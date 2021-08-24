@@ -12,6 +12,10 @@
     "prepare": "husky install",
     "lint": "npm run lint:js && npm run lint:style"
   },
+  "lint-staged": {
+    "*.{js,vue}": "eslint",
+    "*.{css,vue}": "stylelint"
+  },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/pwa": "^3.3.5",
