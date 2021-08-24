@@ -1,5 +1,5 @@
 export default {
-  fix: function (s) {
+  fix(s) {
     // remover scripts
     s = s.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
     // trocar onclick por @change
@@ -10,19 +10,19 @@ export default {
     return s;
   },
 
-  getFormResults: function (formElement) {
-    var setOrPush = function (target, val) {
-      var result = val;
+  getFormResults(formElement) {
+    const setOrPush = function (target, val) {
+      let result = val;
       if (target) {
         result = [target];
         result.push(val);
       }
       return result;
     }
-    var formElements = formElement.elements;
-    var formParams = {};
-    var i = 0;
-    var elem = null;
+    const formElements = formElement.elements;
+    const formParams = {};
+    let i = 0;
+    let elem = null;
     for (i = 0; i < formElements.length; i += 1) {
       elem = formElements[i];
       switch (elem.type) {
@@ -45,9 +45,9 @@ export default {
     return formParams;
   },
 
-  encodeFormParams: function (formParams) {
-    var s = "";
-    for (var k in formParams) {
+  encodeFormParams(formParams) {
+    let s = "";
+    for (const k in formParams) {
       if (s !== "") s += "&";
       s += k + "=" + encodeURIComponent(formParams[k]);
     }

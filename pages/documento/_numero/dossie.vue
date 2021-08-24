@@ -58,7 +58,7 @@
         </table>
         <router-link
           class="btn btn-secondary mb-4"
-          :to="{ name: 'Documento', params: { numero: numero } }"
+          :to="{ name: 'documento-numero', params: { numero: numero } }"
           >Voltar</router-link
         >
       </div>
@@ -75,7 +75,7 @@
           "
         >
           <div ref="html" v-html="html"></div>
-          <my-iframe v-if="src" :src="src"></my-iframe>
+          <MyIFrame v-if="src" :src="src" />
         </div>
       </div>
     </div>
@@ -83,7 +83,7 @@
 </template>
 
 <script>
-import UtilsBL from '../bl/utils.js'
+import UtilsBL from '../../../bl/utils.js'
 
 export default {
   name: 'Dossie',
@@ -149,16 +149,16 @@ export default {
         : this.numero
       // Validar o número do processo
       this.$root.$emit('block', 20)
-      this.$http
-        .get(
+      this.$axios
+        .$get(
           'sigaex/api/v1/documentos/' +
             UtilsBL.onlyLettersAndNumbers(this.numero) +
             '/dossie'
         )
         .then(
-          (response) => {
+          (data) => {
             this.$root.$emit('release')
-            this.lista = response.data.list
+            this.lista = data.list
             this.lista.push({
               descr: 'COMPLETO',
               mobil: this.numero,
@@ -217,34 +217,29 @@ export default {
           '&contenttype=' +
           (this.tipo === 'html' ? 'text/html' : 'application/pdf')
       )
-      this.$root.$emit(
-        'prgAsyncStart',
-        'PDF Completo',
-        response.data.uuid,
-        async () => {
-          const jwt = data.jwt
-          const url =
-            this.$axios.defaults.baseURL +
-            'sigaex/api/v1/download/' +
-            jwt +
-            '/' +
-            this.numero +
-            (this.tipo === 'html'
-              ? '.html'
-              : this.tipo === 'pdf'
-              ? '.pdf'
-              : '.pdf')
+      this.$root.$emit('prgAsyncStart', 'PDF Completo', data.uuid, async () => {
+        const jwt = data.jwt
+        const url =
+          this.$axios.defaults.baseURL +
+          'sigaex/api/v1/download/' +
+          jwt +
+          '/' +
+          this.numero +
+          (this.tipo === 'html'
+            ? '.html'
+            : this.tipo === 'pdf'
+            ? '.pdf'
+            : '.pdf')
 
-          if (this.tipo === 'html') {
-            this.src = undefined
-            const data = await this.$axios.$get(url)
-            this.html = data
-          } else {
-            this.src = url
-            this.html = undefined
-          }
+        if (this.tipo === 'html') {
+          this.src = undefined
+          const data = await this.$axios.$get(url)
+          this.html = data
+        } else {
+          this.src = url
+          this.html = undefined
         }
-      )
+      })
     },
 
     show(i) {

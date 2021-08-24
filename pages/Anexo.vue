@@ -12,7 +12,7 @@
         <template v-if="doc">
           <div class="row">
             <div class="col col-12 col-lg-8">
-              <my-iframe :src="pdfSource"></my-iframe>
+              <MyIFrame :src="pdfSource" />
             </div>
             <div class="col col-12 col-lg-4">
               <h4>Ações</h4>

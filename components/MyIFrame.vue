@@ -22,7 +22,6 @@
 
 <script>
 export default {
-  name: 'my-iframe',
   props: ['src'],
   data() {
     return {

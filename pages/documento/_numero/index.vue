@@ -62,10 +62,7 @@
                   </div>
                 </div>
               </div>
-              <my-iframe
-                v-if="!doc.conteudoBlobHtmlString"
-                :src="pdfSource"
-              ></my-iframe>
+              <MyIFrame v-if="!doc.conteudoBlobHtmlString" :src="pdfSource" />
               <table
                 v-if="filteredMovs && filteredMovs.length"
                 class="table table-sm table-striped"

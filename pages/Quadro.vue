@@ -20,15 +20,9 @@
 
         <div class="row d-print-none">
           <div class="col col-auto ml-auto">
-            <button
-              type="button"
-              class="btn btn-primary"
-              title=""
-              @click="novoDocumento()"
+            <nuxt-link to="/documento/novo" class="btn btn-primary"
+              >Novo</nuxt-link
             >
-              <span class="fa fa-sticky-note-o d-none d-md-inline"></span>
-              Criar Documento
-            </button>
           </div>
         </div>
       </div>
@@ -120,10 +114,6 @@ export default {
         list[i].datahora = UtilsBL.formatJSDDMMYYYY_AS_HHMM(list[i].datahora)
         this.acessos.push(list[i])
       }
-    },
-
-    novoDocumento() {
-      this.$router.push({ name: 'DocumentoNovo' })
     },
 
     listar(item, pessoa) {

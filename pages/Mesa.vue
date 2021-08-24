@@ -27,15 +27,9 @@
         </div>
       </div>
       <div class="col col-auto ml-auto">
-        <button
-          type="button"
-          class="btn btn-primary mt-3"
-          title=""
-          @click="novoDocumento()"
+        <nuxt-link to="/documento/novo" class="btn btn-primary mt-3"
+          >Novo</nuxt-link
         >
-          <span class="fa fa-sticky-note-o d-none d-md-inline"></span>
-          Novo&nbsp;
-        </button>
         <button
           v-if="(filtradosEMarcadosEAnotaveis || []).length"
           type="button"
@@ -327,7 +321,6 @@ export default {
     console.log('mesa-mounted')
 
     setTimeout(() => {
-      this.carregarMesa()
       if (this.$route.params.exibirAcessoAnterior) this.carregarAcessos()
     })
   },
@@ -341,10 +334,6 @@ export default {
         list[i].datahora = UtilsBL.formatJSDDMMYYYY_AS_HHMM(list[i].datahora)
         this.acessos.push(list[i])
       }
-    },
-
-    novoDocumento() {
-      this.$router.push({ name: 'DocumentoNovo' })
     },
 
     assinarComSenhaEmLote() {

@@ -153,14 +153,14 @@ export default {
 
     autuar() {
       this.$router.push({
-        name: 'documento-editar-numero',
+        name: 'documento-numero-editar',
         params: { siglaMobilFilho: this.$parent.mob.sigla },
       })
     },
 
     ver_dossie() {
       this.$router.push({
-        name: 'documento-dossie-numero',
+        name: 'documento-numero-dossie',
         params: {
           numero: UtilsBL.onlyLettersAndNumbers(this.$parent.mob.sigla),
           sigla: this.$parent.mob.sigla,
