@@ -13,9 +13,9 @@
       <div class="col col-12 col-md-auto">
         <div class="input-group mt-3">
           <div class="input-group-prepend">
-            <span id="basic-addon1" class="input-group-text"
-              ><span class="fa fa-search"></span
-            ></span>
+            <span id="basic-addon1" class="input-group-text">
+              <font-awesome-icon :icon="['fa', 'search']" />
+            </span>
           </div>
           <input
             v-model="filtro"
@@ -28,7 +28,10 @@
       </div>
       <div class="col col-auto ml-auto">
         <nuxt-link to="/documento/novo" class="btn btn-primary mt-3"
-          >Novo</nuxt-link
+          ><font-awesome-icon
+            :icon="['fa', 'plus']"
+            class="mr-1"
+          />Novo</nuxt-link
         >
         <button
           v-if="(filtradosEMarcadosEAnotaveis || []).length"
@@ -37,7 +40,7 @@
           title=""
           @click="anotarEmLote()"
         >
-          <span class="fa fa-sticky-note-o d-none d-md-inline"></span>
+          <font-awesome-icon :icon="['fa', 'sticky-note']" class="mr-1" />
           Anotar&nbsp;
           <span class="badge badge-pill badge-warning">{{
             filtradosEMarcadosEAnotaveis.length
@@ -50,7 +53,8 @@
           title=""
           @click="assinarComSenhaEmLote()"
         >
-          <span class="fa fa-shield d-none d-md-inline"></span> Assinar&nbsp;
+          <font-awesome-icon :icon="['fa', 'shield-alt']" class="mr-1" />
+          Assinar&nbsp;
           <span class="badge badge-pill badge-warning">{{
             filtradosEMarcadosEAssinaveis.length
           }}</span>
@@ -62,7 +66,7 @@
           title=""
           @click="tramitarEmLote()"
         >
-          <span class="fa fa-paper-plane-o d-none d-md-inline"></span>
+          <font-awesome-icon :icon="['fa', 'paper-plane']" class="mr-1" />
           Tramitar&nbsp;
           <span class="badge badge-pill badge-warning">{{
             filtradosEMarcadosETramitaveis.length
@@ -152,8 +156,12 @@
                       :key="f.sigla + ':tag:' + m.marcaId"
                       :title="m.titulo"
                       ><button class="btn btn-default btn-sm xrp-label">
-                        <i :class="'fa fa-' + m.icone"></i> {{ m.nome
-                        }}<span v-if="m.pessoa &amp;&amp; !m.daPessoa">
+                        <font-awesome-icon
+                          :icon="['fa', m.icone]"
+                          class="mr-1"
+                        />
+                        {{ m.nome }}
+                        <span v-if="m.pessoa &amp;&amp; !m.daPessoa">
                           - {{ m.pessoa }}</span
                         ><span
                           v-if="m.unidade &amp;&amp; (!m.daLotacao || (!m.daPessoa && !m.deOutraPessoa))"
@@ -212,12 +220,17 @@ export default {
         descr: undefined,
         origem: undefined,
         situacao: undefined,
+        list: undefined,
         errormsg: undefined,
         odd: undefined,
       })
       if (item.datahora !== undefined) {
         item.datahoraFormatada = UtilsBL.formatJSDDMMYYYYHHMM(item.datahora)
       }
+      if (item.list)
+        item.list.forEach((i) => {
+          if (i.icone) i.icone = i.icone.replace('fas fa-', '')
+        })
       return item
     }
 
@@ -227,15 +240,17 @@ export default {
     //     erros[lista[i].codigo] = lista[i].errormsg
     //   }
     // }
-    const data = await $axios.$get('sigaex/api/v1/mesa')
-    const lista = []
-    const list = data.list
-    for (let i = 0; i < list.length; i++) {
-      // list[i].errormsg = erros[list[i].codigo]
-      lista.push(fixItem(list[i]))
-    }
-    window.listaDaMesa = lista
-    return { lista }
+    try {
+      const data = await $axios.$get('sigaex/api/v1/mesa')
+      const lista = []
+      const list = data.list
+      for (let i = 0; i < list.length; i++) {
+        // list[i].errormsg = erros[list[i].codigo]
+        lista.push(fixItem(list[i]))
+      }
+      window.listaDaMesa = lista
+      return { lista }
+    } catch (ex) {}
   },
 
   data() {
@@ -328,12 +343,14 @@ export default {
   methods: {
     async carregarAcessos() {
       this.acessos.length = 0
-      const data = await this.$axios.$get('siga/api/v1/acessos')
-      const list = data.list
-      for (let i = 0; i < list.length; i++) {
-        list[i].datahora = UtilsBL.formatJSDDMMYYYY_AS_HHMM(list[i].datahora)
-        this.acessos.push(list[i])
-      }
+      try {
+        const data = await this.$axios.$get('siga/api/v1/acessos')
+        const list = data.list
+        for (let i = 0; i < list.length; i++) {
+          list[i].datahora = UtilsBL.formatJSDDMMYYYY_AS_HHMM(list[i].datahora)
+          this.acessos.push(list[i])
+        }
+      } catch (ex) {}
     },
 
     assinarComSenhaEmLote() {

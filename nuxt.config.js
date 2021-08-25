@@ -25,6 +25,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/axios',
     '~plugins/fontAwesome.js',
     '~plugins/vAutoComplete.js',
     '~plugins/veeValidate.js',
@@ -70,6 +71,6 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     extend(config) {
-        config.resolve.alias['vue'] = 'vue/dist/vue.common'
+        config.resolve.alias.vue = 'vue/dist/vue.common'
     }
 }}

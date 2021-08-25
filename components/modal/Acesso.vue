@@ -71,20 +71,22 @@ export default {
     },
 
     async carregar() {
-      const data = await this.$axios.$get(
-        'sigaex/api/v1/documentos/' +
-          this.documentos[0].codigo +
-          '/acessos-disponiveis'
-      )
-      const acessos = []
-      for (let i = 0; i < data.list.length; i++) {
-        acessos.push(
-          UtilsBL.applyDefauts(data.list[i], {
-            id: undefined,
-            nome: undefined,
-          })
+      try {
+        const data = await this.$axios.$get(
+          'sigaex/api/v1/documentos/' +
+            this.documentos[0].codigo +
+            '/acessos-disponiveis'
         )
-      }
+        const acessos = []
+        for (let i = 0; i < data.list.length; i++) {
+          acessos.push(
+            UtilsBL.applyDefauts(data.list[i], {
+              id: undefined,
+              nome: undefined,
+            })
+          )
+        }
+      } catch (ex) {}
     },
 
     cancel(e) {

@@ -142,16 +142,18 @@ export default {
       // })
       if (!text || text === '') return
       this.errormsg = undefined
-      const data = await this.$axios.$get(
-        'siga/api/v1/pessoas?texto=' + encodeURI(text)
-      )
-      this.pessoas = []
-      const l = data.list
-      if (l) {
-        for (let i = 0; i < l.length; i++) {
-          this.pessoas.push(l[i].sigla + ' - ' + l[i].nome)
+      try {
+        const data = await this.$axios.$get(
+          'siga/api/v1/pessoas?texto=' + encodeURI(text)
+        )
+        this.pessoas = []
+        const l = data.list
+        if (l) {
+          for (let i = 0; i < l.length; i++) {
+            this.pessoas.push(l[i].sigla + ' - ' + l[i].nome)
+          }
         }
-      }
+      } catch (ex) {}
     },
     async updateLotacoes(text) {
       // yourGetItemsMethod(text).then((response) => {
@@ -159,16 +161,18 @@ export default {
       // })
       if (!text || text === '') return
       this.errormsg = undefined
-      const data = await this.$axios.$get(
-        'siga/api/v1/lotacoes?texto=' + encodeURI(text)
-      )
-      this.lotacoes = []
-      const l = data.list
-      if (l) {
-        for (let i = 0; i < l.length; i++) {
-          this.lotacoes.push(l[i].sigla + ' - ' + l[i].nome)
+      try {
+        const data = await this.$axios.$get(
+          'siga/api/v1/lotacoes?texto=' + encodeURI(text)
+        )
+        this.lotacoes = []
+        const l = data.list
+        if (l) {
+          for (let i = 0; i < l.length; i++) {
+            this.lotacoes.push(l[i].sigla + ' - ' + l[i].nome)
+          }
         }
-      }
+      } catch (ex) {}
     },
 
     show(documentos, cont) {

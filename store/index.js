@@ -31,27 +31,37 @@ export const actions = {
     const userandpass = val.username + ':' + val.password
     const hash = btoa(userandpass)
     const auth = 'Basic ' + hash
-    const token = (await this.$axios.$post(
-      'siga/api/v1/autenticar', {}, {
-        headers: {
-          Authorization: auth
+    try {
+      const token = (await this.$axios.$post(
+        'siga/api/v1/autenticar', {}, {
+          headers: {
+            Authorization: auth
+          }
         }
-      }
-    )).token
+      )).token
 
-    // if (!token) {
-    //   commit('setJwt', undefined)
-    //   return
-    // }
+      // if (!token) {
+      //   commit('setJwt', undefined)
+      //   return
+      // }
 
-    AuthBL.setIdToken(token, this.$axios)
-    await dispatch('updateLogged', token)
+      AuthBL.setIdToken(token)
+      await dispatch('updateLogged', token)
+    } catch (ex) {}
   },
 
   async updateLogged({
     commit,
     dispatch
   }, token) {
+    if (!token) {
+      commit('setJwt', undefined)
+      if (!this.$router.currentRoute || this.$router.currentRoute.name !== "login")
+        this.$router.push({
+          name: 'login'
+        })
+      return
+    }
     commit('setJwt', AuthBL.decodeToken(token))
     await dispatch('carregarUsuario')
     console.log(this.$router.currentRoute)
@@ -69,7 +79,9 @@ export const actions = {
     state,
     commit
   }, val) {
-    const usuario = await this.$axios.$get("siga/api/v1/usuario")
-    commit('setUsuario', usuario)
+    try {
+      const usuario = await this.$axios.$get("siga/api/v1/usuario")
+      commit('setUsuario', usuario)
+    } catch (ex) {}
   }
 }

@@ -139,7 +139,7 @@ export default {
     })
   },
   methods: {
-    carregarDossie() {
+    async carregarDossie() {
       this.errormsg = undefined
       this.numero = this.$route.params.numero
       this.numeroAtivo = this.numero
@@ -149,35 +149,27 @@ export default {
         : this.numero
       // Validar o número do processo
       this.$root.$emit('block', 20)
-      this.$axios
-        .$get(
+      try {
+        const data = await this.$axios.$get(
           'sigaex/api/v1/documentos/' +
             UtilsBL.onlyLettersAndNumbers(this.numero) +
             '/dossie'
         )
-        .then(
-          (data) => {
-            this.$root.$emit('release')
-            this.lista = data.list
-            this.lista.push({
-              descr: 'COMPLETO',
-              mobil: this.numero,
-              completo: true,
-            })
-            if (/\dV\d/gm.exec(this.numero) !== null)
-              this.lista.push({
-                descr: 'VOLUMES',
-                mobil: this.numero,
-                completo: true,
-                volumes: true,
-              })
-            this.show(this.lista[this.lista.length - 1])
-          },
-          (error) => {
-            this.$root.$emit('release')
-            UtilsBL.errormsg(error, this)
-          }
-        )
+        this.lista = data.list
+        this.lista.push({
+          descr: 'COMPLETO',
+          mobil: this.numero,
+          completo: true,
+        })
+        if (/\dV\d/gm.exec(this.numero) !== null)
+          this.lista.push({
+            descr: 'VOLUMES',
+            mobil: this.numero,
+            completo: true,
+            volumes: true,
+          })
+        this.show(this.lista[this.lista.length - 1])
+      } catch (ex) {}
     },
 
     mostrar() {
@@ -198,8 +190,10 @@ export default {
 
       if (this.tipo === 'html') {
         this.src = undefined
-        const data = await this.$axios.$get(url)
-        this.html = data
+        try {
+          const data = await this.$axios.$get(url)
+          this.html = data
+        } catch (ex) {}
       } else {
         this.src = url
         this.html = undefined
@@ -233,8 +227,10 @@ export default {
 
         if (this.tipo === 'html') {
           this.src = undefined
-          const data = await this.$axios.$get(url)
-          this.html = data
+          try {
+            const data = await this.$axios.$get(url)
+            this.html = data
+          } catch (ex) {}
         } else {
           this.src = url
           this.html = undefined

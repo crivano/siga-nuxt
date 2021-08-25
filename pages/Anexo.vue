@@ -105,10 +105,12 @@ export default {
       this.numero = this.$route.params.numero
       // Validar o número do processo
       this.$root.$emit('block', 20)
-      const data = await this.$axios.$get(
-        'sigaex/api/v1/documentos/' + this.numero
-      )
-      this.atualizarDocumento(data)
+      try {
+        const data = await this.$axios.$get(
+          'sigaex/api/v1/documentos/' + this.numero
+        )
+        this.atualizarDocumento(data)
+      } catch (ex) {}
     },
 
     atualizarDocumento(data) {

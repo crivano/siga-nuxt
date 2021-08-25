@@ -1,8 +1,8 @@
 <template>
   <div>
-    <NavBar />
+    <LayoutNavBar />
     <Nuxt />
-    <Footer />
+    <LayoutFooter />
     <Modals />
   </div>
 </template>

@@ -4,62 +4,114 @@ import {
   library
 } from '@fortawesome/fontawesome-svg-core'
 import {
-  faShoppingCart,
+  faSearch,
+  faStickyNote,
+  faShieldAlt,
+  faPaperPlane,
   faPlus,
-  faPlusSquare,
-  faMinusSquare,
-  faTrashAlt,
-  faCheck,
-  faArrowLeft,
-  faHome,
-  faEllipsisH,
+  faLightbulb,
+  faInfoCircle,
+  faTag,
+  faBomb,
+  faUserShield,
+  faExclamationTriangle,
+  faSkullCrossbones,
+  faUserSecret,
+  faUserGraduate,
   faUser,
-  faUserClock,
-  faUserCheck,
-  faUserTimes,
-  faSearchMinus,
-  faSearchPlus,
-  faUserFriends,
-  faEnvelopeOpenText,
-  faUserTie,
-  faPauseCircle,
-  faDollarSign,
-  faHandHoldingUsd,
-  faServer,
-  faCreditCard,
-  faCog
+  faBan,
+  faAddressCard,
+  faAmbulance,
+  faBalanceScale,
+  faBolt,
+  faCalendar,
+  faFile,
+  faFolder,
+  faHeart,
+  faStar,
+  faCertificate,
+  faBell,
+  faCalendarCheck,
+  faBroadcastTower,
+  faSmile,
+  faClock,
+  faInbox,
+  faPowerOff,
+  faLock,
+  faKey,
+  faScroll,
+  faTruck,
+  faShippingFast,
+  faCompressArrowsAlt,
+  faHourglassStart,
+  faGlasses,
+  faExchangeAlt,
+  faArrowAltCircleUp,
+  faUsersCog,
+  faCheckCircle,
+  faGlobe,
+  faHourglassEnd,
+  faHourglassHalf
 } from '@fortawesome/free-solid-svg-icons'
-import {
-  faWhatsapp
-} from '@fortawesome/free-brands-svg-icons'
+// import {
+//   faWhatsapp
+// } from '@fortawesome/free-brands-svg-icons'
 import {
   FontAwesomeIcon
 } from '@fortawesome/vue-fontawesome'
+import { faAccessibleIcon } from '@fortawesome/free-brands-svg-icons'
 
-library.add(faShoppingCart)
 library.add(faPlus)
-library.add(faPlusSquare)
-library.add(faMinusSquare)
-library.add(faWhatsapp)
-library.add(faTrashAlt)
-library.add(faCheck)
-library.add(faArrowLeft)
-library.add(faHome)
-library.add(faEllipsisH)
+library.add(faSearch)
+library.add(faStickyNote)
+library.add(faShieldAlt)
+library.add(faPaperPlane)
+
+library.add(faLightbulb)
+library.add(faInfoCircle)
+library.add(faTag)
+library.add(faBomb)
+library.add(faUserShield)
+library.add(faExclamationTriangle)
+library.add(faSkullCrossbones)
+library.add(faUserSecret)
+library.add(faUserGraduate)
 library.add(faUser)
-library.add(faUserClock)
-library.add(faUserCheck)
-library.add(faUserTimes)
-library.add(faUserFriends)
-library.add(faSearchMinus)
-library.add(faSearchPlus)
-library.add(faEnvelopeOpenText)
-library.add(faUserTie)
-library.add(faPauseCircle)
-library.add(faDollarSign)
-library.add(faHandHoldingUsd)
-library.add(faServer)
-library.add(faCreditCard)
-library.add(faCog)
+library.add(faBan)
+library.add(faAccessibleIcon)
+library.add(faAddressCard)
+library.add(faAmbulance)
+library.add(faBalanceScale)
+library.add(faBolt)
+library.add(faCalendar)
+library.add(faFile)
+library.add(faFolder)
+library.add(faHeart)
+library.add(faStar)
+library.add(faCertificate)
+library.add(faBell)
+library.add(faCalendarCheck)
+library.add(faBroadcastTower)
+library.add(faSmile)
+
+
+library.add(faClock)
+library.add(faInbox)
+library.add(faPowerOff)
+library.add(faLock)
+library.add(faKey)
+library.add(faScroll)
+library.add(faTruck)
+library.add(faShippingFast)
+library.add(faCompressArrowsAlt)
+library.add(faHourglassStart)
+library.add(faGlasses)
+library.add(faExchangeAlt)
+library.add(faArrowAltCircleUp)
+library.add(faUsersCog)
+library.add(faCheckCircle)
+library.add(faGlobe)
+library.add(faHourglassEnd)
+library.add(faHourglassHalf)
 
 Vue.component('FontAwesomeIcon', FontAwesomeIcon)

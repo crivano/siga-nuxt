@@ -84,23 +84,25 @@ export default {
     async updateMobs(text) {
       if (!text || text === '') return
       this.errormsg = undefined
-      const data = await this.$axios.$get(
-        'sigaex/api/v1/documentos/' + encodeURI(text)
-      )
-      this.mobs = []
-      // var l = response.data.list;
-      // if (l) {
-      //   for (var i = 0; i < l.length; i++) {
-      //     this.mobs.push(l[i].sigla + " - " + l[i].nome);
-      //   }
-      // }
-      const d = data
-      if (d.sigla) {
-        let sigla = d.sigla
-        if (d.mobs && d.mobs.length > 0 && d.mobs[0].sigla)
-          sigla = d.mobs[0].sigla
-        this.mobs.push(sigla + ' - ' + d.descrDocumento)
-      }
+      try {
+        const data = await this.$axios.$get(
+          'sigaex/api/v1/documentos/' + encodeURI(text)
+        )
+        this.mobs = []
+        // var l = response.data.list;
+        // if (l) {
+        //   for (var i = 0; i < l.length; i++) {
+        //     this.mobs.push(l[i].sigla + " - " + l[i].nome);
+        //   }
+        // }
+        const d = data
+        if (d.sigla) {
+          let sigla = d.sigla
+          if (d.mobs && d.mobs.length > 0 && d.mobs[0].sigla)
+            sigla = d.mobs[0].sigla
+          this.mobs.push(sigla + ' - ' + d.descrDocumento)
+        }
+      } catch (ex) {}
     },
 
     show(documentos, cont, emit, titulo, campo) {

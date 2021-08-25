@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import ItemTemplate from './ItemTemplate.vue'
+import ItemTemplate from '../ItemTemplate.vue'
 
 export default {
   name: 'my-classificacao',
@@ -49,16 +49,18 @@ export default {
       // })
       if (!text || text === '') return
       this.errormsg = undefined
-      const data = await this.$axios.$get(
-        'sigaex/api/v1/classificacoes?texto=' + encodeURI(text)
-      )
-      this.classificacoes = []
-      const l = data.list
-      if (l) {
-        for (let i = 0; i < l.length; i++) {
-          this.classificacoes.push(l[i].sigla + ' - ' + l[i].nome)
+      try {
+        const data = await this.$axios.$get(
+          'sigaex/api/v1/classificacoes?texto=' + encodeURI(text)
+        )
+        this.classificacoes = []
+        const l = data.list
+        if (l) {
+          for (let i = 0; i < l.length; i++) {
+            this.classificacoes.push(l[i].sigla + ' - ' + l[i].nome)
+          }
         }
-      }
+      } catch (ex) {}
     },
   },
 }

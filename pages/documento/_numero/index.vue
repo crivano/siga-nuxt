@@ -29,22 +29,7 @@
             ></h6>
           </div>
         </div>
-        <div class="row no-gutters mt-2">
-          <!--
-                    <div class="col col-auto mr-1" v-if="!$parent.settings.filtrarMovimentos">
-                      <button type="button" @click="filtrarMovimentos('')" class="btn btn-secondary d-print-none">
-                        <span class="fa fa-filter"></span>
-                        Filtrar Movimentos
-                      </button>
-                    </div>
-                    <div class="col col-auto mr-1 mb-3" v-if="filtro !== '#marca'">
-                      <button type="button" @click="filtrarMovimentos('#marca')" class="btn btn-secondary d-print-none">
-                        <span class="fa fa-filter"></span>
-                        Filtrar Marcas
-                      </button>
-                    </div>
-                    -->
-        </div>
+        <div class="row no-gutters mt-2"></div>
         <template v-if="doc">
           <div class="row">
             <div class="col col-12 col-lg-8">
@@ -310,7 +295,6 @@
 </template>
 
 <script>
-import UtilsBL from '../../../bl/utils.js'
 import Acao from '../../../components/Acao'
 
 export default {
@@ -323,36 +307,40 @@ export default {
   async asyncData({ params, $axios, $store }) {
     const computeGraph = async function (dot) {
       if (!dot) return
-      const data = await $axios.$post(
-        'siga/public/app/graphviz/svg',
-        'digraph G { graph[tooltip="Tramitação"] ' + dot + '}',
-        {
-          headers: { 'Content-Type': 'text/vnd.graphviz' },
-          withCredentials: false,
-        }
-      )
-      if (!data) return
-      let result = data.replace(
-        /width="\d+pt" height="\d+pt"/gm,
-        'style="left:0; top:0; width:100%; height:12em; display:block; margin: auto;"'
-      )
-      result = result.replace(/<polygon fill="white".+?\/>/gm, '')
-      return result
+      try {
+        const data = await $axios.$post(
+          'siga/public/app/graphviz/svg',
+          'digraph G { graph[tooltip="Tramitação"] ' + dot + '}',
+          {
+            headers: { 'Content-Type': 'text/vnd.graphviz' },
+            withCredentials: false,
+          }
+        )
+        if (!data) return
+        let result = data.replace(
+          /width="\d+pt" height="\d+pt"/gm,
+          'style="left:0; top:0; width:100%; height:12em; display:block; margin: auto;"'
+        )
+        result = result.replace(/<polygon fill="white".+?\/>/gm, '')
+        return result
+      } catch (ex) {}
     }
 
     let numero = params.numero
-    const doc = await $axios.$get('sigaex/api/v1/documentos/' + numero)
-    const mob = doc.mobs[0]
-    if (!mob.isGeral) numero = mob.sigla.replace(/[^a-zA-Z0-9]/gi, '')
-    let relacao
-    // if ($store.state.test.properties['vizservice.url']) {
-    // if (doc) {
-    const tramitacao = await computeGraph(doc.vizTramitacao)
-    if (doc.vizRelacaoDocs && doc.vizRelacaoDocs.length > 200)
-      relacao = await computeGraph(doc.vizRelacaoDocs)
-    // }
+    try {
+      const doc = await $axios.$get('sigaex/api/v1/documentos/' + numero)
+      const mob = doc.mobs[0]
+      if (!mob.isGeral) numero = mob.sigla.replace(/[^a-zA-Z0-9]/gi, '')
+      let relacao
+      // if ($store.state.test.properties['vizservice.url']) {
+      // if (doc) {
+      const tramitacao = await computeGraph(doc.vizTramitacao)
+      if (doc.vizRelacaoDocs && doc.vizRelacaoDocs.length > 200)
+        relacao = await computeGraph(doc.vizRelacaoDocs)
+      // }
 
-    return { numero, doc, mob, tramitacao, relacao }
+      return { numero, doc, mob, tramitacao, relacao }
+    } catch (ex) {}
   },
 
   data() {
@@ -447,29 +435,30 @@ export default {
       this.$nuxt.refresh()
     },
 
-    async mostrarCompleto() {
-      const data = await this.$axios.$get(
-        'sigaex/api/v1/documentos/' +
-          this.numero +
-          '/arquivo?estampa=true&completo=true'
-      )
-      this.$root.$emit('prgAsyncStart', 'PDF Completo', data.uuid, () => {
-        const jwt = data.jwt
-        window.open(
-          this.$axios.defaults.baseURL +
-            'sigaex/api/v1//download/' +
-            jwt +
-            '/' +
-            this.numero +
-            '.pdf'
-        )
-      })
-      UtilsBL.logEvento(
-        'consulta-processual',
-        'mostrar pdf completo',
-        'individual'
-      )
-    },
+    // async mostrarCompleto() {
+    //   const data = await this.$axios.$get(
+    //     'sigaex/api/v1/documentos/' +
+    //       this.numero +
+    //       '/arquivo?estampa=true&completo=true'
+    //   )
+    //   this.$root.$emit('prgAsyncStart', 'PDF Completo', data.uuid, () => {
+    //     const jwt = data.jwt
+    //     window.open(
+    //       this.$axios.defaults.baseURL +
+    //         'sigaex/api/v1//download/' +
+    //         jwt +
+    //         '/' +
+    //         this.numero +
+    //         '.pdf'
+    //     )
+    //   })
+    //   UtilsBL.logEvento(
+    //     'consulta-processual',
+    //     'mostrar pdf completo',
+    //     'individual'
+    //   )
+    // },
+
     filtrarMovimentos(texto) {
       this.$parent.$emit('setting', 'filtrarMovimentos', texto !== undefined)
       const f = this.filtro

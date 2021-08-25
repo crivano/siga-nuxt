@@ -76,44 +76,48 @@ export default {
           erros[this.lista[i].codigo] = this.lista[i].errormsg
         }
       }
-      const data = await this.$axios.$get(
-        'sigaex/api/v1/quadro?filtroExpedienteProcesso=' + tipo
-      )
-      this['carregando' + tipo] = false
-      this['lista' + tipo] = data.list.filter(
-        (i) =>
-          i.marcadorId !== 9 &&
-          i.marcadorId !== 8 &&
-          i.marcadorId !== 10 &&
-          i.marcadorId !== 11 &&
-          i.marcadorId !== 12 &&
-          i.marcadorId !== 13 &&
-          i.marcadorId !== 16 &&
-          i.marcadorId !== 18 &&
-          i.marcadorId !== 20 &&
-          i.marcadorId !== 21 &&
-          i.marcadorId !== 22 &&
-          i.marcadorId !== 26 &&
-          i.marcadorId !== 32 &&
-          i.marcadorId !== 62 &&
-          i.marcadorId !== 63 &&
-          i.marcadorId !== 64 &&
-          i.marcadorId !== 7 &&
-          i.marcadorId !== 50 &&
-          i.marcadorId !== 51
-      )
-      this.primeiraCarga = false
-      window['quadro' + tipo] = this['lista' + tipo]
+      try {
+        const data = await this.$axios.$get(
+          'sigaex/api/v1/quadro?filtroExpedienteProcesso=' + tipo
+        )
+        this['carregando' + tipo] = false
+        this['lista' + tipo] = data.list.filter(
+          (i) =>
+            i.marcadorId !== 9 &&
+            i.marcadorId !== 8 &&
+            i.marcadorId !== 10 &&
+            i.marcadorId !== 11 &&
+            i.marcadorId !== 12 &&
+            i.marcadorId !== 13 &&
+            i.marcadorId !== 16 &&
+            i.marcadorId !== 18 &&
+            i.marcadorId !== 20 &&
+            i.marcadorId !== 21 &&
+            i.marcadorId !== 22 &&
+            i.marcadorId !== 26 &&
+            i.marcadorId !== 32 &&
+            i.marcadorId !== 62 &&
+            i.marcadorId !== 63 &&
+            i.marcadorId !== 64 &&
+            i.marcadorId !== 7 &&
+            i.marcadorId !== 50 &&
+            i.marcadorId !== 51
+        )
+        this.primeiraCarga = false
+        window['quadro' + tipo] = this['lista' + tipo]
+      } catch (ex) {}
     },
 
     async carregarAcessos() {
       this.acessos.length = 0
-      const data = await this.$axios.$get('siga/api/v1/acessos')
-      const list = data.list
-      for (let i = 0; i < list.length; i++) {
-        list[i].datahora = UtilsBL.formatJSDDMMYYYY_AS_HHMM(list[i].datahora)
-        this.acessos.push(list[i])
-      }
+      try {
+        const data = await this.$axios.$get('siga/api/v1/acessos')
+        const list = data.list
+        for (let i = 0; i < list.length; i++) {
+          list[i].datahora = UtilsBL.formatJSDDMMYYYY_AS_HHMM(list[i].datahora)
+          this.acessos.push(list[i])
+        }
+      } catch (ex) {}
     },
 
     listar(item, pessoa) {

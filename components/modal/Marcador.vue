@@ -218,18 +218,20 @@ export default {
 
     async carregar() {
       this.carregando = true
-      const data = await this.$axios.$get(
-        'sigaex/api/v1/documentos/' +
-          this.documentos[0].codigo +
-          '/marcadores-disponiveis'
-      )
-      this.carregando = false
-      this.lista.length = 0
-      const resp = data
-      for (let i = 0; i < resp.list.length; i++) {
-        this.lista.push(this.fixItem(resp.list[i]))
-      }
-      this.primeiraCarga = false
+      try {
+        const data = await this.$axios.$get(
+          'sigaex/api/v1/documentos/' +
+            this.documentos[0].codigo +
+            '/marcadores-disponiveis'
+        )
+        this.carregando = false
+        this.lista.length = 0
+        const resp = data
+        for (let i = 0; i < resp.list.length; i++) {
+          this.lista.push(this.fixItem(resp.list[i]))
+        }
+        this.primeiraCarga = false
+      } catch (ex) {}
     },
 
     fixItem(item) {

@@ -78,21 +78,23 @@ export default {
   components: {},
 
   async asyncData({ params, $axios }) {
-    const data = await $axios.$get(
-      'sigaex/api/v1/lista?idMarcador=' +
-        params.idMarcador +
-        '&filtroExpedienteProcesso=' +
-        params.filtroExpedienteProcesso +
-        '&filtroPessoaLotacao=' +
-        params.filtroPessoaLotacao
-    )
-    const lista = data.list
-    lista.forEach((i) => {
-      i.siglaCompacta = UtilsBL.onlyLettersAndNumbers(i.sigla)
-      i.documentoData = UtilsBL.formatDDMMYYYY(i.documentoData)
-      i.marcaData = UtilsBL.formatDDMMYYYY(i.marcaData)
-    })
-    return { lista }
+    try {
+      const data = await $axios.$get(
+        'sigaex/api/v1/lista?idMarcador=' +
+          params.idMarcador +
+          '&filtroExpedienteProcesso=' +
+          params.filtroExpedienteProcesso +
+          '&filtroPessoaLotacao=' +
+          params.filtroPessoaLotacao
+      )
+      const lista = data.list
+      lista.forEach((i) => {
+        i.siglaCompacta = UtilsBL.onlyLettersAndNumbers(i.sigla)
+        i.documentoData = UtilsBL.formatDDMMYYYY(i.documentoData)
+        i.marcaData = UtilsBL.formatDDMMYYYY(i.marcaData)
+      })
+      return { lista }
+    } catch (ex) {}
   },
 
   data() {

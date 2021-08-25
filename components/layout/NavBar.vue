@@ -33,6 +33,28 @@
 
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
+            <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
+              <nuxt-link class="nav-link" active-class="active" to="quadro"
+                >Quadro</nuxt-link
+              >
+            </b-nav-item>
+            <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
+              <nuxt-link class="nav-link" active-class="active" to="mesa"
+                >Mesa</nuxt-link
+              >
+            </b-nav-item>
+            <b-nav-item>
+              <nuxt-link class="nav-link" active-class="active" to="sugestoes"
+                >Sugestões</nuxt-link
+              >
+            </b-nav-item>
+            <b-nav-item>
+              <nuxt-link class="nav-link" active-class="active" to="sobre"
+                >Sobre</nuxt-link
+              >
+            </b-nav-item>
+          </b-navbar-nav>
+          <b-navbar-nav class="ml-auto">
             <b-nav-item
               v-if="!($store.state.jwt &amp;&amp; $store.state.jwt.sub)"
             >
@@ -44,44 +66,6 @@
                 >Login</router-link
               >
             </b-nav-item>
-            <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
-              <router-link
-                class="nav-link"
-                active-class="active"
-                :to="{ name: 'quadro' }"
-                tag="a"
-                >Quadro</router-link
-              >
-            </b-nav-item>
-            <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
-              <router-link
-                class="nav-link"
-                active-class="active"
-                :to="{ name: 'mesa' }"
-                tag="a"
-                >Mesa</router-link
-              >
-            </b-nav-item>
-            <b-nav-item>
-              <router-link
-                class="nav-link"
-                active-class="active"
-                :to="{ name: 'Sugestões' }"
-                tag="a"
-                >Sugestões</router-link
-              >
-            </b-nav-item>
-            <b-nav-item>
-              <router-link
-                class="nav-link"
-                active-class="active"
-                :to="{ name: 'Sobre' }"
-                tag="a"
-                >Sobre</router-link
-              >
-            </b-nav-item>
-          </b-navbar-nav>
-          <b-navbar-nav class="ml-auto">
             <b-nav-item-dropdown
               v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub"
               :text="$store.state.jwt.sub"
@@ -139,58 +123,62 @@
   </div>
 </template>
 <script>
-import AuthBL from '../bl/auth.js'
+import AuthBL from '../../bl/auth.js'
 export default {
   data() {
     return { siglaParaPesquisar: undefined }
   },
   async mounted() {
-    const test = await this.$axios.$get('sigaex/api/v1/test?skip=all')
-    if (test.properties) {
-      for (const k in test.properties) {
-        if (k in test.properties)
-          if (test.properties[k] === '[undefined]')
-            test.properties[k] = undefined
-          else
-            test.properties[k] = test.properties[k].replace(
-              /\[default: (.*)\]/gm,
-              '$1'
-            )
-      }
-
-      if (
-        test.properties['siga-le.wootric.token'] &&
-        test.properties['siga-le.wootric.token'] !== '[undefined]' &&
-        this.$store.state.jwt
-      ) {
-        // This loads the Wootric survey
-        // window.wootric_survey_immediately = true
-        window.wootricSettings = {
-          email: this.jwt.sub,
-          account_token: this.test.properties['siga-le.wootric.token'],
+    try {
+      const test = await this.$axios.$get('sigaex/api/v1/test?skip=all')
+      if (test.properties) {
+        for (const k in test.properties) {
+          if (k in test.properties)
+            if (test.properties[k] === '[undefined]')
+              test.properties[k] = undefined
+            else
+              test.properties[k] = test.properties[k].replace(
+                /\[default: (.*)\]/gm,
+                '$1'
+              )
         }
-        window.wootric('run')
+
+        if (
+          test.properties['siga-le.wootric.token'] &&
+          test.properties['siga-le.wootric.token'] !== '[undefined]' &&
+          this.$store.state.jwt
+        ) {
+          // This loads the Wootric survey
+          // window.wootric_survey_immediately = true
+          window.wootricSettings = {
+            email: this.jwt.sub,
+            account_token: this.test.properties['siga-le.wootric.token'],
+          }
+          window.wootric('run')
+        }
+
+        this.$store.commit('setTest', test)
+
+        let token = AuthBL.getIdToken()
+        if (token && AuthBL.isTokenExpired(token)) token = undefined
+        this.$store.dispatch('updateLogged', token)
       }
-
-      this.$store.commit('setTest', test)
-
-      let token = AuthBL.getIdToken()
-      if (token && AuthBL.isTokenExpired(token)) token = undefined
-      this.$store.dispatch('updateLogged', token)
-    }
+    } catch (ex) {}
   },
   methods: {
     async pesquisar() {
       const pesq = (this.siglaParaPesquisar || '').replace(/[^a-z0-9]/gi, '')
-      const codigo = await this.$axios.$get(
-        'sigaex/api/v1/documentos/' + pesq + '/pesquisar-sigla'
-      ).codigo
-      if (codigo) {
-        this.$router.push({
-          name: 'Documento',
-          params: { numero: codigo },
-        })
-      }
+      try {
+        const codigo = await this.$axios.$get(
+          'sigaex/api/v1/documentos/' + pesq + '/pesquisar-sigla'
+        ).codigo
+        if (codigo) {
+          this.$router.push({
+            name: 'Documento',
+            params: { numero: codigo },
+          })
+        }
+      } catch (ex) {}
       this.siglaParaPesquisar = undefined
     },
 

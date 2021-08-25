@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import ItemTemplate from './ItemTemplate.vue'
+import ItemTemplate from '../ItemTemplate.vue'
 
 export default {
   name: 'my-pessoa',
@@ -49,16 +49,18 @@ export default {
       // })
       if (!text || text === '') return
       this.errormsg = undefined
-      const data = await this.$axios.$get(
-        'siga/api/v1/pessoas?texto=' + encodeURI(text)
-      )
-      this.pessoas = []
-      const l = data.list
-      if (l) {
-        for (let i = 0; i < l.length; i++) {
-          this.pessoas.push(l[i].sigla + ' - ' + l[i].nome)
+      try {
+        const data = await this.$axios.$get(
+          'siga/api/v1/pessoas?texto=' + encodeURI(text)
+        )
+        this.pessoas = []
+        const l = data.list
+        if (l) {
+          for (let i = 0; i < l.length; i++) {
+            this.pessoas.push(l[i].sigla + ' - ' + l[i].nome)
+          }
         }
-      }
+      } catch (ex) {}
     },
   },
 }

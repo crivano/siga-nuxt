@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import ItemTemplate from './ItemTemplate.vue'
+import ItemTemplate from '../ItemTemplate.vue'
 
 export default {
   name: 'my-lotacao',
@@ -48,16 +48,18 @@ export default {
       // })
       if (!text || text === '') return
       this.errormsg = undefined
-      const data = await this.$axios.$get(
-        'siga/api/v1/lotacoes?texto=' + encodeURI(text)
-      )
-      this.lotacoes = []
-      const l = data.list
-      if (l) {
-        for (let i = 0; i < l.length; i++) {
-          this.lotacoes.push(l[i].sigla + ' - ' + l[i].nome)
+      try {
+        const data = await this.$axios.$get(
+          'siga/api/v1/lotacoes?texto=' + encodeURI(text)
+        )
+        this.lotacoes = []
+        const l = data.list
+        if (l) {
+          for (let i = 0; i < l.length; i++) {
+            this.lotacoes.push(l[i].sigla + ' - ' + l[i].nome)
+          }
         }
-      }
+      } catch (ex) {}
     },
   },
 }

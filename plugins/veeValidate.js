@@ -7,11 +7,17 @@ import {
 } from 'vee-validate';
 import {
   required,
+  email,
 } from 'vee-validate/dist/rules';
 
 extend('required', {
   ...required,
   message: "Preenchimento obrigatório"
+});
+
+extend('email', {
+  ...email,
+  message: "Email inválido"
 });
 
 Vue.component('ValidationProvider', ValidationProvider);

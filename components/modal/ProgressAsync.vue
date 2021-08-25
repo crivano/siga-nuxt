@@ -66,19 +66,21 @@ export default {
 
     async refresh() {
       if (!this.showModal) return
-      const r = await this.$axios.$get('sigaex/api/v1/status/' + this.key)
-      this.progressbarCaption = r.mensagem
-      this.progressbarWidth = 100 * (r.indice / r.contador)
-      this.bytes = r.bytes ? UtilsBL.formatBytes(r.bytes) : undefined
-      if (r.indice === r.contador) {
-        this.showModal = false
-        this.progressbarWidth = 0
-        this.callbackEnd(this.i)
-      } else {
-        setTimeout(() => {
-          this.refresh()
-        }, 500)
-      }
+      try {
+        const r = await this.$axios.$get('sigaex/api/v1/status/' + this.key)
+        this.progressbarCaption = r.mensagem
+        this.progressbarWidth = 100 * (r.indice / r.contador)
+        this.bytes = r.bytes ? UtilsBL.formatBytes(r.bytes) : undefined
+        if (r.indice === r.contador) {
+          this.showModal = false
+          this.progressbarWidth = 0
+          this.callbackEnd(this.i)
+        } else {
+          setTimeout(() => {
+            this.refresh()
+          }, 500)
+        }
+      } catch (ex) {}
     },
   },
 }

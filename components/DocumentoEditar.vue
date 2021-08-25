@@ -151,9 +151,9 @@
 </template>
 
 <script>
-import DocumentoEntrevista from './DocumentoEntrevista'
 import UtilsBL from '../bl/utils.js'
 import EntrevistaBL from '../bl/entrevista.js'
+import DocumentoEntrevista from './DocumentoEntrevista'
 
 export default {
   components: { DocumentoEntrevista },
@@ -266,32 +266,34 @@ export default {
       if (!this.numero) return
       // Validar o número do processo
       this.$root.$emit('block', 20)
-      const doc = await this.$axios.$get(
-        'sigaex/api/v1/documentos/' + this.numero
-      )
-      this.podeCapturarPDF = doc.podeCapturarPDF
-      this.sigla = doc.sigla
-      this.idModelo = doc.idModelo
-      this.descricao = doc.descrDocumento
-      this.subscritor =
-        (doc.subscritorSigla ? doc.subscritorSigla + ' - ' : '') +
-        doc.subscritorNome
-      if (doc.destinatarioTipo === 'PESSOA')
-        this.destinatario =
-          (doc.destinatarioSigla ? doc.destinatarioSigla + ' - ' : '') +
-          doc.destinatarioNome
-      else if (doc.destinatarioTipo === 'LOTACAO')
-        this.lotaDestinatario =
-          (doc.destinatarioSigla ? doc.destinatarioSigla + ' - ' : '') +
-          doc.destinatarioNome
+      try {
+        const doc = await this.$axios.$get(
+          'sigaex/api/v1/documentos/' + this.numero
+        )
+        this.podeCapturarPDF = doc.podeCapturarPDF
+        this.sigla = doc.sigla
+        this.idModelo = doc.idModelo
+        this.descricao = doc.descrDocumento
+        this.subscritor =
+          (doc.subscritorSigla ? doc.subscritorSigla + ' - ' : '') +
+          doc.subscritorNome
+        if (doc.destinatarioTipo === 'PESSOA')
+          this.destinatario =
+            (doc.destinatarioSigla ? doc.destinatarioSigla + ' - ' : '') +
+            doc.destinatarioNome
+        else if (doc.destinatarioTipo === 'LOTACAO')
+          this.lotaDestinatario =
+            (doc.destinatarioSigla ? doc.destinatarioSigla + ' - ' : '') +
+            doc.destinatarioNome
 
-      this.classificacao =
-        (doc.classificacaoSigla ? doc.classificacaoSigla + ' - ' : '') +
-        doc.classificacaoNome
-      await this.carregarModelo()
+        this.classificacao =
+          (doc.classificacaoSigla ? doc.classificacaoSigla + ' - ' : '') +
+          doc.classificacaoNome
+        await this.carregarModelo()
 
-      if (doc.conteudoBlobFormString)
-        this.processarEntrevista(doc.conteudoBlobFormString)
+        if (doc.conteudoBlobFormString)
+          this.processarEntrevista(doc.conteudoBlobFormString)
+      } catch (ex) {}
     },
 
     async carregarModelos() {
@@ -309,17 +311,21 @@ export default {
           UtilsBL.onlyLettersAndNumbers(this.siglaMobilFilho) +
           '/modelos-para-autuar'
 
-      const data = await this.$axios.$get(url)
-      this.modelos = data.list
+      try {
+        const data = await this.$axios.$get(url)
+        this.modelos = data.list
+      } catch (ex) {}
     },
 
     async carregarModelo() {
       this.errormsg = undefined
       this.$root.$emit('block', 20)
-      const data = await this.$axios.$get(
-        'sigaex/api/v1/modelos/' + this.idModelo
-      )
-      this.modelo = data
+      try {
+        const data = await this.$axios.$get(
+          'sigaex/api/v1/modelos/' + this.idModelo
+        )
+        this.modelo = data
+      } catch (ex) {}
     },
 
     async carregarModeloEProcessarEntrevista() {
@@ -327,7 +333,7 @@ export default {
       await this.processarEntrevista()
     },
 
-    processarEntrevista(params) {
+    async processarEntrevista(params) {
       this.errormsg = undefined
       const formParams = EntrevistaBL.encodeFormParams(
         EntrevistaBL.getFormResults(this.$refs.form)
@@ -336,24 +342,18 @@ export default {
       // console.log(formParams);
       // console.log(s);
       const self = this
-      this.$axios
-        .$post(
+      try {
+        const data = await this.$axios.$post(
           'sigaex/api/v1/modelos/' + this.idModelo + '/processar-entrevista',
           { entrevista: params || formParams }
         )
-        .then(
-          (data) => {
-            self.entrevista = EntrevistaBL.fix(data)
-            self.$refs.divEntrevista.innerHTML = self.entrevista
-            self.entrevistaTemplate = self.$refs.divEntrevista.innerHTML
-          },
-          (error) => {
-            UtilsBL.errormsg(error, self)
-          }
-        )
+        self.entrevista = EntrevistaBL.fix(data)
+        self.$refs.divEntrevista.innerHTML = self.entrevista
+        self.entrevistaTemplate = self.$refs.divEntrevista.innerHTML
+      } catch (ex) {}
     },
 
-    salvar() {
+    async salvar() {
       this.errormsg = undefined
       const formParams = EntrevistaBL.encodeFormParams(
         EntrevistaBL.getFormResults(this.$refs.form)
@@ -380,17 +380,13 @@ export default {
         data.append('siglamobilfilho', this.siglaMobilFilho)
       if (this.arquivo) data.append('arquivo', this.arquivo)
 
-      this.$axios.$post('sigaex/api/v1/documentos', data).then(
-        (data) => {
-          this.$router.replace({
-            name: 'documento-numero',
-            params: { numero: data.sigladoc },
-          })
-        },
-        (error) => {
-          UtilsBL.errormsg(error, this)
-        }
-      )
+      try {
+        const rdata = await this.$axios.$post('sigaex/api/v1/documentos', data)
+        this.$router.replace({
+          name: 'documento-numero',
+          params: { numero: rdata.sigladoc },
+        })
+      } catch (ex) {}
     },
   },
 }
