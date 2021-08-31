@@ -26,7 +26,7 @@ import UtilsBL from '../bl/utils.js'
 
 export default {
   props: {
-    acao: { required: true },
+    acao: { type: Object, required: true },
   },
   computed: {
     nome() {
@@ -43,6 +43,10 @@ export default {
 
     numero() {
       return UtilsBL.onlyLettersAndNumbers(this.$parent.numero)
+    },
+    numeroGeral() {
+      const geral = this.$parent.doc.mobs.filter((a) => a.isGeral)[0]
+      return UtilsBL.onlyLettersAndNumbers(geral.sigla)
     },
   },
   methods: {
@@ -141,6 +145,13 @@ export default {
       this.$router.push({
         name: 'documento-numero-editar',
         params: { numero: this.numero },
+      })
+    },
+
+    ver_mais() {
+      this.$router.push({
+        name: 'documento-numero-auditar',
+        params: { numero: this.numeroGeral },
       })
     },
 

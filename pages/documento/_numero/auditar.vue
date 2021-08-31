@@ -5,96 +5,65 @@
         <div class="row xd-print-block mt-3 mb-3">
           <div class="col-md-12">
             <h4 class="text-center mb-0">
-              {{ doc.forma }} {{ doc.mobs[0].sigla }}
+              Auditando {{ doc.forma }} {{ doc.mobs[0].sigla }}
             </h4>
-          </div>
-          <div class="col-md-12">
-            <h6
-              class="text-center mb-0 mt-2"
-              v-html="doc.mobs[0].marcadoresEmHtml"
-            ></h6>
           </div>
         </div>
         <div class="row no-gutters mt-2"></div>
         <template v-if="doc">
           <div class="row">
             <div class="col col-12 col-lg-8">
-              <div
-                v-if="errormsg === undefined &amp;&amp; doc.conteudoBlobHtmlString"
-                class="d-print-none"
-              >
-                <div class="card-deck">
-                  <div class="card card-consulta-processual mb-3">
-                    <div class="card-body">
-                      <p class="card-text">
-                        <span v-html="doc.conteudoBlobHtmlString"></span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
+              <div v-for="mobil in filteredMobs" :key="mobil.id">
+                <h6 v-html="mobil.descricaoCompleta"></h6>
+                <table
+                  v-if="mobil.movs && mobil.movs.length"
+                  class="table table-sm table-striped mb-4"
+                >
+                  <thead class="table-dark">
+                    <tr>
+                      <th>Data/Hora</th>
+                      <th>Lotação</th>
+                      <th>Evento</th>
+                      <th>Descrição</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="mov in mobil.movs"
+                      :key="mov.idMov"
+                      :class="[mov.classe, mov.disabled]"
+                    >
+                      <td>{{ mov.dtRegMovDDMMYYHHMMSS }}</td>
+                      <td>{{ mov.lotaCadastranteSigla }}</td>
+                      <td>{{ mov.exTipoMovimentacaoSigla }}</td>
+                      <td style="padding: 5px 5px; word-break: break-all">
+                        {{ mov.descricao }}
+                        <span v-if="mov.idTpMov != 2">{{
+                          mov.complemento
+                        }}</span>
+                        <span
+                          v-if="mov.descricao &amp;&amp; mov.acoes &amp;&amp; mov.acoes.length !== 0"
+                          >|</span
+                        >
+                        <span v-for="acao in mov.acoes" :key="acao.nome"
+                          >{{ acao.pre }}
+                          <a
+                            v-if="acao.acao"
+                            href=""
+                            @click.prevent="executar(mov, acao)"
+                            >{{ acao.nome }}</a
+                          ><span v-if="!acao.acao">{{ acao.nome }}</span>
+                          {{ acao.pos }}</span
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              <MyIFrame v-if="!doc.conteudoBlobHtmlString" :src="pdfSource" />
-              <table
-                v-if="filteredMovs && filteredMovs.length"
-                class="table table-sm table-striped"
-              >
-                <thead class="table-dark">
-                  <tr>
-                    <th>Tempo</th>
-                    <th>Lotação</th>
-                    <th>Evento</th>
-                    <th>Descrição</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="mov in filteredMovs"
-                    :key="mov.idMov"
-                    :class="[mov.classe, mov.disabled]"
-                  >
-                    <td>{{ mov.tempoRelativo }}</td>
-                    <td>{{ mov.lotaCadastranteSigla }}</td>
-                    <td>{{ mov.exTipoMovimentacaoSigla }}</td>
-                    <td style="padding: 5px 5px; word-break: break-all">
-                      {{ mov.descricao }}
-                      <span v-if="mov.idTpMov != 2">{{ mov.complemento }}</span>
-                      <span
-                        v-if="mov.descricao &amp;&amp; mov.acoes &amp;&amp; mov.acoes.length !== 0"
-                        >|</span
-                      >
-                      <span v-for="acao in mov.acoes" :key="acao.nome"
-                        >{{ acao.pre }}
-                        <a
-                          v-if="acao.acao"
-                          href=""
-                          @click.prevent="executar(mov, acao)"
-                          >{{ acao.nome }}</a
-                        ><span v-if="!acao.acao">{{ acao.nome }}</span>
-                        {{ acao.pos }}</span
-                      >
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
             <div class="col col-12 col-lg-4">
-              <h4>Ações</h4>
-              <acao
-                :acao="acao"
-                v-for="acao in filteredAcoes"
-                :key="acao.nome"
-              />
-
               <CardMarcas :doc="doc" />
               <CardPendencias :doc="doc" />
-
-              <CardGraphViz :dot="doc.vizTramitacao" titulo="Tramitação" />
-              <CardGraphViz
-                :dot="doc.vizRelacao"
-                titulo="Tramitação"
-                v-if="doc.vizRelacaoDocs && doc.vizRelacaoDocs.length > 200"
-              />
-
               <CardDetalhes :doc="doc" />
               <CardNivelDeAcesso :doc="doc" />
             </div>
@@ -106,22 +75,45 @@
 </template>
 
 <script>
-import Acao from '../../../components/Acao'
-
 export default {
-  name: 'Documento',
-
-  components: {
-    acao: Acao,
-  },
-
   async asyncData({ params, $axios, $store }) {
+    const computeGraph = async function (dot) {
+      if (!dot) return
+      try {
+        const data = await $axios.$post(
+          'siga/public/app/graphviz/svg',
+          'digraph G { graph[tooltip="Tramitação"] ' + dot + '}',
+          {
+            headers: { 'Content-Type': 'text/vnd.graphviz' },
+            withCredentials: false,
+          }
+        )
+        if (!data) return
+        let result = data.replace(
+          /width="\d+pt" height="\d+pt"/gm,
+          'style="left:0; top:0; width:100%; height:12em; display:block; margin: auto;"'
+        )
+        result = result.replace(/<polygon fill="white".+?\/>/gm, '')
+        return result
+      } catch (ex) {}
+    }
+
     let numero = params.numero
     try {
-      const doc = await $axios.$get('sigaex/api/v1/documentos/' + numero)
+      const doc = await $axios.$get(
+        'sigaex/api/v1/documentos/' + numero + '?auditar=true'
+      )
       const mob = doc.mobs[0]
       if (!mob.isGeral) numero = mob.sigla.replace(/[^a-zA-Z0-9]/gi, '')
-      return { numero, doc, mob }
+      let relacao
+      // if ($store.state.test.properties['vizservice.url']) {
+      // if (doc) {
+      const tramitacao = await computeGraph(doc.vizTramitacao)
+      if (doc.vizRelacaoDocs && doc.vizRelacaoDocs.length > 200)
+        relacao = await computeGraph(doc.vizRelacaoDocs)
+      // }
+
+      return { numero, doc, mob, tramitacao, relacao }
     } catch (ex) {}
   },
 
@@ -146,6 +138,13 @@ export default {
     }
   },
   computed: {
+    filteredMobs() {
+      if (!this.doc || !this.doc.mobs) return undefined
+      const lista = this.doc.mobs
+      return lista.sort((a, b) =>
+        a.isGeral && !b.isGeral ? -1 : b.sigla > a.sigla ? 1 : 0
+      )
+    },
     filteredMovs() {
       if (!this.mob || !this.mob.movs || this.mob.movs.length === 0)
         return undefined
@@ -368,39 +367,6 @@ export default {
 
 .odd {
   background-color: rgba(0, 0, 0, 0.05);
-}
-
-.card-body p {
-  margin-bottom: 0.2em;
-}
-
-.card-body div {
-  margin-top: 1em;
-}
-
-.card-body div h6 {
-  margin-bottom: 0.2em;
-}
-
-.card-consulta-processual div p b {
-  color: #fff;
-}
-
-.card-consulta-processual div p {
-  margin-bottom: 0.5rem;
-}
-
-.card-consulta-processual div i {
-  line-height: 3rem;
-  height: 3rem;
-  color: #fff;
-  float: right;
-  font-size: 4rem;
-  margin: 0 -0.5rem;
-}
-
-.card-text-descr {
-  margin-bottom: 0;
 }
 
 textarea {

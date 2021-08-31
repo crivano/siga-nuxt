@@ -51,7 +51,10 @@ import {
   faCheckCircle,
   faGlobe,
   faHourglassEnd,
-  faHourglassHalf
+  faHourglassHalf,
+  faTrashAlt,
+  faUsers,
+  faCircle
 } from '@fortawesome/free-solid-svg-icons'
 // import {
 //   faWhatsapp
@@ -59,8 +62,11 @@ import {
 import {
   FontAwesomeIcon
 } from '@fortawesome/vue-fontawesome'
-import { faAccessibleIcon } from '@fortawesome/free-brands-svg-icons'
+import {
+  faAccessibleIcon
+} from '@fortawesome/free-brands-svg-icons'
 
+library.add(faCircle)
 library.add(faPlus)
 library.add(faSearch)
 library.add(faStickyNote)
@@ -77,6 +83,7 @@ library.add(faSkullCrossbones)
 library.add(faUserSecret)
 library.add(faUserGraduate)
 library.add(faUser)
+library.add(faUsers)
 library.add(faBan)
 library.add(faAccessibleIcon)
 library.add(faAddressCard)
@@ -113,5 +120,6 @@ library.add(faCheckCircle)
 library.add(faGlobe)
 library.add(faHourglassEnd)
 library.add(faHourglassHalf)
+library.add(faTrashAlt)
 
 Vue.component('FontAwesomeIcon', FontAwesomeIcon)

@@ -14,7 +14,7 @@
             $store.state.test.properties['siga.ambiente'] === 'prod',
         }"
       >
-        <b-navbar-brand href="#/quadro">
+        <b-navbar-brand href="/quadro">
           <img
             id="logo-header"
             src="~assets/logo-siga-novo-38px.png"
@@ -34,12 +34,26 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
-              <nuxt-link class="nav-link" active-class="active" to="quadro"
+              <nuxt-link
+                class="nav-link"
+                active-class="active"
+                :to="{ name: 'painel' }"
+                >Painel</nuxt-link
+              >
+            </b-nav-item>
+            <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
+              <nuxt-link
+                class="nav-link"
+                active-class="active"
+                :to="{ name: 'quadro' }"
                 >Quadro</nuxt-link
               >
             </b-nav-item>
             <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
-              <nuxt-link class="nav-link" active-class="active" to="mesa"
+              <nuxt-link
+                class="nav-link"
+                active-class="active"
+                :to="{ name: 'mesa' }"
                 >Mesa</nuxt-link
               >
             </b-nav-item>

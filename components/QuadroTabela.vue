@@ -7,13 +7,7 @@
       <div
         v-if="!carregando &amp;&amp; !primeiraCarga &amp;&amp; lista.length == 0"
         class="row mt-3"
-      >
-        <div class="col col-12">
-          <p class="alert alert-warning">
-            <strong>Atenção!</strong> Nenhum documento no quadro.
-          </p>
-        </div>
-      </div>
+      ></div>
 
       <div v-if="lista && lista.length > 0" class="row">
         <div class="col-sm-12">
@@ -64,7 +58,7 @@
                   <td style="text-align: right">
                     <nuxt-link
                       :to="`/lista/${f.marcadorId}/Lotacao/${filtroExpedienteProcesso}`"
-                      >{{ f.qtdAtendente }}</nuxt-link
+                      >{{ f.qtdLotaAtendente }}</nuxt-link
                     >
                   </td>
                 </tr>

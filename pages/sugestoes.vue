@@ -125,8 +125,6 @@ export default {
     async sugerir() {
       try {
         await this.$axios.$post('sigaex/api/v1/sugestao', this.sugestao)
-        // .then(
-        //   () => {
         this.$root.$emit(
           'message',
           'Sucesso',
@@ -135,11 +133,6 @@ export default {
         this.sugestao.nome = undefined
         this.sugestao.email = undefined
         this.sugestao.mensagem = undefined
-        //   },
-        //   (error) => {
-        //     this.$root.$emit('message', 'Erro', error.response.data.errormsg)
-        //   }
-        // )
       } catch (ex) {}
     },
   },

@@ -21,7 +21,9 @@
 <script>
 import AcaoBL from '../bl/acao.js'
 export default {
-  data() {},
+  data() {
+    return {}
+  },
   mounted() {
     const prg = this.$refs.progressModal
 

@@ -11,20 +11,7 @@
 
     <div v-if="lista &amp;&amp; lista.length > 0" class="row d-print-none">
       <div class="col col-12 col-md-auto">
-        <div class="input-group mt-3">
-          <div class="input-group-prepend">
-            <span id="basic-addon1" class="input-group-text">
-              <font-awesome-icon :icon="['fa', 'search']" />
-            </span>
-          </div>
-          <input
-            v-model="filtro"
-            type="text"
-            class="form-control"
-            placeholder="Filtrar"
-            ng-model-options="{ debounce: 200 }"
-          />
-        </div>
+        <MyFiltro v-model="filtro" />
       </div>
       <div class="col col-auto ml-auto">
         <nuxt-link to="/documento/novo" class="btn btn-primary mt-3"
@@ -111,7 +98,7 @@
               <tr
                 v-if="f.grupoExibir"
                 :key="f.sigla + ':grupo2'"
-                class="table-head"
+                class="table-head text-white bg-dark"
               >
                 <th style="text-align: center">
                   <input
@@ -141,9 +128,12 @@
                   {{ f.tempoRelativo }}
                 </td>
                 <td>
-                  <router-link
-                    :to="{ name: 'Documento', params: { numero: f.codigo } }"
-                    >{{ f.sigla }}</router-link
+                  <nuxt-link
+                    :to="{
+                      name: 'documento-numero',
+                      params: { numero: f.codigo },
+                    }"
+                    >{{ f.sigla }}</nuxt-link
                   ><span class="d-inline d-md-none"> - {{ f.descr }}</span>
                 </td>
                 <td class="d-none d-md-block">{{ f.descr }}</td>
@@ -333,8 +323,6 @@ export default {
 
   mounted() {
     this.errormsg = undefined
-    console.log('mesa-mounted')
-
     setTimeout(() => {
       if (this.$route.params.exibirAcessoAnterior) this.carregarAcessos()
     })
