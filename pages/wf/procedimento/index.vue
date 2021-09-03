@@ -5,35 +5,14 @@
         <div class="row xd-print-block mt-3 mb-3">
           <div class="col-md-12">
             <h4 class="text-center mb-0">
-              {{ doc.forma }} {{ doc.mobs[0].sigla }}
+              Procedimento {{ obj.sigla }}
             </h4>
-          </div>
-          <div class="col-md-12">
-            <h6
-              class="text-center mb-0 mt-2"
-              v-html="doc.mobs[0].marcadoresEmHtml"
-            ></h6>
           </div>
         </div>
         <div class="row no-gutters mt-2"></div>
-        <template v-if="doc">
+        <template v-if="obj">
           <div class="row">
             <div class="col col-12 col-lg-8">
-              <div
-                v-if="errormsg === undefined &amp;&amp; doc.conteudoBlobHtmlString"
-                class="d-print-none"
-              >
-                <div class="card-deck">
-                  <div class="card card-consulta-processual mb-3">
-                    <div class="card-body">
-                      <p class="card-text">
-                        <span v-html="doc.conteudoBlobHtmlString"></span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <MyIFrame v-if="!doc.conteudoBlobHtmlString" :src="pdfSource" />
               <table
                 v-if="filteredMovs && filteredMovs.length"
                 class="table table-sm table-striped"
@@ -84,19 +63,6 @@
                 v-for="acao in filteredAcoes"
                 :key="acao.nome"
               />
-
-              <CardMarcas :doc="doc" />
-              <CardPendencias :doc="doc" />
-
-              <CardGraphViz :dot="doc.vizTramitacao" titulo="Tramitação" />
-              <CardGraphViz
-                :dot="doc.vizRelacao"
-                titulo="Tramitação"
-                v-if="doc.vizRelacaoDocs && doc.vizRelacaoDocs.length > 200"
-              />
-
-              <CardDetalhes :doc="doc" />
-              <CardNivelDeAcesso :doc="doc" />
             </div>
           </div>
         </template>
@@ -109,7 +75,7 @@
 import Acao from '../../../components/Acao'
 
 export default {
-  name: 'Documento',
+  name: 'Procedimento',
 
   components: {
     acao: Acao,

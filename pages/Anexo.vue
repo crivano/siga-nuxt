@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div>
     <div class="container-fluid content profile">
       <div v-if="doc">
         <div class="row xd-print-block mt-3 mb-3">

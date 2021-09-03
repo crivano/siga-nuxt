@@ -26,6 +26,14 @@
           </div>
         </div>
       </div>
+      <div class="col-12 col-md-6">
+        <wf-quadro-tabela
+          titulo="Tarefas"
+          :lista="listaTarefa"
+          :carregando="carregandoTarefas"
+          :primeira-carga="primeiraCarga"
+        />
+      </div>
     </div>
     <p
       v-if="acessos &amp;&amp; acessos.length >= 1"
@@ -47,7 +55,11 @@ export default {
       filtro: undefined,
       listaExpediente: window.quadroExpediente ? window.quadroExpediente : [],
       listaProcesso: window.quadroProcesso ? window.quadroProcesso : [],
-      primeiraCarga: !!window.quadroExpediente || !!window.quadroProcesso,
+      listaTarefa: window.quadroTarefa ? window.quadroTarefa : [],
+      primeiraCarga:
+        !!window.quadroExpediente ||
+        !!window.quadroProcesso ||
+        !!window.quadroTarefa,
       todos: {},
       carregandoExpediente: false,
       carregandoProcesso: false,
@@ -63,6 +75,7 @@ export default {
     setTimeout(() => {
       this.carregarQuadro('Expediente')
       this.carregarQuadro('Processo')
+      this.carregarTarefas()
       if (this.$route.params.exibirAcessoAnterior) this.carregarAcessos()
     })
   },
@@ -105,6 +118,17 @@ export default {
         )
         this.primeiraCarga = false
         window['quadro' + tipo] = this['lista' + tipo]
+      } catch (ex) {}
+    },
+
+    async carregarTarefas() {
+      this.carregandoTarefas = true
+      try {
+        const data = await this.$axios.$get('sigawf/api/v1/ativos')
+        this.carregandoTarefas = false
+        this.listaTarefa = data.list
+        this.primeiraCarga = false
+        window.quadroTarefa = this.listaTarefa
       } catch (ex) {}
     },
 

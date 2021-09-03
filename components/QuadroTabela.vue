@@ -87,7 +87,7 @@ export default {
 .table-quadro th,
 .table-quadro td {
   padding-top: 0 !important;
-  padding-bottom: 0 !important;
+  padding-bottom: 0.1em !important;
   line-height: normal;
 }
 </style>

@@ -258,6 +258,7 @@ export default {
   },
 
   onlyLettersAndNumbers(s) {
+    if (!s) return
     return s.replace(/[^a-z0-9]/gi, "")
   },
 
