@@ -34,7 +34,7 @@
     "pdfvuer": "1.6.1",
     "jwt-decode": "~2.2.0",
     "v-autocomplete": "~1.8.2",
-    "vee-validate": "~3.3.11",
+    "vee-validate": "~3.4.13",
     "vue-clip": "~1.0.0",
     "vue-the-mask": "~0.11.1",
     "vue-select": "~2.2.0"
