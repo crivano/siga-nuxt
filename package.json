@@ -37,7 +37,7 @@
     "vee-validate": "~3.3.11",
     "vue-clip": "~1.0.0",
     "vue-the-mask": "~0.11.1",
-    "vue-select": "~2.2.0"
+    "vue-select": "~3.15.1"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.0",
