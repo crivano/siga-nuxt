@@ -1,7 +1,10 @@
 <template>
-  <div class="card bg-light mb-3" v-if="dot">
+  <div v-if="dot" class="card bg-light mb-3">
     <div class="card-header">{{ titulo }}</div>
-    <div class="card-body" v-html="svg"></div>
+    <div v-if="!aspecto" class="card-body" v-html="svg"></div>
+    <b-aspect v-else :aspect="aspecto">
+      <div class="card-body" v-html="svg"></div>
+    </b-aspect>
   </div>
 </template>
 <script>
@@ -9,6 +12,7 @@ export default {
   props: {
     dot: { type: String, required: false },
     titulo: { type: String, required: true },
+    aspecto: { type: String, required: false },
   },
   data() {
     return { svg: undefined }
@@ -16,6 +20,11 @@ export default {
   async fetch() {
     // if ($store.state.test.properties['vizservice.url']) {
     this.svg = await this.computeGraph(this.dot)
+  },
+  watch: {
+    async dot(newDot, oldDot) {
+      this.svg = await this.computeGraph(newDot)
+    },
   },
   methods: {
     async computeGraph(dot) {

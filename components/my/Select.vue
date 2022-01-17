@@ -4,17 +4,17 @@
     <div v-if="!edit">{{ nome }}</div>
     <select
       v-if="edit"
-      :disabled="disabled"
       :id="name"
+      :disabled="disabled"
       class="form-control"
-      v-bind:value="value"
-      v-on:input="$emit('input', $event.target.value)"
-      v-on:change="$emit('change')"
+      :value="value"
       :name="name"
       :class="{ 'is-invalid': error }"
+      @input="$emit('input', $event.target.value)"
+      @change="$emit('change')"
     >
       <option disabled selected hidden :value="undefined">[Selecionar]</option>
-      <option v-for="l in list" :value="l[chave]" :key="l[chave]">
+      <option v-for="l in list" :key="l[chave]" :value="l[chave]">
         {{ l[descr] }}
       </option>
     </select>
@@ -24,18 +24,18 @@
 
 <script>
 export default {
-  name: 'my-select',
-  props: [
-    'value',
-    'label',
-    'name',
-    'list',
-    'edit',
-    'error',
-    'disabled',
-    'chave',
-    'descr',
-  ],
+  name: 'MySelect',
+  props: {
+    value: String,
+    label: String,
+    name: String,
+    list: Array,
+    edit: { type: Boolean, required: false, default: true },
+    error: String,
+    disabled: Boolean,
+    chave: { type: String, required: false, default: 'id' },
+    descr: { type: String, required: false, default: 'nome' },
+  },
   data() {
     return {}
   },

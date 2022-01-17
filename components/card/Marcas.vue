@@ -26,15 +26,15 @@
               <td :key="'lotacao-' + marca.id">
                 {{ marca.siglaLotacao }}
               </td>
-              <td :key="'mov-' + marca.id" v-if="marca.descrMov">
+              <td v-if="marca.descrMov" :key="'mov-' + marca.id">
                 {{ marca.descrMov }}
               </td>
               <td
-                :key="'mov-' + marca.id"
                 v-else
+                :key="'mov-' + marca.id"
                 style="padding-left: 0; padding-right: 0"
               ></td>
-              <td :key="'cmov-' + marca.id" v-if="marca.podeCancelarMov">
+              <td v-if="marca.podeCancelarMov" :key="'cmov-' + marca.id">
                 <a
                   href="javascript:postToUrl('/sigaex/app/expediente/mov/cancelar_movimentacao_gravar?id=${marca.exMovimentacao.idMov}&sigla=${sigla}')"
                   title="${marca.exMovimentacao.expliquePodeCancelar(titular, lotaTitular)}"
@@ -42,8 +42,8 @@
                 /></a>
               </td>
               <td
-                :key="'cmov-' + marca.id"
                 v-else
+                :key="'cmov-' + marca.id"
                 style="padding-left: 0; padding-right: 0"
               ></td>
               <td

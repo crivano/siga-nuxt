@@ -14,11 +14,11 @@
     <div class="row">
       <div class="col-12 col-lg-4 bg-light vh-100">
         <QuadroPainel
-          @pesquisar="pesquisar($event)"
           :lista="lista"
           :carregando="carregandoExpediente"
           :primeira-carga="primeiraCarga"
           filtro-expediente-processo="Expediente"
+          @pesquisar="pesquisar($event)"
         />
       </div>
       <div class="col-12 col-lg-8 pl-0 pr-0">
@@ -34,11 +34,11 @@
         <DocPesquisa
           v-if="marcadorId"
           ref="pesquisa"
-          :idMarcador="marcadorId"
-          :filtroPessoaLotacao="filtroPessoaLotacao"
-          :filtroExpedienteProcesso="filtroExpedienteProcesso"
+          :id-marcador="marcadorId"
+          :filtro-pessoa-lotacao="filtroPessoaLotacao"
+          :filtro-expediente-processo="filtroExpedienteProcesso"
           :qtd="qtd"
-          :marcadorNome="marcadorNome"
+          :marcador-nome="marcadorNome"
           :filtro="filtro"
           :painel="true"
         />
@@ -76,12 +76,6 @@ export default {
       acessos: [],
       errormsg: undefined,
     }
-  },
-
-  computed: {
-    titulo() {
-      return this.marcadorNome + ' (' + this.qtd + ')'
-    },
   },
 
   async fetch() {
@@ -132,6 +126,12 @@ export default {
         }
       }
     } catch (ex) {}
+  },
+
+  computed: {
+    titulo() {
+      return this.marcadorNome + ' (' + this.qtd + ')'
+    },
   },
   methods: {
     async carregarAcessos() {

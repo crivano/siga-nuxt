@@ -297,5 +297,16 @@ export default {
         delete allNodes[i].children;
 
     return output;
+  },
+
+  encodeFormParams(formParams) {
+    let s = "";
+    for (const k in formParams) {
+      if (formParams[k] === undefined || formParams[k] === '') continue
+      if (s !== "") s += "&";
+      s += k + "=" + encodeURIComponent(formParams[k]);
+    }
+    return s;
   }
+
 }

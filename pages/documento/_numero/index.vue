@@ -80,9 +80,9 @@
             <div class="col col-12 col-lg-4">
               <h4>Ações</h4>
               <acao
-                :acao="acao"
                 v-for="acao in filteredAcoes"
                 :key="acao.nome"
+                :acao="acao"
               />
 
               <CardMarcas :doc="doc" />
@@ -90,9 +90,9 @@
 
               <CardGraphViz :dot="doc.vizTramitacao" titulo="Tramitação" />
               <CardGraphViz
+                v-if="doc.vizRelacaoDocs && doc.vizRelacaoDocs.length > 200"
                 :dot="doc.vizRelacao"
                 titulo="Tramitação"
-                v-if="doc.vizRelacaoDocs && doc.vizRelacaoDocs.length > 200"
               />
 
               <CardDetalhes :doc="doc" />

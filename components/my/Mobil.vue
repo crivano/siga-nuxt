@@ -1,18 +1,19 @@
 <template>
-  <validation-provider v-slot="{ errors }" rules="required" :immediate="true">
-    <label class="control-label" for="matricula" style="width: 100%">{{
+  <validation-provider v-slot="{ errors }" :rules="rules" :immediate="true">
+    <label class="control-label" for="lotacao" style="width: 100%">{{
       label
     }}</label>
     <v-autocomplete
-      :name="name"
+      id="mob"
       :value="definedValue"
-      :items="classificacoes"
-      :get-label="getLabelClassificacao"
+      :items="mobs"
+      name="mob"
+      :get-label="getLabel"
       :component-item="template"
       input-class="form-control"
       @input="$emit('input', $event)"
       @change="$emit('change', $event)"
-      @update-items="updateClassificacoes"
+      @update-items="update"
     ></v-autocomplete>
     <span v-if="false" v-show="errors.length > 0" class="help is-danger">{{
       errors[0]
@@ -24,12 +25,11 @@
 import ItemTemplate from '../ItemTemplate.vue'
 
 export default {
-  name: 'MyClassificacao',
-  props: ['value', 'name', 'label'],
+  name: 'MyMobil',
+  props: ['value', 'label', 'name', 'rules'],
   data() {
     return {
-      classificacao: undefined,
-      classificacoes: [],
+      lotacoes: [],
       template: ItemTemplate,
     }
   },
@@ -40,25 +40,23 @@ export default {
     },
   },
   methods: {
-    getLabelClassificacao(item) {
+    getLabel(item) {
       return item
     },
-    async updateClassificacoes(text) {
-      // yourGetItemsMethod(text).then((response) => {
-      //   this.items = response
-      // })
+    async update(text) {
       if (!text || text === '') return
       this.errormsg = undefined
       try {
         const data = await this.$axios.$get(
-          'sigaex/api/v1/classificacoes?texto=' + encodeURI(text)
+          'sigaex/api/v1/documentos/' + encodeURI(text)
         )
-        this.classificacoes = []
-        const l = data.list
-        if (l) {
-          for (let i = 0; i < l.length; i++) {
-            this.classificacoes.push(l[i].sigla + ' - ' + l[i].nome)
-          }
+        this.mobs = []
+        const d = data
+        if (d.sigla) {
+          let sigla = d.sigla
+          if (d.mobs && d.mobs.length > 0 && d.mobs[0].sigla)
+            sigla = d.mobs[0].sigla
+          this.mobs.push(sigla + ' - ' + d.descrDocumento)
         }
       } catch (ex) {}
     },

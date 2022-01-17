@@ -1,18 +1,18 @@
 <template>
-  <validation-provider rules="required" :immediate="true" v-slot="{ errors }">
+  <validation-provider v-slot="{ errors }" rules="required" :immediate="true">
     <label class="control-label" for="lotacao" style="width: 100%">{{
       label
     }}</label>
     <v-autocomplete
       :name="name"
-      v-bind:value="definedValue"
-      v-on:input="$emit('input', $event)"
-      v-on:change="$emit('change', $event)"
+      :value="definedValue"
       :items="lotacoes"
       :get-label="getLabelLotacao"
       :component-item="template"
-      @update-items="updateLotacoes"
       input-class="form-control"
+      @input="$emit('input', $event)"
+      @change="$emit('change', $event)"
+      @update-items="updateLotacoes"
     ></v-autocomplete>
     <span v-if="false" v-show="errors.length > 0" class="help is-danger">{{
       errors[0]
@@ -24,7 +24,7 @@
 import ItemTemplate from '../ItemTemplate.vue'
 
 export default {
-  name: 'my-lotacao',
+  name: 'MyLotacao',
   props: ['value', 'label', 'name'],
   data() {
     return {

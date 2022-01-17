@@ -10,14 +10,14 @@
       class="form-control"
       placeholder="Filtrar"
       ng-model-options="{ debounce: 200 }"
-      v-bind:value="value"
-      v-on:input="$emit('input', $event.target.value)"
+      :value="value"
+      @input="$emit('input', $event.target.value)"
     />
   </div>
 </template>
 <script>
 export default {
-  name: 'my-filtro',
+  name: 'MyFiltro',
   inheritAttrs: false,
   props: ['value'],
   data() {

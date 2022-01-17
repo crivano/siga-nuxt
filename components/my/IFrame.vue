@@ -1,6 +1,7 @@
 <template>
-  <div ref="myIFrame" id="paipainel" v-bind:style="{ height: height + 'px' }">
+  <div id="paipainel" ref="myIFrame" :style="{ height: height + 'px' }">
     <iframe
+      id="painel"
       style="
         visibility: visible;
         margin: 0;
@@ -9,7 +10,6 @@
         display: block;
       "
       name="painel"
-      id="painel"
       :src="src"
       align="right"
       width="100%"
@@ -32,6 +32,11 @@ export default {
       },
     }
   },
+  computed: {
+    height() {
+      return this.window.height - this.top
+    },
+  },
   // Aqui antes era created()
   mounted() {
     window.addEventListener('resize', this.handleResize)
@@ -39,11 +44,6 @@ export default {
   },
   destroyed() {
     window.removeEventListener('resize', this.handleResize)
-  },
-  computed: {
-    height() {
-      return this.window.height - this.top
-    },
   },
   methods: {
     handleResize() {

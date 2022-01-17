@@ -13,8 +13,7 @@
       :value="value"
       :name="name"
       :class="{ 'is-invalid': error }"
-      @input="$emit('input', $event.target.value)"
-      @change="$emit('change', $event.target.value)"
+      @input="$emit('input', Number($event.target.value))"
     />
     <div v-if="error" class="invalid-feedback">{{ error }}</div>
   </div>
@@ -24,12 +23,12 @@
 import AwesomeMask from 'awesome-mask'
 
 export default {
-  name: 'MyInput',
+  name: 'MyNumeric',
   directives: {
     mask: AwesomeMask,
   },
   props: {
-    value: String,
+    value: { type: Number, required: false, default: 0 },
     label: String,
     name: String,
     placeholder: String,

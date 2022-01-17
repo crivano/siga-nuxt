@@ -63,6 +63,7 @@ export default {
       todos: {},
       carregandoExpediente: false,
       carregandoProcesso: false,
+      carregandoTarefas: false,
       acessos: [],
       errormsg: undefined,
     }

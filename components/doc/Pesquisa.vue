@@ -1,6 +1,6 @@
 <template>
-  <DocListaPainel :lista="lista" v-if="painel" />
-  <DocLista :lista="lista" v-else />
+  <DocListaPainel v-if="painel" :lista="lista" />
+  <DocLista v-else :lista="lista" />
 </template>
 <script>
 import UtilsBL from '../../bl/utils'
@@ -27,13 +27,6 @@ export default {
       this.lista = lista
     } catch (ex) {}
   },
-  watch: {
-    url(val) {
-      console.log('url')
-      console.log(val)
-      this.$fetch()
-    },
-  },
   computed: {
     url() {
       return (
@@ -44,6 +37,13 @@ export default {
         '&filtroPessoaLotacao=' +
         this.filtroPessoaLotacao
       )
+    },
+  },
+  watch: {
+    url(val) {
+      console.log('url')
+      console.log(val)
+      this.$fetch()
     },
   },
 }

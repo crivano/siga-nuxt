@@ -27,11 +27,16 @@
               <template v-for="f in lista">
                 <tr :key="f.id + ':row'">
                   <td>
-                    {{ f.tarefaTitulo }}
-                  </td>
-                  <td style="text-align: center">
                     <nuxt-link
-                      :to="`/documento/${onlyLettersAndNumbers(f.principalSigla)}`"
+                      :to="`/wf/procedimento/${onlyLettersAndNumbers(f.sigla)}`"
+                      >{{ f.tarefaTitulo }}</nuxt-link
+                    >
+                  </td>
+                  <td>
+                    <nuxt-link
+                      :to="`/documento/${onlyLettersAndNumbers(
+                        f.principalSigla
+                      )}`"
                       >{{ f.principalSigla }}</nuxt-link
                     >
                   </td>
