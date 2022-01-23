@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-12 col-lg-4 bg-light vh-100">
+      <div class="col-12 col-xl-3 col-md-6 bg-light">
         <QuadroPainel
           :lista="lista"
           :carregando="carregandoExpediente"
@@ -21,12 +21,12 @@
           @pesquisar="pesquisar($event)"
         />
       </div>
-      <div class="col-12 col-lg-8 pl-0 pr-0">
+      <div class="col-12 col-xl-9 col-md-6">
         <div class="row">
-          <div class="col mt-3 ml-1 mb-3">
+          <div class="col col-12 col-md-9 mt-3 mb-3">
             <h4 class="mb-0 mt-0">{{ titulo }}</h4>
           </div>
-          <div class="col col-12 col-md-auto ml-auto mb-3 mr-3 mb-0">
+          <div class="col col-12 col-md-3 mb-3 mb-0">
             <MyFiltro v-model="filtro" class="input-group-sm" />
           </div>
         </div>
@@ -130,7 +130,9 @@ export default {
 
   computed: {
     titulo() {
-      return this.marcadorNome + ' (' + this.qtd + ')'
+      if (this.marcadorNome && this.qtd)
+        return this.marcadorNome + ' (' + this.qtd + ')'
+      return ''
     },
   },
   methods: {

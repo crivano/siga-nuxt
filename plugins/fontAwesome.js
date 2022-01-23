@@ -54,7 +54,8 @@ import {
   faHourglassHalf,
   faTrashAlt,
   faUsers,
-  faCircle
+  faCircle,
+  faArrowCircleRight
 } from '@fortawesome/free-solid-svg-icons'
 // import {
 //   faWhatsapp
@@ -66,6 +67,7 @@ import {
   faAccessibleIcon
 } from '@fortawesome/free-brands-svg-icons'
 
+library.add(faArrowCircleRight)
 library.add(faCircle)
 library.add(faPlus)
 library.add(faSearch)

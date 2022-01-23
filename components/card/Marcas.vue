@@ -82,17 +82,21 @@ export default {
     },
     listaPlana() {
       const l = []
-      this.marcasPorMobil.forEach((mobil) => {
-        mobil.marcas.forEach((marca, index) => {
-          const m = { ...marca }
-          if (index === 0) {
-            m.identificadorMob = mobil.identificadorMob
-            m.rows = mobil.marcas.length
+      if (this.marcasPorMobil) {
+        this.marcasPorMobil.forEach((mobil) => {
+          if (mobil.marcas) {
+            mobil.marcas.forEach((marca, index) => {
+              const m = { ...marca }
+              if (index === 0) {
+                m.identificadorMob = mobil.identificadorMob
+                m.rows = mobil.marcas.length
+              }
+              m.numeroMob = UtilsBL.onlyLettersAndNumbers(m.siglaMob)
+              l.push(m)
+            })
           }
-          m.numeroMob = UtilsBL.onlyLettersAndNumbers(m.siglaMob)
-          l.push(m)
         })
-      })
+      }
       return l
     },
   },

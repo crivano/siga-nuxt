@@ -34,10 +34,10 @@ export const actions = {
     try {
       const token = (await this.$axios.$post(
         'siga/api/v1/autenticar', {}, {
-          headers: {
-            Authorization: auth
-          }
+        headers: {
+          Authorization: auth
         }
+      }
       )).token
 
       // if (!token) {
@@ -47,7 +47,7 @@ export const actions = {
 
       AuthBL.setIdToken(token)
       await dispatch('updateLogged', token)
-    } catch (ex) {}
+    } catch (ex) { }
   },
 
   async updateLogged({
@@ -81,7 +81,22 @@ export const actions = {
   }, val) {
     try {
       const usuario = await this.$axios.$get("siga/api/v1/usuario")
-      commit('setUsuario', usuario)
-    } catch (ex) {}
+      commit('setUsuario', usuario.usuario)
+    } catch (ex) { }
+  },
+
+  async substituir({
+    state,
+    commit,
+    dispatch
+  }, val) {
+    try {
+      console.log('substituir')
+      console.log(val)
+      const usuario = await this.$axios.$post("siga/api/v1/usuario/substituir", { substituicaoId: val })
+      commit('setUsuario', usuario.usuario)
+      await dispatch('carregarUsuario')
+    } catch (ex) { }
   }
+
 }

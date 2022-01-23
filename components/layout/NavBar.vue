@@ -82,20 +82,37 @@
             </b-nav-item>
             <b-nav-item-dropdown
               v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub"
-              :text="$store.state.jwt.sub"
               right
             >
+              <template v-slot:button-content>
+                {{ $store.state.jwt.sub }}
+                <template v-if="$store.state.usuario && $store.state.usuario.substituicaoId">
+                  <font-awesome-icon
+                    :icon="['fa', 'arrow-circle-right']"
+                    class="mr-1"
+                  /><span>{{ descrUsuarioAtivo }}</span>
+                </template>
+              </template>
               <template
                 v-if="
                   $store.state.usuario &&
                   $store.state.usuario.substituicoesPermitidas
                 "
               >
+                <template v-if="$store.state.usuario && $store.state.usuario.substituicaoId">
+                  <b-dropdown-item @click="substituir()"
+                    >Interromper Substituição Corrente</b-dropdown-item
+                  >
+                  <b-dropdown-divider></b-dropdown-divider>
+                </template>
                 <b-dropdown-group header="Substituir:"></b-dropdown-group>
                 <b-dropdown-item
                   v-for="s in $store.state.usuario.substituicoesPermitidas"
                   :key="s.substituicaoId"
-                  @click="substituir(subst)"
+                  :disabled="
+                    $store.state.usuario.substituicaoId === s.substituicaoId
+                  "
+                  @click="substituir(s)"
                 >
                   {{
                     (s.cadastranteId !== s.titularId ? s.titularNome : '') +
@@ -203,7 +220,27 @@ export default {
       this.$router.push({ name: 'login' })
     },
 
-    substituir() {},
+    async substituir(s) {
+      await this.$store.dispatch('substituir', s ? s.substituicaoId : undefined)
+      this.$nuxt.refresh()
+    },
+  },
+  computed: {
+    descrUsuarioAtivo() {
+      if (!this.$store.state.usuario) return
+      let s = ''
+      if (this.$store.state.usuario.substituicaoId)
+        this.$store.state.usuario.substituicoesPermitidas.forEach((element) => {
+          if (
+            this.$store.state.usuario.substituicaoId === element.substituicaoId
+          ) {
+            if (element.titularSigla) s += element.titularSigla
+            if (element.titularSigla && element.lotaTitularSigla) s += '/'
+            if (element.lotaTitularSigla) s += element.lotaTitularSigla
+          }
+        })
+      return s
+    },
   },
 }
 </script>
