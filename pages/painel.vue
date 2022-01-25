@@ -87,7 +87,7 @@ export default {
     }
     try {
       const data = await this.$axios.$get(
-        'sigaex/api/v1/quadro?filtroExpedienteProcesso=Todos'
+        'sigaex/api/v1/quadro?filtroExpedienteProcesso=Todos&estilo=Agrupados'
       )
       this.lista = data.list.filter(
         (i) =>

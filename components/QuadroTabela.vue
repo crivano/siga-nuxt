@@ -17,7 +17,7 @@
             <thead>
               <tr class="table-head">
                 <th>
-                  {{ lista[0].grupoNome }}
+                  {{ lista[0].tipoNome }}
                 </th>
                 <th style="text-align: right">Atendente</th>
                 <th style="text-align: right">Lotacao</th>
@@ -26,8 +26,8 @@
             <tbody>
               <template v-for="(f, index) in lista">
                 <tr
-                  v-if="index > 0 && f.grupoNome !== lista[index - 1].grupoNome"
-                  :key="f.grupoId"
+                  v-if="index > 0 && f.tipoNome !== lista[index - 1].tipoNome"
+                  :key="f.tipoId"
                   class="table-group"
                 >
                   <th
@@ -35,7 +35,7 @@
                     class="pb-0 pl-0"
                     style="padding-top: 0.5em !important"
                   >
-                    <span class="pt-3">{{ f.grupoNome }}</span>
+                    <span class="pt-3">{{ f.tipoNome }}</span>
                   </th>
                 </tr>
                 <tr :key="f.marcadorId + ':row'">
