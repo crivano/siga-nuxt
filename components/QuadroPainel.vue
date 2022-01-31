@@ -1,5 +1,12 @@
 <template>
   <div>
+    <b-dropdown menu-class="span" text="Todos" variant="primary" class="m-2">
+      <b-dropdown-item href="#">Todos</b-dropdown-item>
+      <b-dropdown-item href="#">Documentos</b-dropdown-item>
+      <b-dropdown-item href="#">Procedimentos</b-dropdown-item>
+      <b-dropdown-item href="#">Conhecimentos</b-dropdown-item>
+    </b-dropdown>
+
     <QuadroPainelItem
       :id="t.id"
       :nome="t.nome"
@@ -52,6 +59,48 @@ export default {
         grupo.qtdLotaAtendente += parseInt(x.qtdLotaAtendente)
         grupo.filhos.push(x)
       }
+
+      const documentos = {
+        tipo: 'ELEMENTO',
+        id: 1,
+        nome: 'Documentos',
+        qtdAtendente: 0,
+        qtdLotaAtendente: 0,
+      }
+
+      const procedimentos = {
+        tipo: 'ELEMENTO',
+        id: 1,
+        nome: 'Procedimentos',
+        qtdAtendente: 0,
+        qtdLotaAtendente: 0,
+      }
+
+      const conhecimentos = {
+        tipo: 'ELEMENTO',
+        id: 1,
+        nome: 'Conhecimentos',
+        qtdAtendente: 0,
+        qtdLotaAtendente: 0,
+      }
+
+      const servicos = {
+        tipo: 'ELEMENTO',
+        id: 1,
+        nome: 'Serviços',
+        qtdAtendente: 0,
+        qtdLotaAtendente: 0,
+      }
+
+      const todos = {
+        tipo: 'TUDO',
+        id: 1,
+        nome: 'Todos',
+        qtdAtendente: 0,
+        qtdLotaAtendente: 0,
+        filhos: [documentos, procedimentos, servicos, conhecimentos],
+      }
+      r.unshift(todos)
       return r
     },
   },

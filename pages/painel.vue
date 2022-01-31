@@ -10,7 +10,7 @@
           @pesquisar="pesquisar($event)"
         />
       </div>
-      <div class="col-12 col-xl-9 col-md-6 pl-0 pr-0">
+      <div class="col-12 col-xl-9 col-md-6">
         <div class="row" v-if="false">
           <div class="col col-12 col-md-9 mt-3 mb-3">
             <h4 class="mb-0 mt-0">{{ titulo }}</h4>
@@ -20,17 +20,44 @@
           </div>
         </div>
 
-        <DocPesquisa
-          v-if="$store.state.painel.lista"
-          ref="pesquisa"
-          :id-marcador="marcadorId"
-          :filtro-pessoa-lotacao="filtroPessoaLotacao"
-          :filtro-expediente-processo="filtroExpedienteProcesso"
-          :qtd="qtd"
-          :marcador-nome="marcadorNome"
-          :filtro="filtro"
-          :painel="true"
-        />
+        <b-tabs content-class="mt-3">
+          <b-tab title="Todos" active><DocPesquisa
+                v-if="$store.state.painel.lista"
+                ref="pesquisa"
+                :id-marcador="marcadorId"
+                :filtro-pessoa-lotacao="filtroPessoaLotacao"
+                :filtro-expediente-processo="filtroExpedienteProcesso"
+                :qtd="qtd"
+                :marcador-nome="marcadorNome"
+                :filtro="filtro"
+                :painel="true"
+              /></b-tab>
+          <b-tab title="Doc"><p>I'm the second tab</p></b-tab>
+          <b-tab title="GC"><p>I'm the second tab</p></b-tab>
+          <b-tab title="Serviços"><p>I'm the second tab</p></b-tab>
+        </b-tabs>
+
+        <b-card no-body>
+          <b-tabs card>
+            <b-tab title="Todos" active>
+              <DocPesquisa
+                v-if="$store.state.painel.lista"
+                ref="pesquisa"
+                :id-marcador="marcadorId"
+                :filtro-pessoa-lotacao="filtroPessoaLotacao"
+                :filtro-expediente-processo="filtroExpedienteProcesso"
+                :qtd="qtd"
+                :marcador-nome="marcadorNome"
+                :filtro="filtro"
+                :painel="true"
+              />
+            </b-tab>
+            <b-tab title="Documentos">
+              <b-card-text>Tab contents 2</b-card-text>
+            </b-tab>
+          </b-tabs>
+          <b-card-body> </b-card-body>
+        </b-card>
       </div>
     </div>
     <p

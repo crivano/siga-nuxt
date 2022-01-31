@@ -7,6 +7,8 @@
       >
         <div
           :class="{
+            tudo: tipo === 'TUDO',
+            elemento: tipo === 'ELEMENTO',
             tipo: tipo === 'TIPO',
             grupo: tipo === 'GRUPO',
             marcador: tipo === 'MARCADOR',
@@ -140,6 +142,16 @@ export default {
 .titulo-tipo {
   padding-top: 1em;
   padding-bottom: 0.5em;
+}
+
+.tudo {
+  font-weight: bold;
+}
+
+.elemento {
+  padding-left: 1em;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .tipo {
