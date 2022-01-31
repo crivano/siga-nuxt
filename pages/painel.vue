@@ -1,28 +1,17 @@
 <template>
   <div class="container-fluid content">
-    <div class="row bg-light pb-3">
-      <div class="col col-12 col-md-auto"></div>
-      <div class="col col-auto ml-auto">
-        <nuxt-link to="/documento/novo" class="btn btn-primary mt-3"
-          ><font-awesome-icon
-            :icon="['fa', 'plus']"
-            class="mr-1"
-          />Novo</nuxt-link
-        >
-      </div>
-    </div>
     <div class="row">
-      <div class="col-12 col-xl-3 col-md-6 bg-light">
+      <div class="col-12 col-xl-3 col-md-6 bg-light pt-2">
         <QuadroPainel
-          :lista="lista"
+          :lista="$store.state.painel.quadro"
           :carregando="carregandoExpediente"
           :primeira-carga="primeiraCarga"
           filtro-expediente-processo="Expediente"
           @pesquisar="pesquisar($event)"
         />
       </div>
-      <div class="col-12 col-xl-9 col-md-6">
-        <div class="row">
+      <div class="col-12 col-xl-9 col-md-6 pl-0 pr-0">
+        <div class="row" v-if="false">
           <div class="col col-12 col-md-9 mt-3 mb-3">
             <h4 class="mb-0 mt-0">{{ titulo }}</h4>
           </div>
@@ -32,7 +21,7 @@
         </div>
 
         <DocPesquisa
-          v-if="marcadorId"
+          v-if="$store.state.painel.lista"
           ref="pesquisa"
           :id-marcador="marcadorId"
           :filtro-pessoa-lotacao="filtroPessoaLotacao"
@@ -79,53 +68,54 @@ export default {
   },
 
   async fetch() {
-    const erros = {}
-    if (this.lista && this.lista.length > 0) {
-      for (let i = 0; i < this.lista.length; i++) {
-        erros[this.lista[i].codigo] = this.lista[i].errormsg
-      }
-    }
-    try {
-      const data = await this.$axios.$get(
-        'sigaex/api/v1/quadro?filtroExpedienteProcesso=Todos&estilo=Agrupados'
-      )
-      this.lista = data.list.filter(
-        (i) =>
-          i.marcadorId !== 9 &&
-          i.marcadorId !== 8 &&
-          i.marcadorId !== 10 &&
-          i.marcadorId !== 11 &&
-          i.marcadorId !== 12 &&
-          i.marcadorId !== 13 &&
-          i.marcadorId !== 16 &&
-          i.marcadorId !== 18 &&
-          i.marcadorId !== 20 &&
-          i.marcadorId !== 21 &&
-          i.marcadorId !== 22 &&
-          i.marcadorId !== 26 &&
-          i.marcadorId !== 32 &&
-          i.marcadorId !== 62 &&
-          i.marcadorId !== 63 &&
-          i.marcadorId !== 64 &&
-          i.marcadorId !== 7 &&
-          i.marcadorId !== 50 &&
-          i.marcadorId !== 51
-      )
-      this.primeiraCarga = false
-      window.painel = this.lista
-      if (!this.marcadorId) {
-        for (const i of this.lista) {
-          if (i.qtdAtendente || i.qtdLotaAtendente) {
-            this.filtroPessoaLotacao = i.qtdAtendente ? 'Pessoa' : 'Lotacao'
-            this.filtroExpedienteProcesso = 'Expediente'
-            this.marcadorId = i.marcadorId
-            this.marcadorNome = i.marcadorNome
-            this.qtd = i.qtdAtendente ? i.qtdAtendente : i.qtdLotaAtendente
-            break
-          }
-        }
-      }
-    } catch (ex) {}
+    // const erros = {}
+    // if (this.lista && this.lista.length > 0) {
+    //   for (let i = 0; i < this.lista.length; i++) {
+    //     erros[this.lista[i].codigo] = this.lista[i].errormsg
+    //   }
+    // }
+    // try {
+    //   const data = await this.$axios.$get(
+    //     'sigaex/api/v1/quadro?filtroExpedienteProcesso=Todos&estilo=Agrupados'
+    //   )
+    //   this.lista = data.list.filter(
+    //     (i) =>
+    //       i.marcadorId !== 9 &&
+    //       i.marcadorId !== 8 &&
+    //       i.marcadorId !== 10 &&
+    //       i.marcadorId !== 11 &&
+    //       i.marcadorId !== 12 &&
+    //       i.marcadorId !== 13 &&
+    //       i.marcadorId !== 16 &&
+    //       i.marcadorId !== 18 &&
+    //       i.marcadorId !== 20 &&
+    //       i.marcadorId !== 21 &&
+    //       i.marcadorId !== 22 &&
+    //       i.marcadorId !== 26 &&
+    //       i.marcadorId !== 32 &&
+    //       i.marcadorId !== 62 &&
+    //       i.marcadorId !== 63 &&
+    //       i.marcadorId !== 64 &&
+    //       i.marcadorId !== 7 &&
+    //       i.marcadorId !== 50 &&
+    //       i.marcadorId !== 51
+    //   )
+    //   this.primeiraCarga = false
+    //   window.painel = this.lista
+    //   if (!this.marcadorId) {
+    //     for (const i of this.lista) {
+    //       if (i.qtdAtendente || i.qtdLotaAtendente) {
+    //         this.filtroPessoaLotacao = i.qtdAtendente ? 'Pessoa' : 'Lotacao'
+    //         this.filtroExpedienteProcesso = 'Expediente'
+    //         this.marcadorId = i.marcadorId
+    //         this.marcadorNome = i.marcadorNome
+    //         this.qtd = i.qtdAtendente ? i.qtdAtendente : i.qtdLotaAtendente
+    //         break
+    //       }
+    //     }
+    //   }
+    // } catch (ex) {}
+    await this.$store.dispatch('painel/carregarQuadro')
   },
 
   computed: {

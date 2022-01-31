@@ -41,6 +41,14 @@
                 >Painel</nuxt-link
               >
             </b-nav-item>
+
+            <b-nav-item-dropdown>
+              <template slot="button-content">Novo</template>
+              <b-dropdown-item href="#">Documento</b-dropdown-item>
+              <b-dropdown-item href="#">Serviço</b-dropdown-item>
+              <b-dropdown-item href="#">Conhecimento</b-dropdown-item>
+            </b-nav-item-dropdown>
+
             <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
               <nuxt-link
                 class="nav-link"
@@ -86,7 +94,11 @@
             >
               <template v-slot:button-content>
                 {{ $store.state.jwt.sub }}
-                <template v-if="$store.state.usuario && $store.state.usuario.substituicaoId">
+                <template
+                  v-if="
+                    $store.state.usuario && $store.state.usuario.substituicaoId
+                  "
+                >
                   <font-awesome-icon
                     :icon="['fa', 'arrow-circle-right']"
                     class="mr-1"
@@ -99,7 +111,11 @@
                   $store.state.usuario.substituicoesPermitidas
                 "
               >
-                <template v-if="$store.state.usuario && $store.state.usuario.substituicaoId">
+                <template
+                  v-if="
+                    $store.state.usuario && $store.state.usuario.substituicaoId
+                  "
+                >
                   <b-dropdown-item @click="substituir()"
                     >Interromper Substituição Corrente</b-dropdown-item
                   >

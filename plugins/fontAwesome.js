@@ -55,7 +55,9 @@ import {
   faTrashAlt,
   faUsers,
   faCircle,
-  faArrowCircleRight
+  faArrowCircleRight,
+  faCaretRight,
+  faCaretDown
 } from '@fortawesome/free-solid-svg-icons'
 // import {
 //   faWhatsapp
@@ -70,6 +72,8 @@ import {
 library.add(faArrowCircleRight)
 library.add(faCircle)
 library.add(faPlus)
+library.add(faCaretRight)
+library.add(faCaretDown)
 library.add(faSearch)
 library.add(faStickyNote)
 library.add(faShieldAlt)

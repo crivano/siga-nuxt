@@ -64,7 +64,7 @@ export const actions = {
     }
     commit('setJwt', AuthBL.decodeToken(token))
     await dispatch('carregarUsuario')
-    console.log(this.$router.currentRoute)
+    // console.log(this.$router.currentRoute)
     if (this.$router.currentRoute && this.$router.currentRoute.name === "login")
       this.$router.push({
         name: 'quadro',
