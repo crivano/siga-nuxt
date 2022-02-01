@@ -9,7 +9,21 @@ export const state = () => ({
   pessoaOuLotacao: undefined,
   grupoId: undefined,
   filtro: undefined,
+  qtds: 'RESUMIDO',
 })
+
+export const getters = {
+  listDeQuantidades(state) {
+    if (state.qtds === 'DETALHADO')
+      return [
+        { icone: 'user', filtro: 'PESSOA' },
+        { icone: 'users', filtro: 'LOTACAO' },
+        { icone: 'user-slash', filtro: 'NAO_ATRIBUIDO' }
+      ]
+    else
+      return [{ icone: 'folder-open', filtro: 'TOTAL' }];
+  },
+}
 
 export const mutations = {
   setPrimeiraCarga(state, val) {
@@ -35,6 +49,9 @@ export const mutations = {
   },
   setFiltro(state, val) {
     state.filtro = val
+  },
+  setQtds(state, val) {
+    state.qtds = val
   }
 }
 
@@ -173,6 +190,15 @@ export const actions = {
     }
     commit('setPessoaOuLotacao', val.pessoaOuLotacao)
     commit('setQtd', val.qtd)
+    await dispatch('carregarLista')
+  },
+
+  async trocarQtds({
+    state,
+    commit,
+    dispatch
+  }, val) {
+    commit('setQtds', val)
     await dispatch('carregarLista')
   },
 

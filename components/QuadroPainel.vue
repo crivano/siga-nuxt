@@ -1,11 +1,39 @@
 <template>
   <div>
-    <b-dropdown menu-class="span" text="Todos" variant="primary" class="m-2">
-      <b-dropdown-item href="#">Todos</b-dropdown-item>
-      <b-dropdown-item href="#">Documentos</b-dropdown-item>
-      <b-dropdown-item href="#">Procedimentos</b-dropdown-item>
-      <b-dropdown-item href="#">Conhecimentos</b-dropdown-item>
-    </b-dropdown>
+    <div
+      class="row mr-0"
+      @click.prevent="
+        $store.commit(
+          'painel/setQtds',
+          $store.state.painel.qtds === 'RESUMIDO' ? 'DETALHADO' : 'RESUMIDO'
+        )
+      "
+    >
+      <div
+        class="col"
+        :class="
+          'col-' + (12 - 2 * $store.getters['painel/listDeQuantidades'].length)
+        "
+      >
+        &nbsp;
+      </div>
+      <div
+        class="col col-2 col-badge pl-0 pr-0"
+        v-for="(i, index) in $store.getters['painel/listDeQuantidades']"
+        :key="i.filtro"
+      >
+        <font-awesome-icon
+          :icon="[
+            'fa',
+            $store.state.painel.qtds === 'RESUMIDO'
+              ? 'caret-left'
+              : 'caret-right',
+          ]"
+          v-if="index === 0"
+        />
+        <font-awesome-icon :icon="['fa', i.icone]" />
+      </div>
+    </div>
 
     <QuadroPainelItem
       :id="t.id"
@@ -15,6 +43,7 @@
       :primeiro="index === 0"
       v-for="(t, index) in arvore"
       :key="t.id"
+      :qtd="t.qtd"
     />
   </div>
 </template>
@@ -23,7 +52,6 @@
 export default {
   props: {
     lista: { required: true },
-    filtroExpedienteProcesso: { required: true },
     carregando: { required: false },
     primeiraCarga: { required: false },
   },
@@ -31,6 +59,18 @@ export default {
     arvore() {
       if (!this.lista) return []
       const r = []
+
+      const todos = {
+        tipo: 'TUDO',
+        id: 1,
+        nome: 'Tudo',
+        qtd: {},
+        filhos: [],
+        filho: {},
+      }
+
+      r.push(todos)
+
       let tipo
       let grupo
       for (let i = 0; i < this.lista.length; i++) {
@@ -49,58 +89,28 @@ export default {
             tipo: 'GRUPO',
             id: x.grupoId,
             nome: x.grupoNome,
-            qtdAtendente: 0,
-            qtdLotaAtendente: 0,
+            qtds: [],
+            qtd: {},
             filhos: [],
           }
           tipo.filhos.push(grupo)
         }
-        grupo.qtdAtendente += parseInt(x.qtdAtendente)
-        grupo.qtdLotaAtendente += parseInt(x.qtdLotaAtendente)
+        if (x.qtds) {
+          x.qtd = {}
+          for (let q = 0; q < x.qtds.length; q++) {
+            const qtd = x.qtds[q]
+            x.qtd[qtd.filtro] = parseInt(qtd.qtd)
+
+            if (grupo.qtd[qtd.filtro] === undefined) grupo.qtd[qtd.filtro] = 0
+            grupo.qtd[qtd.filtro] += x.qtd[qtd.filtro]
+          }
+        }
+        // grupo.qtds[]
+        // grupo.qtdAtendente += parseInt(x.qtdAtendente)
+        // grupo.qtdLotaAtendente += parseInt(x.qtdLotaAtendente)
         grupo.filhos.push(x)
       }
 
-      const documentos = {
-        tipo: 'ELEMENTO',
-        id: 1,
-        nome: 'Documentos',
-        qtdAtendente: 0,
-        qtdLotaAtendente: 0,
-      }
-
-      const procedimentos = {
-        tipo: 'ELEMENTO',
-        id: 1,
-        nome: 'Procedimentos',
-        qtdAtendente: 0,
-        qtdLotaAtendente: 0,
-      }
-
-      const conhecimentos = {
-        tipo: 'ELEMENTO',
-        id: 1,
-        nome: 'Conhecimentos',
-        qtdAtendente: 0,
-        qtdLotaAtendente: 0,
-      }
-
-      const servicos = {
-        tipo: 'ELEMENTO',
-        id: 1,
-        nome: 'Serviços',
-        qtdAtendente: 0,
-        qtdLotaAtendente: 0,
-      }
-
-      const todos = {
-        tipo: 'TUDO',
-        id: 1,
-        nome: 'Todos',
-        qtdAtendente: 0,
-        qtdLotaAtendente: 0,
-        filhos: [documentos, procedimentos, servicos, conhecimentos],
-      }
-      r.unshift(todos)
       return r
     },
   },
@@ -118,5 +128,8 @@ export default {
 }
 .marcador {
   width: 1em;
+}
+.col-badge {
+  text-align: right;
 }
 </style>

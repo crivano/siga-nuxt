@@ -57,7 +57,10 @@ import {
   faCircle,
   faArrowCircleRight,
   faCaretRight,
-  faCaretDown
+  faCaretDown,
+  faUserSlash,
+  faCaretLeft,
+  faFolderOpen
 } from '@fortawesome/free-solid-svg-icons'
 // import {
 //   faWhatsapp
@@ -74,6 +77,7 @@ library.add(faCircle)
 library.add(faPlus)
 library.add(faCaretRight)
 library.add(faCaretDown)
+library.add(faCaretLeft)
 library.add(faSearch)
 library.add(faStickyNote)
 library.add(faShieldAlt)
@@ -90,6 +94,7 @@ library.add(faUserSecret)
 library.add(faUserGraduate)
 library.add(faUser)
 library.add(faUsers)
+library.add(faUserSlash)
 library.add(faBan)
 library.add(faAccessibleIcon)
 library.add(faAddressCard)
@@ -99,6 +104,7 @@ library.add(faBolt)
 library.add(faCalendar)
 library.add(faFile)
 library.add(faFolder)
+library.add(faFolderOpen)
 library.add(faHeart)
 library.add(faStar)
 library.add(faCertificate)
