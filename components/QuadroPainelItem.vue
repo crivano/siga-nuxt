@@ -4,8 +4,8 @@
       class="row mr-0"
       v-if="nome"
       :class="{
-        'primeiro-titulo-tipo': tipo === 'TIPO' && primeiro,
-        'titulo-tipo': tipo === 'TIPO' && !primeiro,
+        'primeiro-titulo-escopo': escopo === 'TIPO' && primeiro,
+        'titulo-escopo': escopo === 'TIPO' && !primeiro,
       }"
     >
       <div
@@ -17,11 +17,11 @@
       >
         <div
           :class="{
-            tudo: tipo === 'TUDO',
-            elemento: tipo === 'ELEMENTO',
-            tipo: tipo === 'TIPO',
-            grupo: tipo === 'GRUPO',
-            marcador: tipo === 'MARCADOR',
+            tudo: escopo === 'TUDO',
+            'tipo-de-marca': escopo === 'TIPO_MARCA',
+            escopo: escopo === 'TIPO',
+            grupo: escopo === 'GRUPO',
+            marcador: escopo === 'MARCADOR',
           }"
         >
           <span v-if="filhos" class="when-open"
@@ -40,7 +40,7 @@
           v-if="qtd && qtd[i.filtro] != undefined"
           @click="
             $store.dispatch('painel/trocarLista', {
-              tipo: tipo,
+              escopo: escopo,
               id: id,
               nome: nome,
               qtd: qtd[i.filtro],
@@ -64,15 +64,15 @@
     </div>
     <b-collapse
       :id="'accordion-' + id"
-      :visible="tipo !== 'GRUPO' || !id"
-      :accordion="nome && tipo !== 'TIPO' ? 'accordion-' + tipo : undefined"
+      :visible="escopo !== 'GRUPO' || !id"
+      :accordion="nome && escopo !== 'TIPO' ? 'accordion-' + escopo : undefined"
       role="tabpanel"
     >
       <QuadroPainelItem
         :id="f.id"
         :nome="f.nome"
         :filhos="f.filhos"
-        :tipo="f.tipo"
+        :escopo="f.escopo"
         :qtd="f.qtd"
         v-for="f in filhos"
         :key="f.id"
@@ -87,7 +87,7 @@ export default {
     primeiro: { required: false },
     nome: { required: false },
     id: { required: false },
-    tipo: { required: true },
+    escopo: { required: true },
     qtd: { required: false },
     filhos: { required: false },
   },
@@ -112,12 +112,12 @@ export default {
   text-align: right;
 }
 
-.primeiro-titulo-tipo {
+.primeiro-titulo-escopo {
   padding-top: 0;
   padding-bottom: 0.5em;
 }
 
-.titulo-tipo {
+.titulo-escopo {
   padding-top: 1em;
   padding-bottom: 0.5em;
 }
@@ -132,13 +132,19 @@ export default {
   padding-bottom: 0;
 }
 
-.tipo {
+.escopo {
   font-weight: bold;
 }
 
 .grupo {
   padding-top: 0;
   padding-bottom: 0.5em;
+}
+
+.tipo-de-marca {
+  padding-left: 1em;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .marcador {
