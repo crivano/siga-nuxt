@@ -19,21 +19,30 @@
           </div>
         </div>
 
-        <b-tabs class="mt-3 mb-0" content-class="mt-0" active-nav-item-class="font-weight-bold bg-dark text-white">
-          <b-tab title="Tudo" active><DocPesquisa
-                v-if="$store.state.painel.lista"
-                ref="pesquisa"
-                :id-marcador="marcadorId"
-                :filtro-pessoa-lotacao="filtroPessoaLotacao"
-                :filtro-expediente-processo="filtroExpedienteProcesso"
-                :qtd="qtd"
-                :marcador-nome="marcadorNome"
-                :filtro="filtro"
-                :painel="true"
-              /></b-tab>
-          <b-tab title="Documento"><p>I'm the second tab</p></b-tab>
-          <b-tab title="Serviço"><p>I'm the second tab</p></b-tab>
-          <b-tab title="Conhecimento"><p>I'm the second tab</p></b-tab>
+        <b-tabs
+          class="mt-3 mb-0"
+          content-class="mt-0"
+          active-nav-item-class="font-weight-bold bg-dark text-white"
+          lazy
+        >
+          <b-tab
+            v-for="tm in tabs"
+            :key="tm.id"
+            :title="tm.nome + ' (' + tm.count + ')'"
+            @click="$store.dispatch('painel/trocarTab', tm.id)"
+          >
+            <DocPesquisa
+              v-if="$store.state.painel.lista"
+              ref="pesquisa"
+              :id-marcador="marcadorId"
+              :filtro-pessoa-lotacao="filtroPessoaLotacao"
+              :filtro-expediente-processo="filtroExpedienteProcesso"
+              :qtd="qtd"
+              :marcador-nome="marcadorNome"
+              :filtro="filtro"
+              :painel="true"
+            />
+          </b-tab>
         </b-tabs>
       </div>
     </div>
@@ -72,53 +81,6 @@ export default {
   },
 
   async fetch() {
-    // const erros = {}
-    // if (this.lista && this.lista.length > 0) {
-    //   for (let i = 0; i < this.lista.length; i++) {
-    //     erros[this.lista[i].codigo] = this.lista[i].errormsg
-    //   }
-    // }
-    // try {
-    //   const data = await this.$axios.$get(
-    //     'sigaex/api/v1/quadro?filtroExpedienteProcesso=Todos&estilo=Agrupados'
-    //   )
-    //   this.lista = data.list.filter(
-    //     (i) =>
-    //       i.marcadorId !== 9 &&
-    //       i.marcadorId !== 8 &&
-    //       i.marcadorId !== 10 &&
-    //       i.marcadorId !== 11 &&
-    //       i.marcadorId !== 12 &&
-    //       i.marcadorId !== 13 &&
-    //       i.marcadorId !== 16 &&
-    //       i.marcadorId !== 18 &&
-    //       i.marcadorId !== 20 &&
-    //       i.marcadorId !== 21 &&
-    //       i.marcadorId !== 22 &&
-    //       i.marcadorId !== 26 &&
-    //       i.marcadorId !== 32 &&
-    //       i.marcadorId !== 62 &&
-    //       i.marcadorId !== 63 &&
-    //       i.marcadorId !== 64 &&
-    //       i.marcadorId !== 7 &&
-    //       i.marcadorId !== 50 &&
-    //       i.marcadorId !== 51
-    //   )
-    //   this.primeiraCarga = false
-    //   window.painel = this.lista
-    //   if (!this.marcadorId) {
-    //     for (const i of this.lista) {
-    //       if (i.qtdAtendente || i.qtdLotaAtendente) {
-    //         this.filtroPessoaLotacao = i.qtdAtendente ? 'Pessoa' : 'Lotacao'
-    //         this.filtroExpedienteProcesso = 'Expediente'
-    //         this.marcadorId = i.marcadorId
-    //         this.marcadorNome = i.marcadorNome
-    //         this.qtd = i.qtdAtendente ? i.qtdAtendente : i.qtdLotaAtendente
-    //         break
-    //       }
-    //     }
-    //   }
-    // } catch (ex) {}
     await this.$store.dispatch('painel/carregarQuadro')
   },
 
@@ -127,6 +89,23 @@ export default {
       if (this.marcadorNome && this.qtd)
         return this.marcadorNome + ' (' + this.qtd + ')'
       return ''
+    },
+
+    tabs() {
+      let a = [{ id: undefined, nome: 'Tudo' }]
+      this.$store.state.painel.tiposDeMarca.forEach((e) => {
+        a.push({ ...e })
+      })
+      if (this.$store.state.painel.item)
+        a.forEach((e) => {
+          e.count =
+            this.$store.state.painel.item.qtd[
+              this.$store.state.painel.pessoaOuLotacao +
+                (e.id ? ':' + e.id : '')
+            ]
+        })
+      a = a.filter((e) => e.count)
+      return a
     },
   },
   methods: {

@@ -2,10 +2,10 @@
   <div>
     <div
       class="row mr-0"
-      v-if="nome"
+      v-if="item.nome"
       :class="{
-        'primeiro-titulo-escopo': escopo === 'TIPO' && primeiro,
-        'titulo-escopo': escopo === 'TIPO' && !primeiro,
+        'primeiro-titulo-escopo': item.escopo === 'TIPO' && item.primeiro,
+        'titulo-escopo': item.escopo === 'TIPO' && !item.primeiro,
       }"
     >
       <div
@@ -13,22 +13,22 @@
         :class="
           'col-' + (12 - 2 * $store.getters['painel/listDeQuantidades'].length)
         "
-        v-b-toggle="filhos ? 'accordion-' + id : undefined"
+        v-b-toggle="item.filhos ? 'accordion-' + item.id : undefined"
       >
         <div
           :class="{
-            tudo: escopo === 'TUDO',
-            'tipo-de-marca': escopo === 'TIPO_MARCA',
-            escopo: escopo === 'TIPO',
-            grupo: escopo === 'GRUPO',
-            marcador: escopo === 'MARCADOR',
+            tudo: item.escopo === 'TUDO',
+            'tipo-de-marca': item.escopo === 'TIPO_MARCA',
+            escopo: item.escopo === 'TIPO',
+            grupo: item.escopo === 'GRUPO',
+            marcador: item.escopo === 'MARCADOR',
           }"
         >
-          <span v-if="filhos" class="when-open"
+          <span v-if="item.filhos" class="when-open"
             ><font-awesome-icon :icon="['fa', 'caret-down']" /></span
-          ><span v-if="filhos" class="when-closed"
+          ><span v-if="item.filhos" class="when-closed"
             ><font-awesome-icon :icon="['fa', 'caret-right']" /></span
-          ><span>{{ nome }}</span>
+          ><span>{{ item.nome }}</span>
         </div>
       </div>
       <div
@@ -37,46 +37,39 @@
         :key="i.filtro"
       >
         <a
-          v-if="qtd && qtd[i.filtro] != undefined"
+          v-if="item.qtd && item.qtd[i.filtro] != undefined"
           @click="
             $store.dispatch('painel/trocarLista', {
-              escopo: escopo,
-              id: id,
-              nome: nome,
-              qtd: qtd[i.filtro],
-              pessoaOuLotacao: i.filtro,
+              item: item,
+              filtro: i.filtro,
             })
           "
         >
           <b-badge
             :variant="
-              ($store.state.painel.marcadorId === id ||
-                $store.state.painel.grupoId === id) &&
+              ($store.state.painel.marcadorId === item.id ||
+                $store.state.painel.grupoId === item.id) &&
               $store.state.painel.pessoaOuLotacao === i.filtro
                 ? 'dark'
                 : 'light'
             "
-            >{{ qtd[i.filtro] }}</b-badge
+            >{{ item.qtd[i.filtro] }}</b-badge
           ></a
         >
         <b-badge v-else :variant="'light'">-</b-badge>
       </div>
     </div>
     <b-collapse
-      :id="'accordion-' + id"
-      :visible="escopo !== 'GRUPO' || !id"
-      :accordion="nome && escopo !== 'TIPO' ? 'accordion-' + escopo : undefined"
+      :id="'accordion-' + item.id"
+      :visible="item.escopo !== 'GRUPO' || !item.id"
+      :accordion="
+        item.nome && item.escopo !== 'TIPO'
+          ? 'accordion-' + item.escopo
+          : undefined
+      "
       role="tabpanel"
     >
-      <QuadroPainelItem
-        :id="f.id"
-        :nome="f.nome"
-        :filhos="f.filhos"
-        :escopo="f.escopo"
-        :qtd="f.qtd"
-        v-for="f in filhos"
-        :key="f.id"
-      />
+      <QuadroPainelItem :item="f" v-for="f in item.filhos" :key="f.id" />
     </b-collapse>
   </div>
 </template>
@@ -84,12 +77,7 @@
 <script>
 export default {
   props: {
-    primeiro: { required: false },
-    nome: { required: false },
-    id: { required: false },
-    escopo: { required: true },
-    qtd: { required: false },
-    filhos: { required: false },
+    item: { required: true },
   },
 }
 </script>

@@ -9,7 +9,14 @@ export const state = () => ({
   pessoaOuLotacao: undefined,
   grupoId: undefined,
   filtro: undefined,
+  tab: undefined,
+  item: undefined,
   qtds: 'RESUMIDO',
+  tiposDeMarca: [
+    { id: 'SIGA_EX', nome: 'Documentos' },
+    { id: 'SIGA_SR', nome: 'Serviços' },
+    { id: 'SIGA_GC', nome: 'Conhecimentos' },
+  ]
 })
 
 export const getters = {
@@ -22,6 +29,131 @@ export const getters = {
       ]
     else
       return [{ icone: 'folder-open', filtro: 'TOTAL' }];
+  },
+  mapTiposDeMarca(state) {
+    const r = {}
+    for (let i = 0; i < state.tiposDeMarca.length; i++) {
+      const tm = state.tiposDeMarca[i]
+      r[tm.id] = tm
+    }
+    return r
+  },
+  arvore(state, getters) {
+    const sumQtd = function (a) {
+      if (!a.qtd) return 0
+      return a.qtd.TOTAL
+    }
+    const compareQtd = function (a, b) {
+      return sumQtd(b) - sumQtd(a)
+    }
+    const addQtd = function (qtd, para) {
+      if (para.qtd[qtd.filtro] === undefined) para.qtd[qtd.filtro] = 0
+      para.qtd[qtd.filtro] += parseInt(qtd.qtd)
+
+      if (para.qtd[qtd.tipo] === undefined) para.qtd[qtd.tipo] = 0
+      para.qtd[qtd.tipo] += parseInt(qtd.qtd)
+
+      const key = qtd.filtro + ':' + qtd.tipo
+      if (para.qtd[key] === undefined) para.qtd[key] = 0
+      para.qtd[key] += parseInt(qtd.qtd)
+    }
+
+    if (!state.quadro) return []
+    const r = []
+
+    const todos = {
+      escopo: 'TUDO',
+      id: 1,
+      nome: 'Tudo',
+      qtd: {},
+      filhos: [],
+      filho: {},
+    }
+
+    r.push(todos)
+
+    let tipo
+    let grupo
+    // let marcador
+    for (let i = 0; i < state.quadro.length; i++) {
+      const x = {
+        ...state.quadro[i],
+        escopo: 'MARCADOR',
+        id: state.quadro[i].marcadorId,
+        nome: state.quadro[i].marcadorNome,
+        qtd: {},
+      }
+
+      // se não existir um este "tipo" no resultado, incluir
+      if (x.tipoId && (!tipo || tipo.id !== x.tipoId)) {
+        tipo = {
+          escopo: 'TIPO',
+          id: x.tipoId,
+          nome: x.tipoNome,
+          qtd: {},
+          filhos: [],
+        }
+        r.push(tipo)
+      }
+
+      // se não existir um filho de "tipo" que represente esse grupo, incluir
+      if (tipo.filhos.length === 0 || grupo.id !== x.grupoId) {
+        grupo = {
+          escopo: 'GRUPO',
+          id: x.grupoId,
+          nome: x.grupoNome,
+          qtds: [],
+          qtd: {},
+          filhos: [],
+        }
+        tipo.filhos.push(grupo)
+      }
+
+      // se não existir um filho de "grupo" que represente esse marcador, incluir
+      // if (grupo.filhos.length === 0 || marcador.id !== x.grupoId) {
+      //   grupo = {
+      //     escopo: 'GRUPO',
+      //     id: x.grupoId,
+      //     nome: x.grupoNome,
+      //     qtds: [],
+      //     qtd: {},
+      //     filhos: [],
+      //   }
+      //   tipo.filhos.push(grupo)
+      // }
+
+      if (x.qtds) {
+        for (let q = 0; q < x.qtds.length; q++) {
+          const qtd = x.qtds[q]
+
+          // se não existir um filho de "todos" que represente esse tipoDeMarca, incluir
+          if (!todos.filho[qtd.tipo]) {
+            const tipoDaMarca = {
+              escopo: 'TIPO_MARCA',
+              id: qtd.tipo,
+              nome: getters.mapTiposDeMarca[qtd.tipo].nome,
+              qtd: {},
+            }
+            todos.filhos.push(tipoDaMarca)
+            todos.filho[qtd.tipo] = tipoDaMarca
+          }
+
+          addQtd(qtd, x)
+          addQtd(qtd, grupo)
+          addQtd(qtd, tipo)
+          addQtd(qtd, todos.filho[qtd.tipo])
+          addQtd(qtd, todos)
+        }
+      }
+      // grupo.qtds[]
+      // grupo.qtdAtendente += parseInt(x.qtdAtendente)
+      // grupo.qtdLotaAtendente += parseInt(x.qtdLotaAtendente)
+      grupo.filhos.push(x)
+    }
+
+    todos.filhos.sort((a, b) => compareQtd(a, b))
+
+    return r
   },
 }
 
@@ -49,6 +181,12 @@ export const mutations = {
   },
   setFiltro(state, val) {
     state.filtro = val
+  },
+  setTab(state, val) {
+    state.tab = val
+  },
+  setItem(state, val) {
+    state.item = val
   },
   setQtds(state, val) {
     state.qtds = val
@@ -181,25 +319,26 @@ export const actions = {
     commit,
     dispatch
   }, val) {
-    if (val.tipo === 'MARCADOR') {
-      commit('setMarcadorId', val.id)
+    commit('setItem', val.item)
+    if (val.item.escopo === 'MARCADOR') {
+      commit('setMarcadorId', val.item.id)
       commit('setGrupoId', undefined)
-    } else if (val.tipo === 'GRUPO') {
-      commit('setGrupoId', val.id)
+    } else if (val.item.escopo === 'GRUPO') {
+      commit('setGrupoId', val.item.id)
       commit('setMarcadorId', undefined)
     }
-    commit('setPessoaOuLotacao', val.pessoaOuLotacao)
-    commit('setQtd', val.qtd)
+    commit('setPessoaOuLotacao', val.filtro)
+    commit('setQtd', val.item.qtd[val.filtro])
     await dispatch('carregarLista')
   },
 
-  async trocarQtds({
+  async trocarTab({
     state,
     commit,
     dispatch
   }, val) {
-    commit('setQtds', val)
-    await dispatch('carregarLista')
+    commit('setTab', val)
+    await dispatch('carregarQuadro')
   },
 
 }
