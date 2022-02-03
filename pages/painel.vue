@@ -3,7 +3,6 @@
     <div class="row">
       <div class="col-12 col-xl-3 col-md-6 bg-light pt-2">
         <QuadroPainel
-          :lista="$store.state.painel.quadro"
           :carregando="carregandoExpediente"
           :primeira-carga="primeiraCarga"
           @pesquisar="pesquisar($event)"
@@ -31,6 +30,15 @@
             :title="tm.nome + ' (' + tm.count + ')'"
             @click="$store.dispatch('painel/trocarTab', tm.id)"
           >
+            <template v-if="false" #title>
+              <span>{{ tm.nome }} </span>
+              <span
+                class="position-absolutex badge rounded-pillx bg-light text-dark top-0 start-100 translate-middle "
+                style="margin-top: -0.5em"
+              >
+                {{ tm.count }}
+              </span>
+            </template>
             <DocPesquisa
               v-if="$store.state.painel.lista"
               ref="pesquisa"
@@ -81,7 +89,7 @@ export default {
   },
 
   async fetch() {
-    await this.$store.dispatch('painel/carregarQuadro')
+    await this.$store.dispatch('painel/iniciar')
   },
 
   computed: {
@@ -92,7 +100,7 @@ export default {
     },
 
     tabs() {
-      let a = [{ id: undefined, nome: 'Tudo' }]
+      let a = [{ id: undefined, nome: 'Todos' }]
       this.$store.state.painel.tiposDeMarca.forEach((e) => {
         a.push({ ...e })
       })

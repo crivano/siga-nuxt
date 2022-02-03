@@ -3,8 +3,8 @@
     <div
       class="row mr-0"
       @click.prevent="
-        $store.commit(
-          'painel/setQtds',
+        $store.dispatch(
+          'painel/trocarFiltroDePessoaOuLotacao',
           $store.state.painel.qtds === 'RESUMIDO' ? 'DETALHADO' : 'RESUMIDO'
         )
       "
@@ -18,7 +18,7 @@
         &nbsp;
       </div>
       <div
-        class="col col-2 col-badge pl-0 pr-0"
+        class="col col-2 col-badge pl-0 pr-0 mt-3 mb-3"
         v-for="(i, index) in $store.getters['painel/listDeQuantidades']"
         :key="i.filtro"
       >
@@ -47,7 +47,6 @@
 <script>
 export default {
   props: {
-    lista: { required: true },
     carregando: { required: false },
     primeiraCarga: { required: false },
   },

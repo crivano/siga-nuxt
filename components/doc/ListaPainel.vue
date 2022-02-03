@@ -12,10 +12,13 @@
               @change="marcarTodos(f.grupo)"
             />
           </th>
+          <th>Data</th>
           <th>Tipo</th>
           <th>Código</th>
+          <th>Origem</th>
           <th>Descrição</th>
-          <th>Anotação</th>
+          <th v-if="exibirColunaDeMarca">Marca</th>
+          <th v-if="exibirColunaUltimaAnotacao">Anotação</th>
         </tr>
       </thead>
       <tbody>
@@ -23,22 +26,28 @@
           <td style="text-align: center">
             <input v-model="i.checked" type="checkbox" :disabled="i.disabled" />
           </td>
+          <td v-html="i.dataIniFormatada"></td>
           <td>{{ i.tipo }}</td>
           <td class="action">
-            <nuxt-link :to="`/documento/${i.siglaCompacta}`">{{
-              i.sigla
-            }}</nuxt-link>
+            <nuxt-link :to="`/documento/${i.codigo}`">{{ i.sigla }}</nuxt-link>
+          </td>
+          <td>
+            {{ i.origem }}
           </td>
           <td class="content">
             {{ i.descricao }}
           </td>
-          <td>
+          <td v-if="exibirColunaDeMarca">
+            {{ i.marcaTexto }}
+          </td>
+          <td v-if="exibirColunaUltimaAnotacao">
             {{ i.ultimaAnotacao }}
           </td>
         </tr>
       </tbody>
     </table>
-    <b-pagination class="mr-3"
+    <b-pagination
+      class="mr-3"
       v-model="pagina"
       :total-rows="$store.state.painel.qtd"
       :per-page="10"
@@ -53,9 +62,24 @@ export default {
   },
   data() {
     return {
-      pagina: 1,
       todos: undefined,
     }
+  },
+  computed: {
+    pagina: {
+      get() {
+        return this.$store.state.painel.pagina
+      },
+      set(value) {
+        this.$store.dispatch('painel/trocarPagina', value)
+      },
+    },
+    exibirColunaDeMarca() {
+      return !this.$store.state.painel.marcadorId
+    },
+    exibirColunaUltimaAnotacao() {
+      return this.$store.state.painel.lista.some((e) => e.ultimaAnotacao)
+    },
   },
 }
 </script>

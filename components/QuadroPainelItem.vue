@@ -39,7 +39,7 @@
         <a
           v-if="item.qtd && item.qtd[i.filtro] != undefined"
           @click="
-            $store.dispatch('painel/trocarLista', {
+            $store.dispatch('painel/trocarItemEFiltro', {
               item: item,
               filtro: i.filtro,
             })
@@ -47,8 +47,7 @@
         >
           <b-badge
             :variant="
-              ($store.state.painel.marcadorId === item.id ||
-                $store.state.painel.grupoId === item.id) &&
+              itemSelecionado &&
               $store.state.painel.pessoaOuLotacao === i.filtro
                 ? 'dark'
                 : 'light'
@@ -78,6 +77,19 @@
 export default {
   props: {
     item: { required: true },
+  },
+  computed: {
+    itemSelecionado() {
+      const painel = this.$store.state.painel
+      if (!painel.item) return false
+      return (
+        (painel.item.escopo === 'MARCADOR' &&
+          painel.marcadorId === this.item.id) ||
+        (painel.item.escopo === 'GRUPO' && painel.grupoId === this.item.id) ||
+        (painel.item.escopo === 'TIPO' && painel.tipoId === this.item.id) ||
+        (painel.item.escopo === 'TUDO' && this.item.escopo === 'TUDO')
+      )
+    },
   },
 }
 </script>

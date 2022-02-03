@@ -6,6 +6,20 @@ export default {
     )
   },
 
+  formatDDMMYY(s) {
+    if (!s) return
+    return (
+      s.substring(8, 10) + '/' + s.substring(5, 7) + '/' + s.substring(2, 4)
+    )
+  },
+
+  formatDDMMYYHHMM(s) {
+    if (!s) return
+    return (
+      s.substring(8, 10) + '/' + s.substring(5, 7) + '/' + s.substring(2, 4) + '&nbsp;' + s.substring(11, 13) + ':' + s.substring(14, 16)
+    )
+  },
+
   formatDDMMYYYYHHMM(s) {
     if (s === undefined) return
 
@@ -98,8 +112,8 @@ export default {
       (c ?
         d +
         Math.abs(n - i)
-        .toFixed(c)
-        .slice(2) :
+          .toFixed(c)
+          .slice(2) :
         '')
     )
   },
@@ -108,7 +122,7 @@ export default {
       /* global ga */
       /* eslint no-undef: "error" */
       ga('send', 'event', categoria, acao, rotulo, valor)
-    } catch (ex) {}
+    } catch (ex) { }
   },
   camelCaseToDash(s) {
     return s.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase()
