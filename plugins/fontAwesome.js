@@ -71,6 +71,9 @@ import {
 import {
   faAccessibleIcon
 } from '@fortawesome/free-brands-svg-icons'
+import {
+  faStar as farStar
+} from '@fortawesome/free-regular-svg-icons'
 
 library.add(faArrowCircleRight)
 library.add(faCircle)
@@ -107,12 +110,12 @@ library.add(faFolder)
 library.add(faFolderOpen)
 library.add(faHeart)
 library.add(faStar)
+library.add(farStar)
 library.add(faCertificate)
 library.add(faBell)
 library.add(faCalendarCheck)
 library.add(faBroadcastTower)
 library.add(faSmile)
-
 
 library.add(faClock)
 library.add(faInbox)
@@ -133,5 +136,6 @@ library.add(faGlobe)
 library.add(faHourglassEnd)
 library.add(faHourglassHalf)
 library.add(faTrashAlt)
+library.add(faBell)
 
 Vue.component('FontAwesomeIcon', FontAwesomeIcon)

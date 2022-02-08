@@ -4,6 +4,8 @@ export const state = () => ({
   primeiraCarga: true,
   quadro: undefined,
   lista: undefined,
+  marcaIdChecked: {},
+  listaMarcaIdChecked: [],
   qtd: undefined,
   marcadorId: undefined,
   grupoId: undefined,
@@ -12,7 +14,7 @@ export const state = () => ({
   tab: undefined,
   item: undefined,
   qtds: 'RESUMIDO',
-  itensPorPagina: 10,
+  itensPorPagina: 50,
   pagina: 1,
   tiposDeMarca: [
     { id: 'SIGA_EX', nome: 'Documentos' },
@@ -157,20 +159,35 @@ export const getters = {
     return r
   },
 
+  caixaDeEntradaItem(state, getters) {
+    console.log('caixaDeEntradaItem')
+    if (!getters.arvore) return undefined
+    function localizarCaixaDeEntradaItem(a) {
+      for (let i = 0; i < a.length; i++) {
+        console.log(' - ' + a[i].escopo + ' - ' + a[i].id)
+        if (a[i].escopo === 'GRUPO' && a[i].id === 'CAIXA_DE_ENTRADA') return a[i]
+        if (a[i].filhos) {
+          const sub = localizarCaixaDeEntradaItem(a[i].filhos)
+          if (sub) return sub
+        }
+      }
+      return undefined
+    }
+    return localizarCaixaDeEntradaItem(getters.arvore)
+  },
+
   marcadoresId(state) {
     if (!state.item || state.item.tipo === 'TUDO') return ''
     const marcadores = {}
     const add = function (item) {
-      console.log('*** item')
-      console.log(marcadores)
       if (item.escopo === 'MARCADOR') marcadores[item.id] = 1
       if (item.filhos) item.filhos.forEach(e => add(e))
     }
     add(state.item)
-    console.log('marcadores')
-    console.log(marcadores)
     return Object.keys(marcadores).join()
-  }
+  },
+
+
 }
 
 export const mutations = {
@@ -182,6 +199,16 @@ export const mutations = {
   },
   setLista(state, val) {
     state.lista = val
+  },
+  toogleMarcaIdChecked(state, val) {
+    state.marcaIdChecked[val.marcaId] = val.value
+    if (val.value) state.listaMarcaIdChecked.push(val.marcaId)
+    else {
+      const index = state.listaMarcaIdChecked.indexOf(val.marcaId);
+      if (index !== -1) {
+        state.listaMarcaIdChecked.splice(index, 1);
+      }
+    }
   },
   setQtd(state, val) {
     state.qtd = val
@@ -298,7 +325,6 @@ export const actions = {
   }, token) {
     console.log("vou carregar a lista")
     const url = `siga/api/v1/painel/lista?idMarcadores=${getters.marcadoresId}&filtroPessoaLotacao=${state.pessoaOuLotacao}&tipoMarca=${state.tab ? state.tab : ''}&itensPorPagina=${state.itensPorPagina}&pagina=${state.pagina}`
-    console.log(url)
     try {
       const data = await this.$axios.$get(url)
       const l = data.list
@@ -312,9 +338,8 @@ export const actions = {
           marcasPorModulo[i.moduloId] = []
         marcasPorModulo[i.moduloId].push(i.marcaId)
       })
-      console.log(marcasPorModulo)
       commit('setLista', l)
-      if (marcasPorModulo["1"]) dispatch('complementarLista', { moduloId: "1", idMarcas: marcasPorModulo[1] })
+      if (marcasPorModulo["1"]) await dispatch('complementarLista', { moduloId: "1", idMarcas: marcasPorModulo[1] })
     } catch (ex) { }
   },
 
@@ -325,11 +350,6 @@ export const actions = {
 
     const url = (val.moduloId === "1" ? 'sigaex' : undefined) + '/api/v1/painel/lista?idMarcas=' + val.idMarcas.join(',')
 
-    console.log(url)
-
-    console.log('state.lista')
-    console.log(state.lista)
-
     // Clona state.lista
     const lista = []
     state.lista.forEach(
@@ -337,9 +357,6 @@ export const actions = {
         ...e
       })
     )
-
-    console.log('lista')
-    console.log(lista)
 
     try {
       const data = await this.$axios.$get(url)

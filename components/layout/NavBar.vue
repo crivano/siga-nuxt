@@ -34,13 +34,21 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
-              <nuxt-link
-                class="nav-link"
-                active-class="active"
-                :to="{ name: 'painel' }"
+              <nuxt-link active-class="active" :to="{ name: 'painel' }"
                 >Painel</nuxt-link
               >
             </b-nav-item>
+
+            <b-nav-item-dropdown
+              v-if="$store.state.painel.listaMarcaIdChecked.length"
+            >
+              <template slot="button-content"
+                ><span class="em-lote text-warning">Em Lote</span></template
+              >
+              <b-dropdown-item href="#">Assinar</b-dropdown-item>
+              <b-dropdown-item href="#">Tramitar</b-dropdown-item>
+              <b-dropdown-item href="#">Arquivar</b-dropdown-item>
+            </b-nav-item-dropdown>
 
             <b-nav-item-dropdown>
               <template slot="button-content">Novo</template>
@@ -50,33 +58,99 @@
             </b-nav-item-dropdown>
 
             <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
-              <nuxt-link
-                class="nav-link"
-                active-class="active"
-                :to="{ name: 'quadro' }"
+              <nuxt-link active-class="active" :to="{ name: 'quadro' }"
                 >Quadro</nuxt-link
               >
             </b-nav-item>
             <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
-              <nuxt-link
-                class="nav-link"
-                active-class="active"
-                :to="{ name: 'mesa' }"
+              <nuxt-link active-class="active" :to="{ name: 'mesa' }"
                 >Mesa</nuxt-link
               >
             </b-nav-item>
             <b-nav-item>
-              <nuxt-link class="nav-link" active-class="active" to="sugestoes"
+              <nuxt-link active-class="active" to="sugestoes"
                 >Sugestões</nuxt-link
               >
             </b-nav-item>
             <b-nav-item>
-              <nuxt-link class="nav-link" active-class="active" to="sobre"
-                >Sobre</nuxt-link
-              >
+              <nuxt-link active-class="active" to="sobre">Sobre</nuxt-link>
             </b-nav-item>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
+            <b-nav-item v-if="$store.getters['painel/caixaDeEntradaItem']">
+              <nuxt-link
+                active-class="active"
+                :to="{
+                  name: 'painel',
+                  params: { item: $store.getters['painel/caixaDeEntradaItem'] },
+                }"
+                ><font-awesome-icon :icon="['fa', 'inbox']" class="mr-1" />
+                <span
+                  class="
+                    position-absolute
+                    badge
+                    rounded-pill
+                    bg-danger
+                    text-white
+                    top-0
+                    start-100
+                    translate-middle
+                  "
+                  style="margin-top: -0.75em; margin-left: -1em; opacity: 0.75"
+                >
+                  {{ $store.getters['painel/caixaDeEntradaItem'].qtd.TOTAL }}
+                </span>
+              </nuxt-link>
+            </b-nav-item>
+            <b-nav-item>
+              <nuxt-link active-class="active" :to="{ name: 'painel' }"
+                ><font-awesome-icon :icon="['far', 'star']" class="mr-1" /><span
+                  class="
+                    position-absolute
+                    badge
+                    rounded-pill
+                    bg-light
+                    text-dark
+                    top-0
+                    start-100
+                    translate-middle
+                  "
+                  style="margin-top: -0.75em; margin-left: -1em; opacity: 0.75"
+                >
+                  {{ 5 }}
+                </span></nuxt-link
+              >
+            </b-nav-item>
+             <b-nav-item>
+              <nuxt-link active-class="active" :to="{ name: 'painel' }"
+                ><font-awesome-icon :icon="['fa', 'bell']" class="mr-1" /><span
+                  class="
+                    position-absolute
+                    badge
+                    rounded-pill
+                    bg-light
+                    text-dark
+                    top-0
+                    start-100
+                    translate-middle
+                  "
+                  style="margin-top: -0.75em; margin-left: -1em; opacity: 0.75"
+                >
+                  {{ 5 }}
+                </span></nuxt-link
+              >
+            </b-nav-item>
+            <b-nav-item
+              v-if="!($store.state.jwt &amp;&amp; $store.state.jwt.sub)"
+            >
+              <router-link
+                class="nav-link"
+                active-class="active"
+                :to="{ name: 'login' }"
+                tag="a"
+                >Login</router-link
+              >
+            </b-nav-item>
             <b-nav-item
               v-if="!($store.state.jwt &amp;&amp; $store.state.jwt.sub)"
             >
@@ -260,3 +334,19 @@ export default {
   },
 }
 </script>
+<style scoped>
+a.nav-link a {
+  color: rgba(255, 255, 255, 0.5);
+}
+a.nav-link a:hover {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.75);
+}
+a.nav-link a.active {
+  color: rgba(255, 255, 255, 1);
+}
+.em-lote {
+  color: rgba(255, 255, 255, 1);
+  font-weight: bold;
+}
+</style>

@@ -27,13 +27,22 @@
           <b-tab
             v-for="tm in tabs"
             :key="tm.id"
-            :title="tm.nome + ' (' + tm.count + ')'"
+            :title="tm.nome + (tm.id ? ' (' + tm.count + ')' : '')"
             @click="$store.dispatch('painel/trocarTab', tm.id)"
           >
             <template v-if="false" #title>
               <span>{{ tm.nome }} </span>
               <span
-                class="position-absolutex badge rounded-pillx bg-light text-dark top-0 start-100 translate-middle "
+                class="
+                  position-absolutex
+                  badge
+                  rounded-pillx
+                  bg-light
+                  text-dark
+                  top-0
+                  start-100
+                  translate-middle
+                "
                 style="margin-top: -0.5em"
               >
                 {{ tm.count }}
@@ -90,6 +99,15 @@ export default {
 
   async fetch() {
     await this.$store.dispatch('painel/iniciar')
+  },
+
+  mounted() {
+    if (this.$route.params.item) {
+      this.$store.dispatch('painel/trocarItemEFiltro', {
+        item: this.$route.params.item,
+        filtro: 'TOTAL',
+      })
+    }
   },
 
   computed: {

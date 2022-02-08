@@ -12,6 +12,7 @@
               @change="marcarTodos(f.grupo)"
             />
           </th>
+          <th></th>
           <th>Data</th>
           <th>Tipo</th>
           <th>Código</th>
@@ -22,28 +23,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(i, index) in lista" :key="index + ':tr'">
-          <td style="text-align: center">
-            <input v-model="i.checked" type="checkbox" :disabled="i.disabled" />
-          </td>
-          <td v-html="i.dataIniFormatada"></td>
-          <td>{{ i.tipo }}</td>
-          <td class="action">
-            <nuxt-link :to="`/documento/${i.codigo}`">{{ i.sigla }}</nuxt-link>
-          </td>
-          <td>
-            {{ i.origem }}
-          </td>
-          <td class="content">
-            {{ i.descricao }}
-          </td>
-          <td v-if="exibirColunaDeMarca">
-            {{ i.marcaTexto }}
-          </td>
-          <td v-if="exibirColunaUltimaAnotacao">
-            {{ i.ultimaAnotacao }}
-          </td>
-        </tr>
+        <DocListaPainelItem
+          v-for="i in lista"
+          :key="i.marcaId + ':tr'"
+          :item="i"
+          :exibirColunaDeMarca="exibirColunaDeMarca"
+          :exibirColunaUltimaAnotacao="exibirColunaUltimaAnotacao"
+        />
       </tbody>
     </table>
     <b-pagination
