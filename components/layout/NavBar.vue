@@ -34,6 +34,11 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
+              <nuxt-link active-class="active" :to="{ name: 'quadro' }"
+                >Quadro</nuxt-link
+              >
+            </b-nav-item>
+            <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
               <nuxt-link active-class="active" :to="{ name: 'painel' }"
                 >Painel</nuxt-link
               >
@@ -52,29 +57,43 @@
 
             <b-nav-item-dropdown>
               <template slot="button-content">Novo</template>
-              <b-dropdown-item href="#">Documento</b-dropdown-item>
-              <b-dropdown-item href="#">Serviço</b-dropdown-item>
-              <b-dropdown-item href="#">Conhecimento</b-dropdown-item>
+              <b-dropdown-item
+                ><nuxt-link
+                  class="dropdown-link"
+                  active-class="active"
+                  :to="{ name: 'documento-novo' }"
+                  >Documento</nuxt-link
+                ></b-dropdown-item
+              >
             </b-nav-item-dropdown>
 
-            <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
-              <nuxt-link active-class="active" :to="{ name: 'quadro' }"
-                >Quadro</nuxt-link
-              >
-            </b-nav-item>
-            <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
+            <b-nav-item
+              v-if="false && $store.state.jwt &amp;&amp; $store.state.jwt.sub"
+            >
               <nuxt-link active-class="active" :to="{ name: 'mesa' }"
                 >Mesa</nuxt-link
               >
             </b-nav-item>
-            <b-nav-item>
-              <nuxt-link active-class="active" to="sugestoes"
-                >Sugestões</nuxt-link
+
+            <b-nav-item-dropdown>
+              <template slot="button-content">Ajuda</template>
+              <b-dropdown-item
+                ><nuxt-link
+                  class="dropdown-link"
+                  active-class="active"
+                  :to="{ name: 'sugestoes' }"
+                  >Sugestões</nuxt-link
+                ></b-dropdown-item
               >
-            </b-nav-item>
-            <b-nav-item>
-              <nuxt-link active-class="active" to="sobre">Sobre</nuxt-link>
-            </b-nav-item>
+              <b-dropdown-item
+                ><nuxt-link
+                  class="dropdown-link"
+                  active-class="active"
+                  :to="{ name: 'sobre' }"
+                  >Sobre</nuxt-link
+                ></b-dropdown-item
+              >
+            </b-nav-item-dropdown>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
             <b-nav-item v-if="$store.getters['painel/caixaDeEntradaItem']">
@@ -121,7 +140,7 @@
                 </span></nuxt-link
               >
             </b-nav-item>
-             <b-nav-item>
+            <b-nav-item>
               <nuxt-link active-class="active" :to="{ name: 'painel' }"
                 ><font-awesome-icon :icon="['fa', 'bell']" class="mr-1" /><span
                   class="
@@ -140,25 +159,11 @@
                 </span></nuxt-link
               >
             </b-nav-item>
+
             <b-nav-item
               v-if="!($store.state.jwt &amp;&amp; $store.state.jwt.sub)"
             >
-              <router-link
-                class="nav-link"
-                active-class="active"
-                :to="{ name: 'login' }"
-                tag="a"
-                >Login</router-link
-              >
-            </b-nav-item>
-            <b-nav-item
-              v-if="!($store.state.jwt &amp;&amp; $store.state.jwt.sub)"
-            >
-              <router-link
-                class="nav-link"
-                active-class="active"
-                :to="{ name: 'login' }"
-                tag="a"
+              <router-link active-class="active" :to="{ name: 'login' }" tag="a"
                 >Login</router-link
               >
             </b-nav-item>
@@ -344,6 +349,13 @@ a.nav-link a:hover {
 }
 a.nav-link a.active {
   color: rgba(255, 255, 255, 1);
+}
+a.dropdown-link {
+  color: #212529;
+}
+a.dropdown-link:hover {
+  text-decoration: none;
+  color: #212529;
 }
 .em-lote {
   color: rgba(255, 255, 255, 1);

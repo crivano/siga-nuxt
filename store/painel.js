@@ -160,11 +160,11 @@ export const getters = {
   },
 
   caixaDeEntradaItem(state, getters) {
-    console.log('caixaDeEntradaItem')
+    // console.log('caixaDeEntradaItem')
     if (!getters.arvore) return undefined
     function localizarCaixaDeEntradaItem(a) {
       for (let i = 0; i < a.length; i++) {
-        console.log(' - ' + a[i].escopo + ' - ' + a[i].id)
+        // console.log(' - ' + a[i].escopo + ' - ' + a[i].id)
         if (a[i].escopo === 'GRUPO' && a[i].id === 'CAIXA_DE_ENTRADA') return a[i]
         if (a[i].filhos) {
           const sub = localizarCaixaDeEntradaItem(a[i].filhos)
@@ -292,7 +292,7 @@ export const actions = {
   async ajustarSelecaoDeItem({
     state, getters, commit, dispatch
   }, token) {
-    console.log('ajustarSelecaoDeItem')
+    // console.log('ajustarSelecaoDeItem')
     if (state.item) {
       for (const f of getters.listDeQuantidades)
         if (state.pessoaOuLotacao === f.filtro && state.item.qtd[f.filtro]) {
@@ -323,7 +323,7 @@ export const actions = {
   async carregarLista({
     state, getters, commit, dispatch
   }, token) {
-    console.log("vou carregar a lista")
+    // console.log("vou carregar a lista")
     const url = `siga/api/v1/painel/lista?idMarcadores=${getters.marcadoresId}&filtroPessoaLotacao=${state.pessoaOuLotacao}&tipoMarca=${state.tab ? state.tab : ''}&itensPorPagina=${state.itensPorPagina}&pagina=${state.pagina}`
     try {
       const data = await this.$axios.$get(url)
@@ -346,7 +346,7 @@ export const actions = {
   async complementarLista({
     state, commit
   }, val) {
-    console.log("vou complementar a lista")
+    // console.log("vou complementar a lista")
 
     const url = (val.moduloId === "1" ? 'sigaex' : undefined) + '/api/v1/painel/lista?idMarcas=' + val.idMarcas.join(',')
 

@@ -44,6 +44,23 @@
               @change="carregarModeloEProcessarEntrevista()"
             ></my-select>
           </div>
+          <div
+            v-if="modelo && !modelo.nivelDeAcesso"
+            class="form-group col col-md-4 col-lg-2"
+          >
+            <my-select
+              id="nivelacesso"
+              v-model="nivelacesso"
+              label="Nível de Acesso"
+              name="nivelacesso"
+              validate="required"
+              :disabled="false"
+              :list="niveisDeAcesso"
+              :edit="true"
+              chave="nmNivelAcesso"
+              descr="nmNivelAcesso"
+            ></my-select>
+          </div>
         </div>
         <div class="row">
           <div class="form-group col col-sm-12 col-lg-6">
@@ -170,7 +187,7 @@ export default {
       lotaDestinatario: undefined,
       classificacao: undefined,
       descricao: undefined,
-      nivelacesso: 'Público',
+      nivelacesso: undefined,
       numero: undefined,
       sigla: undefined,
       siglaMobilPai: this.$route.params.siglaMobilPai,
@@ -236,6 +253,9 @@ export default {
         this.modelo.tipoDeDocumento.includes('Capturado') &&
         (!this.numero || this.podeCapturarPDF)
       )
+    },
+    niveisDeAcesso() {
+      return this.$store.state.tabelas.ExNivelAcesso
     },
   },
   watch: {
@@ -321,10 +341,10 @@ export default {
       this.errormsg = undefined
       this.$root.$emit('block', 20)
       try {
-        const data = await this.$axios.$get(
+        this.modelo = await this.$axios.$get(
           'sigaex/api/v1/modelos/' + this.idModelo
         )
-        this.modelo = data
+        this.nivelacesso = this.modelo.nivelDeAcesso
       } catch (ex) {}
     },
 

@@ -6,6 +6,8 @@ export const state = () => ({
       "siga.ambiente": "desenv"
     }
   },
+  enums: {},
+  tabelas: {},
   jwt: {},
   usuario: {}
 })
@@ -13,6 +15,12 @@ export const state = () => ({
 export const mutations = {
   setTest(state, val) {
     state.test = val
+  },
+  setEnums(state, val) {
+    state.enums = val
+  },
+  setTabelas(state, val) {
+    state.tabelas = val
   },
   setJwt(state, val) {
     state.jwt = val
@@ -23,6 +31,16 @@ export const mutations = {
 }
 
 export const actions = {
+  async init({ commit }) {
+    try {
+      const dadosEstaticos = (await this.$axios.$get('sigaex/api/v1/dados-estaticos'))
+      // console.log('carreguei dados estáticos')
+      // console.log(dadosEstaticos)
+      // console.log(JSON.parse(dadosEstaticos.enumsAsJson))
+      commit('setEnums', JSON.parse(dadosEstaticos.enumsAsJson))
+      commit('setTabelas', JSON.parse(dadosEstaticos.tabelasAsJson))
+    } catch (ex) { }
+  },
   async login({
     state,
     commit,

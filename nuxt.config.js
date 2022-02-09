@@ -33,6 +33,7 @@ export default {
     '~plugins/vueSelect.js',
     '~plugins/vueTheMask.js',
     '~plugins/vueTreeSelect.js',
+    '~plugins/initStore.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
