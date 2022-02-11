@@ -121,7 +121,7 @@
                 </span>
               </nuxt-link>
             </b-nav-item>
-            <b-nav-item>
+            <b-nav-item v-if="false">
               <nuxt-link active-class="active" :to="{ name: 'painel' }"
                 ><font-awesome-icon :icon="['far', 'star']" class="mr-1" /><span
                   class="
@@ -140,7 +140,7 @@
                 </span></nuxt-link
               >
             </b-nav-item>
-            <b-nav-item>
+            <b-nav-item v-if="false">
               <nuxt-link active-class="active" :to="{ name: 'painel' }"
                 ><font-awesome-icon :icon="['fa', 'bell']" class="mr-1" /><span
                   class="

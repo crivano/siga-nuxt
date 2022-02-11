@@ -1,22 +1,6 @@
 <template>
-  <button
-    type="button"
-    class="btn btn-sm d-print-none mr-2 mb-2"
-    :class="{ 'btn-primary': !!metodo, 'btn-light': !metodo }"
-    @click="clique()"
-  >
-    <img
-      :src="
-        $axios.defaults.baseURL +
-        '/siga/css/famfamfam/icons/' +
-        acao.icone +
-        '.png'
-      "
-      width="16px"
-      height="16px"
-      class="mr-1 mb-1"
-      title=""
-    />
+  <button type="button" class="btn btn-sm d-print-none mr-2 mb-2" :class="{ 'btn-outline-secondary': !!metodo, 'btn-light': !metodo }" @click="clique()" v-if="exibir">
+    <img :src="$axios.defaults.baseURL + '/siga/css/famfamfam/icons/' + acao.icone + '.png'" width="16px" height="16px" class="mr-1 mb-1" title="" />
     {{ nome }}
   </button>
 </template>
@@ -48,37 +32,25 @@ export default {
       const geral = this.$parent.doc.mobs.filter((a) => a.isGeral)[0]
       return UtilsBL.onlyLettersAndNumbers(geral.sigla)
     },
+    exibir() {
+      return this.metodo || process.env.SHOW_UNIMPLEMENTED_ACTIONS
+    },
   },
   methods: {
     clique() {
       if (this.acao.msgConfirmacao) {
-        this.$root.$emit(
-          'confirmar',
-          'Confirmação',
-          this.acao.msgConfirmacao,
-          () => {
-            this.executar()
-          }
-        )
+        this.$root.$emit('confirmar', 'Confirmação', this.acao.msgConfirmacao, () => {
+          this.executar()
+        })
       } else this.executar()
     },
     executar() {
       if (this.metodo) this.metodo()
-      else
-        this.$root.$emit(
-          'message',
-          'Erro',
-          "Não existe suporte para a ação '" + this.slug + "'"
-        )
+      else this.$root.$emit('message', 'Erro', "Não existe suporte para a ação '" + this.slug + "'")
     },
 
     emitir(operacao, params, callback) {
-      this.$root.$emit(
-        operacao,
-        [{ codigo: this.$parent.numero, sigla: this.$parent.doc.sigla }],
-        callback || this.$parent.reler,
-        params
-      )
+      this.$root.$emit(operacao, [{ codigo: this.$parent.numero, sigla: this.$parent.doc.sigla }], callback || this.$parent.reler, params)
     },
 
     voltarParaDocumento() {

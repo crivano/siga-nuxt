@@ -4,9 +4,7 @@
       <div v-if="!errormsg &amp;&amp; doc">
         <div class="row xd-print-block mt-3 mb-3">
           <div class="col-md-12">
-            <h4 class="text-center mb-0">
-              Auditando {{ doc.forma }} {{ doc.mobs[0].sigla }}
-            </h4>
+            <h4 class="text-center mb-0">Auditando {{ doc.forma }} {{ doc.mobs[0].sigla }}</h4>
           </div>
         </div>
         <div class="row no-gutters mt-2"></div>
@@ -15,10 +13,7 @@
             <div class="col col-12 col-lg-8">
               <div v-for="mobil in filteredMobs" :key="mobil.id">
                 <h6 v-html="mobil.descricaoCompleta"></h6>
-                <table
-                  v-if="mobil.movs && mobil.movs.length"
-                  class="table table-sm table-striped mb-4"
-                >
+                <table v-if="mobil.movs && mobil.movs.length" class="table table-sm table-striped mb-4">
                   <thead class="table-dark">
                     <tr>
                       <th>Data/Hora</th>
@@ -28,32 +23,17 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr
-                      v-for="mov in mobil.movs"
-                      :key="mov.idMov"
-                      :class="[mov.classe, mov.disabled]"
-                    >
+                    <tr v-for="mov in mobil.movs" :key="mov.idMov" :class="[mov.classe, mov.disabled]">
                       <td>{{ mov.dtRegMovDDMMYYHHMMSS }}</td>
                       <td>{{ mov.lotaCadastranteSigla }}</td>
                       <td>{{ mov.exTipoMovimentacaoSigla }}</td>
                       <td style="padding: 5px 5px; word-break: break-all">
                         {{ mov.descricao }}
-                        <span v-if="mov.idTpMov != 2">{{
-                          mov.complemento
-                        }}</span>
-                        <span
-                          v-if="mov.descricao &amp;&amp; mov.acoes &amp;&amp; mov.acoes.length !== 0"
-                          >|</span
-                        >
+                        <span v-if="mov.idTpMov != 2">{{ mov.complemento }}</span>
+                        <span v-if="mov.descricao &amp;&amp; mov.acoes &amp;&amp; mov.acoes.length !== 0">|</span>
                         <span v-for="acao in mov.acoes" :key="acao.nome"
-                          >{{ acao.pre }}
-                          <a
-                            v-if="acao.acao"
-                            href=""
-                            @click.prevent="executar(mov, acao)"
-                            >{{ acao.nome }}</a
-                          ><span v-if="!acao.acao">{{ acao.nome }}</span>
-                          {{ acao.pos }}</span
+                          >{{ acao.pre }} <a v-if="acao.acao" href="" @click.prevent="executar(mov, acao)">{{ acao.nome }}</a
+                          ><span v-if="!acao.acao">{{ acao.nome }}</span> {{ acao.pos }}</span
                         >
                       </td>
                     </tr>
@@ -80,19 +60,12 @@ export default {
     const computeGraph = async function (dot) {
       if (!dot) return
       try {
-        const data = await $axios.$post(
-          'siga/public/app/graphviz/svg',
-          'digraph G { graph[tooltip="Tramitação"] ' + dot + '}',
-          {
-            headers: { 'Content-Type': 'text/vnd.graphviz' },
-            withCredentials: false,
-          }
-        )
+        const data = await $axios.$post('siga/public/app/graphviz/svg', 'digraph G { graph[tooltip="Tramitação"] ' + dot + '}', {
+          headers: { 'Content-Type': 'text/vnd.graphviz' },
+          withCredentials: false,
+        })
         if (!data) return
-        let result = data.replace(
-          /width="\d+pt" height="\d+pt"/gm,
-          'style="left:0; top:0; width:100%; height:12em; display:block; margin: auto;"'
-        )
+        let result = data.replace(/width="\d+pt" height="\d+pt"/gm, 'style="left:0; top:0; width:100%; height:12em; display:block; margin: auto;"')
         result = result.replace(/<polygon fill="white".+?\/>/gm, '')
         return result
       } catch (ex) {}
@@ -100,17 +73,14 @@ export default {
 
     let numero = params.numero
     try {
-      const doc = await $axios.$get(
-        'sigaex/api/v1/documentos/' + numero + '?auditar=true'
-      )
+      const doc = await $axios.$get('sigaex/api/v1/documentos/' + numero + '?auditar=true')
       const mob = doc.mobs[0]
       if (!mob.isGeral) numero = mob.sigla.replace(/[^a-zA-Z0-9]/gi, '')
       let relacao
       // if ($store.state.test.properties['vizservice.url']) {
       // if (doc) {
       const tramitacao = await computeGraph(doc.vizTramitacao)
-      if (doc.vizRelacaoDocs && doc.vizRelacaoDocs.length > 200)
-        relacao = await computeGraph(doc.vizRelacaoDocs)
+      if (doc.vizRelacaoDocs && doc.vizRelacaoDocs.length > 200) relacao = await computeGraph(doc.vizRelacaoDocs)
       // }
 
       return { numero, doc, mob, tramitacao, relacao }
@@ -141,41 +111,23 @@ export default {
     filteredMobs() {
       if (!this.doc || !this.doc.mobs) return undefined
       const lista = this.doc.mobs
-      return lista.sort((a, b) =>
-        a.isGeral && !b.isGeral ? -1 : b.sigla > a.sigla ? 1 : 0
-      )
+      return lista.sort((a, b) => (a.isGeral && !b.isGeral ? -1 : b.sigla > a.sigla ? 1 : 0))
     },
     filteredMovs() {
-      if (!this.mob || !this.mob.movs || this.mob.movs.length === 0)
-        return undefined
+      if (!this.mob || !this.mob.movs || this.mob.movs.length === 0) return undefined
       return this.mob.movs.filter((m) => m.idTpMov !== 14 && !m.cancelada)
     },
     filteredAcoes() {
       if (!this.mob) return undefined
-      let acoes =
-        this.doc.mobs.length > 1
-          ? this.mob.acoes.concat(this.doc.mobs[1].acoes)
-          : this.mob.acoes
-      acoes = acoes.sort((a, b) =>
-        a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0
-      )
+      let acoes = this.doc.mobs.length > 1 ? this.mob.acoes.concat(this.doc.mobs[1].acoes) : this.mob.acoes
+      acoes = acoes.sort((a, b) => (a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0))
       return acoes.filter((m) => m.pode)
     },
     pdfSource() {
       if (!this.doc || this.doc.conteudoBlobHtmlString) return undefined
-      return (
-        this.$axios.defaults.baseURL +
-        'sigaex/api/v1/documentos/' +
-        this.numero +
-        '/arquivo/produzir?contenttype=application/pdf'
-      )
+      return this.$axios.defaults.baseURL + 'sigaex/api/v1/documentos/' + this.numero + '/arquivo/produzir?contenttype=application/pdf'
     },
   },
-  // watch: {
-  //   '$route.params.numero'() {
-  //     this.carregarDocumento(this.$route.params.numero)
-  //   },
-  // },
   mounted() {
     this.$on('filtrar', (texto) => {
       this.filtrarMovimentos(texto)
@@ -185,136 +137,8 @@ export default {
     // })
   },
   methods: {
-    executar(mov, acao) {
-      if (
-        mov.descrTipoMovimentacao === 'Anexação' &&
-        (acao.nome === 'Assinar/Autenticar' || acao.nome === 'Excluir')
-      ) {
-        this.$router.push({
-          name: 'Anexo',
-          params: { numero: this.numero, id: mov.idMov },
-        })
-      } else if (
-        mov.descrTipoMovimentacao.includes('Inclusão de Cossignatário') &&
-        acao.nome === 'Excluir'
-      ) {
-        this.$root.$emit(
-          'excluirMovimentacao',
-          [{ codigo: this.numero, sigla: this.doc.sigla }],
-          this.$nuxt.refresh()
-        )
-        this.emitir()
-      } else if (acao.acao === 'exibir') {
-        this.$router.push({
-          name: 'Documento',
-          params: { numero: acao.params.sigla.replace(/[^a-z0-9]/gi, '') },
-        })
-      }
-    },
-
     reler() {
       this.$nuxt.refresh()
-    },
-
-    // async mostrarCompleto() {
-    //   const data = await this.$axios.$get(
-    //     'sigaex/api/v1/documentos/' +
-    //       this.numero +
-    //       '/arquivo?estampa=true&completo=true'
-    //   )
-    //   this.$root.$emit('prgAsyncStart', 'PDF Completo', data.uuid, () => {
-    //     const jwt = data.jwt
-    //     window.open(
-    //       this.$axios.defaults.baseURL +
-    //         'sigaex/api/v1//download/' +
-    //         jwt +
-    //         '/' +
-    //         this.numero +
-    //         '.pdf'
-    //     )
-    //   })
-    //   UtilsBL.logEvento(
-    //     'consulta-processual',
-    //     'mostrar pdf completo',
-    //     'individual'
-    //   )
-    // },
-
-    filtrarMovimentos(texto) {
-      this.$parent.$emit('setting', 'filtrarMovimentos', texto !== undefined)
-      const f = this.filtro
-      if (texto) {
-        if (
-          texto.length > 0 &&
-          texto.substring(0, 1) === '#' &&
-          f &&
-          f.length > 0 &&
-          f.substring(0, 1) === '#'
-        ) {
-          this.filtro = f + ' ' + texto
-          return
-        }
-      }
-      this.filtro = texto
-      this.$nextTick(() => this.$refs.filtro.focus())
-    },
-    mostrarPartes(ativo) {
-      this.$parent.$emit('setting', 'mostrarPartes', ativo)
-    },
-    imprimir() {
-      window.print()
-    },
-    formatDDMMYYYHHMM(s) {
-      if (s === undefined) {
-        return
-      }
-      let r =
-        s.substring(6, 8) +
-        '/' +
-        s.substring(4, 6) +
-        '/' +
-        s.substring(0, 4) +
-        ' ' +
-        s.substring(8, 10) +
-        ':' +
-        s.substring(10, 12)
-      r = r.replace(' ', '&nbsp;')
-      return r
-    },
-
-    exibirProcessoPecaDetalhes(movdoc, marca) {
-      this.currentMovDoc = movdoc
-      this.currentMarca = marca
-      this.$refs.processoPecaDetalhes.show(
-        marca,
-        this.marcadores,
-        movdoc.doc && movdoc.doc.outroParametro
-          ? movdoc.doc.outroParametro.paginaInicial
-          : undefined,
-        movdoc.doc && movdoc.doc.outroParametro
-          ? movdoc.doc.outroParametro.paginaFinal
-          : undefined
-      )
-    },
-
-    cotar() {
-      this.$refs.Assinatura.show()
-    },
-
-    cotaEnviada(msg) {
-      this.$root.$emit('message', 'Sucesso', 'Cota enviada com sucesso. ' + msg)
-    },
-
-    cotaNaoEnviada(msg, texto) {
-      this.$root.$emit(
-        'message',
-        'Erro',
-        'Não foi possível enviar a cota "' +
-          texto +
-          '". Ocorreu o erro: "' +
-          msg +
-          '"'
-      )
     },
   },
 }

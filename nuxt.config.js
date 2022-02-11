@@ -57,6 +57,11 @@ export default {
     '@nuxtjs/pwa',
   ],
 
+  env: {
+    API_URL_BROWSER: process.env.API_URL_BROWSER || 'http://localhost:8080/',
+    SHOW_UNIMPLEMENTED_ACTIONS: process.env.SHOW_UNIMPLEMENTED_ACTIONS
+  },
+
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     credentials: true

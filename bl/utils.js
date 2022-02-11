@@ -1,4 +1,9 @@
+let store = null;
+
 export default {
+  init(context) {
+    store = context.store;
+  },
   formatDDMMYYYY(s) {
     if (!s) return
     return (
@@ -321,6 +326,21 @@ export default {
       s += k + "=" + encodeURIComponent(formParams[k]);
     }
     return s;
+  },
+
+  twoWay(substore, names) {
+    const r = {}
+    for (const i of names) {
+      r[i] = {
+        get() {
+          return substore ? store.state[substore][i] : store.state[i]
+        },
+        set(value) {
+          store.commit((substore ? substore + '/' : '') + i, value)
+        }
+      }
+    }
+    return r
   }
 
 }
