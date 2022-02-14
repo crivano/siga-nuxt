@@ -28,7 +28,7 @@
     "awesome-mask": "~1.1.1",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
-    "ckeditor4-vue": "~1.2.0",
+    "ckeditor4-vue": "~1.5.1",
     "core-js": "^3.15.1",
     "font-awesome": "~4.7.0",
     "jwt-decode": "~2.2.0",
