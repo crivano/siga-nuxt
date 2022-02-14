@@ -83,5 +83,9 @@ export default {
   loading: {
     color: 'black',
     height: '5px'
+  },
+
+  server: {
+    host: "0.0.0.0"
   }
 }

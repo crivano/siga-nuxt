@@ -1,5 +1,16 @@
 import UtilsBL from "../bl/utils.js";
 
+const localizarItemNaLista = function (a, escopo, id) {
+  for (let i = 0; i < a.length; i++) {
+    if (a[i].escopo === escopo && a[i].id === id) return a[i]
+    if (a[i].filhos) {
+      const sub = localizarItemNaLista(a[i].filhos, escopo, id)
+      if (sub) return sub
+    }
+  }
+  return undefined
+}
+
 export const state = () => ({
   primeiraCarga: true,
   quadro: undefined,
@@ -176,6 +187,11 @@ export const getters = {
     return localizarCaixaDeEntradaItem(getters.arvore)
   },
 
+  itemNaLista(state, getters) {
+    if (!getters.arvore || !state.item) return undefined
+    return localizarItemNaLista(getters.arvore, state.item.escopo, state.item.id)
+  },
+
   marcadoresId(state) {
     if (!state.item || state.item.tipo === 'TUDO') return ''
     const marcadores = {}
@@ -249,6 +265,8 @@ export const actions = {
   }) {
     if (!state.quadro)
       await dispatch('carregarQuadro')
+    else
+      dispatch('carregarQuadro')
   },
 
   async carregarQuadro({
@@ -291,9 +309,12 @@ export const actions = {
 
   async ajustarSelecaoDeItem({
     state, getters, commit, dispatch
-  }, token) {
+  }) {
     // console.log('ajustarSelecaoDeItem')
+
+    commit('setItem', getters.itemNaLista)
     if (state.item) {
+
       for (const f of getters.listDeQuantidades)
         if (state.pessoaOuLotacao === f.filtro && state.item.qtd[f.filtro]) {
           // Encontrei o estado atual nos filtros exigidos, entào não preciso fazer mais nada

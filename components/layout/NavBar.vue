@@ -6,93 +6,44 @@
       <b-navbar
         toggleable="lg"
         :class="{
-          'navbar-dark bg-success':
-            $store.state.test.properties['siga.ambiente'] === 'desenv',
-          'navbar-dark bg-secondary':
-            $store.state.test.properties['siga.ambiente'] === 'homolo',
-          'navbar-dark bg-primary':
-            $store.state.test.properties['siga.ambiente'] === 'prod',
+          'navbar-dark bg-success': $store.state.test.properties['siga.ambiente'] === 'desenv',
+          'navbar-dark bg-secondary': $store.state.test.properties['siga.ambiente'] === 'homolo',
+          'navbar-dark bg-primary': $store.state.test.properties['siga.ambiente'] === 'prod',
         }"
       >
         <b-navbar-brand href="/quadro">
-          <img
-            id="logo-header"
-            src="~assets/logo-siga-novo-38px.png"
-            alt="Siga-Le"
-            height="38"
-          />
-          <img
-            id="logo-header2"
-            class="ml-2"
-            src="~assets/trf2-38px-2.png"
-            alt="Logo TRF2"
-            height="38"
-          />
+          <img id="logo-header" src="~assets/logo-siga-novo-38px.png" alt="Siga-Le" height="38" />
+          <img id="logo-header2" class="ml-2" src="~assets/trf2-38px-2.png" alt="Logo TRF2" height="38" />
         </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
-            <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
-              <nuxt-link active-class="active" :to="{ name: 'quadro' }"
-                >Quadro</nuxt-link
-              >
-            </b-nav-item>
-            <b-nav-item v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub">
-              <nuxt-link active-class="active" :to="{ name: 'painel' }"
-                >Painel</nuxt-link
-              >
+            <b-nav-item v-if="logged">
+              <nuxt-link active-class="active" :to="{ name: 'painel' }">Painel</nuxt-link>
             </b-nav-item>
 
-            <b-nav-item-dropdown
-              v-if="$store.state.painel.listaMarcaIdChecked.length"
-            >
-              <template slot="button-content"
-                ><span class="em-lote text-warning">Em Lote</span></template
-              >
+            <b-nav-item-dropdown v-if="$store.state.painel.listaMarcaIdChecked.length">
+              <template slot="button-content"><span class="em-lote text-warning">Em Lote</span></template>
               <b-dropdown-item href="#">Assinar</b-dropdown-item>
               <b-dropdown-item href="#">Tramitar</b-dropdown-item>
               <b-dropdown-item href="#">Arquivar</b-dropdown-item>
             </b-nav-item-dropdown>
 
-            <b-nav-item-dropdown>
+            <b-nav-item-dropdown v-if="logged">
               <template slot="button-content">Novo</template>
-              <b-dropdown-item
-                ><nuxt-link
-                  class="dropdown-link"
-                  active-class="active"
-                  :to="{ name: 'documento-novo' }"
-                  >Documento</nuxt-link
-                ></b-dropdown-item
-              >
+              <b-dropdown-item><nuxt-link class="dropdown-link" active-class="active" :to="{ name: 'documento-novo' }">Documento</nuxt-link></b-dropdown-item>
             </b-nav-item-dropdown>
 
-            <b-nav-item
-              v-if="false && $store.state.jwt &amp;&amp; $store.state.jwt.sub"
-            >
-              <nuxt-link active-class="active" :to="{ name: 'mesa' }"
-                >Mesa</nuxt-link
-              >
-            </b-nav-item>
+            <b-nav-item-dropdown v-if="logged" text="Ver">
+              <b-dropdown-item><nuxt-link class="dropdown-link" active-class="active" :to="{ name: 'quadro' }">Quadro</nuxt-link></b-dropdown-item>
+              <b-dropdown-item><nuxt-link class="dropdown-link" active-class="active" :to="{ name: 'mesa' }">Mesa</nuxt-link></b-dropdown-item>
+            </b-nav-item-dropdown>
 
             <b-nav-item-dropdown>
               <template slot="button-content">Ajuda</template>
-              <b-dropdown-item
-                ><nuxt-link
-                  class="dropdown-link"
-                  active-class="active"
-                  :to="{ name: 'sugestoes' }"
-                  >Sugestões</nuxt-link
-                ></b-dropdown-item
-              >
-              <b-dropdown-item
-                ><nuxt-link
-                  class="dropdown-link"
-                  active-class="active"
-                  :to="{ name: 'sobre' }"
-                  >Sobre</nuxt-link
-                ></b-dropdown-item
-              >
+              <b-dropdown-item><nuxt-link class="dropdown-link" active-class="active" :to="{ name: 'sugestoes' }">Sugestões</nuxt-link></b-dropdown-item>
+              <b-dropdown-item><nuxt-link class="dropdown-link" active-class="active" :to="{ name: 'sobre' }">Sobre</nuxt-link></b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>
           <b-navbar-nav class="ml-auto">
@@ -105,16 +56,7 @@
                 }"
                 ><font-awesome-icon :icon="['fa', 'inbox']" class="mr-1" />
                 <span
-                  class="
-                    position-absolute
-                    badge
-                    rounded-pill
-                    bg-danger
-                    text-white
-                    top-0
-                    start-100
-                    translate-middle
-                  "
+                  class="position-absolute badge rounded-pill bg-danger text-white top-0 start-100 translate-middle"
                   style="margin-top: -0.75em; margin-left: -1em; opacity: 0.75"
                 >
                   {{ $store.getters['painel/caixaDeEntradaItem'].qtd.TOTAL }}
@@ -124,16 +66,7 @@
             <b-nav-item v-if="false">
               <nuxt-link active-class="active" :to="{ name: 'painel' }"
                 ><font-awesome-icon :icon="['far', 'star']" class="mr-1" /><span
-                  class="
-                    position-absolute
-                    badge
-                    rounded-pill
-                    bg-light
-                    text-dark
-                    top-0
-                    start-100
-                    translate-middle
-                  "
+                  class="position-absolute badge rounded-pill bg-light text-dark top-0 start-100 translate-middle"
                   style="margin-top: -0.75em; margin-left: -1em; opacity: 0.75"
                 >
                   {{ 5 }}
@@ -143,16 +76,7 @@
             <b-nav-item v-if="false">
               <nuxt-link active-class="active" :to="{ name: 'painel' }"
                 ><font-awesome-icon :icon="['fa', 'bell']" class="mr-1" /><span
-                  class="
-                    position-absolute
-                    badge
-                    rounded-pill
-                    bg-light
-                    text-dark
-                    top-0
-                    start-100
-                    translate-middle
-                  "
+                  class="position-absolute badge rounded-pill bg-light text-dark top-0 start-100 translate-middle"
                   style="margin-top: -0.75em; margin-left: -1em; opacity: 0.75"
                 >
                   {{ 5 }}
@@ -160,64 +84,32 @@
               >
             </b-nav-item>
 
-            <b-nav-item
-              v-if="!($store.state.jwt &amp;&amp; $store.state.jwt.sub)"
-            >
-              <router-link active-class="active" :to="{ name: 'login' }" tag="a"
-                >Login</router-link
-              >
+            <b-nav-item v-if="!logged">
+              <router-link active-class="active" :to="{ name: 'login' }" tag="a">Login</router-link>
             </b-nav-item>
-            <b-nav-item-dropdown
-              v-if="$store.state.jwt &amp;&amp; $store.state.jwt.sub"
-              right
-            >
+            <b-nav-item-dropdown v-if="logged" right>
               <template v-slot:button-content>
                 {{ $store.state.jwt.sub }}
-                <template
-                  v-if="
-                    $store.state.usuario && $store.state.usuario.substituicaoId
-                  "
-                >
-                  <font-awesome-icon
-                    :icon="['fa', 'arrow-circle-right']"
-                    class="mr-1"
-                  /><span>{{ descrUsuarioAtivo }}</span>
+                <template v-if="$store.state.usuario && $store.state.usuario.substituicaoId">
+                  <font-awesome-icon :icon="['fa', 'arrow-circle-right']" class="mr-1" /><span>{{ descrUsuarioAtivo }}</span>
                 </template>
               </template>
-              <template
-                v-if="
-                  $store.state.usuario &&
-                  $store.state.usuario.substituicoesPermitidas
-                "
-              >
-                <template
-                  v-if="
-                    $store.state.usuario && $store.state.usuario.substituicaoId
-                  "
-                >
-                  <b-dropdown-item @click="substituir()"
-                    >Interromper Substituição Corrente</b-dropdown-item
-                  >
+              <template v-if="$store.state.usuario && $store.state.usuario.substituicoesPermitidas">
+                <template v-if="$store.state.usuario && $store.state.usuario.substituicaoId">
+                  <b-dropdown-item @click="substituir()">Interromper Substituição Corrente</b-dropdown-item>
                   <b-dropdown-divider></b-dropdown-divider>
                 </template>
                 <b-dropdown-group header="Substituir:"></b-dropdown-group>
                 <b-dropdown-item
                   v-for="s in $store.state.usuario.substituicoesPermitidas"
                   :key="s.substituicaoId"
-                  :disabled="
-                    $store.state.usuario.substituicaoId === s.substituicaoId
-                  "
+                  :disabled="$store.state.usuario.substituicaoId === s.substituicaoId"
                   @click="substituir(s)"
                 >
                   {{
                     (s.cadastranteId !== s.titularId ? s.titularNome : '') +
-                    (s.cadastranteId !== s.titularId &&
-                    s.lotaCadastranteId !== s.lotaTitularId
-                      ? '/'
-                      : '') +
-                    (s.lotaCadastranteId !== s.lotaTitularId
-                      ? s.lotaTitularNome
-                      : '')
+                    (s.cadastranteId !== s.titularId && s.lotaCadastranteId !== s.lotaTitularId ? '/' : '') +
+                    (s.lotaCadastranteId !== s.lotaTitularId ? s.lotaTitularNome : '')
                   }}
                 </b-dropdown-item>
                 <b-dropdown-divider></b-dropdown-divider>
@@ -226,19 +118,8 @@
             </b-nav-item-dropdown>
 
             <b-nav-form>
-              <b-form-input
-                v-model="siglaParaPesquisar"
-                size="sm"
-                class="mr-sm-2"
-                placeholder="Sigla"
-              ></b-form-input>
-              <b-button
-                size="sm"
-                class="my-2 my-sm-0"
-                type="submit"
-                @click="pesquisar"
-                >Buscar</b-button
-              >
+              <b-form-input v-model="siglaParaPesquisar" size="sm" class="mr-sm-2" placeholder="Sigla"></b-form-input>
+              <b-button size="sm" class="my-2 my-sm-0" type="submit" @click="pesquisar">Buscar</b-button>
             </b-nav-form>
           </b-navbar-nav>
         </b-collapse>
@@ -260,20 +141,11 @@ export default {
       if (test.properties) {
         for (const k in test.properties) {
           if (k in test.properties)
-            if (test.properties[k] === '[undefined]')
-              test.properties[k] = undefined
-            else
-              test.properties[k] = test.properties[k].replace(
-                /\[default: (.*)\]/gm,
-                '$1'
-              )
+            if (test.properties[k] === '[undefined]') test.properties[k] = undefined
+            else test.properties[k] = test.properties[k].replace(/\[default: (.*)\]/gm, '$1')
         }
 
-        if (
-          test.properties['siga-le.wootric.token'] &&
-          test.properties['siga-le.wootric.token'] !== '[undefined]' &&
-          this.$store.state.jwt
-        ) {
+        if (test.properties['siga-le.wootric.token'] && test.properties['siga-le.wootric.token'] !== '[undefined]' && this.$store.state.jwt) {
           // This loads the Wootric survey
           // window.wootric_survey_immediately = true
           window.wootricSettings = {
@@ -295,9 +167,7 @@ export default {
     async pesquisar() {
       const pesq = (this.siglaParaPesquisar || '').replace(/[^a-z0-9]/gi, '')
       try {
-        const codigo = await this.$axios.$get(
-          'sigaex/api/v1/documentos/' + pesq + '/pesquisar-sigla'
-        ).codigo
+        const codigo = await this.$axios.$get('sigaex/api/v1/documentos/' + pesq + '/pesquisar-sigla').codigo
         if (codigo) {
           this.$router.push({
             name: 'Documento',
@@ -326,15 +196,16 @@ export default {
       let s = ''
       if (this.$store.state.usuario.substituicaoId)
         this.$store.state.usuario.substituicoesPermitidas.forEach((element) => {
-          if (
-            this.$store.state.usuario.substituicaoId === element.substituicaoId
-          ) {
+          if (this.$store.state.usuario.substituicaoId === element.substituicaoId) {
             if (element.titularSigla) s += element.titularSigla
             if (element.titularSigla && element.lotaTitularSigla) s += '/'
             if (element.lotaTitularSigla) s += element.lotaTitularSigla
           }
         })
       return s
+    },
+    logged() {
+      return this.$store.state.jwt && this.$store.state.jwt.sub
     },
   },
 }

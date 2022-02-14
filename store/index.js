@@ -74,6 +74,7 @@ export const actions = {
   }, token) {
     if (!token) {
       commit('setJwt', undefined)
+      commit('painel/reset')
       if (!this.$router.currentRoute || this.$router.currentRoute.name !== "login")
         this.$router.push({
           name: 'login'
@@ -82,6 +83,7 @@ export const actions = {
     }
     commit('setJwt', AuthBL.decodeToken(token))
     await dispatch('carregarUsuario')
+    dispatch('painel/iniciar')
     // console.log(this.$router.currentRoute)
     if (this.$router.currentRoute && this.$router.currentRoute.name === "login")
       this.$router.push({
@@ -90,7 +92,6 @@ export const actions = {
           exibirAcessoAnterior: true
         },
       })
-
   },
 
   async carregarUsuario({
