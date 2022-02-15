@@ -1,8 +1,8 @@
 <template>
-  <button type="button" class="btn btn-sm d-print-none mr-2 mb-2" :class="{ 'btn-outline-secondary': !!metodo, 'btn-light': !metodo }" @click="clique()" v-if="exibir">
+  <li type="button" class="btnx btn-smx d-print-nonex mr-2x mb-2x" :class="{ 'btn-outline-secondary': !!metodo, 'btn-light': !metodo }" @click="clique()" v-if="exibir">
     <img :src="$axios.defaults.baseURL + '/siga/css/famfamfam/icons/' + acao.icone + '.png'" width="16px" height="16px" class="mr-1 mb-1" title="" />
     {{ nome }}
-  </button>
+  </li>
 </template>
 
 <script>

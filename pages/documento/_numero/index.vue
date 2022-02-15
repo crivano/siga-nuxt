@@ -45,8 +45,9 @@
             </div>
             <div class="col col-12 col-lg-4">
               <h4>Ações</h4>
-              <acao v-for="acao in filteredAcoes" :key="acao.nome" :acao="acao" />
-
+              <ul class="blog-tags">
+                <acao v-for="acao in filteredAcoes" :key="acao.nome" :acao="acao" />
+              </ul>
               <div class="mt-1"><CardMarcas :doc="doc" /></div>
               <CardPendencias :doc="doc" />
 
@@ -251,4 +252,47 @@ table.mov tr.anexacaox {
 table.mov tr.encerramento_volumex {
   background-color: rgb(255, 218, 218);
 }
+
+ul.blog-tags {
+  padding: 0;
+}
+
+ul.blog-tags li {
+  font-size: 13px;
+  padding: 2px 7px;
+  background: #f7f7f7;
+  margin: 0 3px 6px 0;
+  display: inline-block;
+}
+
+li.blog-tags-enabled-false {
+  color: #a7a7a7 !important;
+}
+
+li.blog-tags-enabled-false i {
+  color: #a7a7a7 !important;
+}
+
+li.blog-tags-enabled-false:hover {
+  background: #e74c3c !important;
+}
+
+ul.blog-tags li i {
+  color: #666;
+}
+
+li.blog-tags-enabled-false:hover i {
+  color: #fff !important;
+}
+ul.blog-tags li:hover {
+  background: #72c02c;
+}
+
+ul.blog-tags li:hover,
+ul.blog-tags li:hover i {
+  color: #fff !important;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+}
 </style>
+
