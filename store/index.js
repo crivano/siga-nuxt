@@ -87,7 +87,7 @@ export const actions = {
     // console.log(this.$router.currentRoute)
     if (this.$router.currentRoute && this.$router.currentRoute.name === "login")
       this.$router.push({
-        name: 'quadro',
+        name: 'painel',
         params: {
           exibirAcessoAnterior: true
         },

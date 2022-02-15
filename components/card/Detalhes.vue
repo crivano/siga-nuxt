@@ -1,17 +1,13 @@
 <template>
-  <div class="card bg-light mb-3">
-    <div class="card-header">Documento {{ doc.exTipoDocumentoDescricao }}</div>
-    <div class="card-body" style="font-size: 70%">
+  <div class="mb-3">
+    <h4>Documento {{ doc.exTipoDocumentoDescricao }}</h4>
+    <div style="font-size: 70%">
       <p><b>Suporte:</b> {{ doc.fisicoOuEletronico }}</p>
       <p>
         <b>Data:</b> {{ doc.dtDocDDMMYY }}
-        <span v-if="doc.originalData"
-          ><b>original:</b> {{ doc.originalData }}</span
-        >
+        <span v-if="doc.originalData"><b>original:</b> {{ doc.originalData }}</span>
       </p>
-      <p v-if="doc.originalNumero">
-        <b>Número original:</b> {{ doc.originalNumero }}
-      </p>
+      <p v-if="doc.originalNumero"><b>Número original:</b> {{ doc.originalNumero }}</p>
       <p><b>De:</b> {{ doc.subscritorString }}</p>
       <p><b>Para:</b> {{ doc.destinatarioString }}</p>
       <p>
@@ -25,9 +21,8 @@
         <b>Classificação:</b>
         {{ doc.classificacaoDescricaoCompleta }}
       </p>
-      <div v-if="doc.dadosComplementares">
-        {{ doc.dadosComplementares }}
-      </div>
+      <p v-if="!doc.listaDeAcessos"><b>Nível de Acesso:</b> {{ doc.nmNivelAcesso }}</p>
+      <div v-if="doc.dadosComplementares">{{ doc.dadosComplementares }}</div>
       <div v-if="false &amp;&amp; doc.cossignatarios">
         <h6>Cossignatários</h6>
         <ul>
@@ -66,7 +61,7 @@ export default {
 }
 </script>
 <style scoped>
-.card-body p {
+p {
   margin-bottom: 0.2em;
 }
 </style>

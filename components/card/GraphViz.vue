@@ -1,7 +1,7 @@
 <template>
-  <div v-if="dot" class="card bg-light mb-3">
-    <div class="card-header">{{ titulo }}</div>
-    <div v-if="!aspecto" class="card-body" v-html="svg"></div>
+  <div v-if="dot" class="mb-3">
+    <h4>{{ titulo }}</h4>
+    <div v-if="!aspecto" v-html="svg"></div>
     <b-aspect v-else :aspect="aspecto">
       <div class="card-body" v-html="svg"></div>
     </b-aspect>
@@ -30,19 +30,12 @@ export default {
     async computeGraph(dot) {
       if (!dot) return
       try {
-        const data = await this.$axios.$post(
-          'siga/public/app/graphviz/svg',
-          'digraph G { graph[tooltip="Tramitação"] ' + dot + '}',
-          {
-            headers: { 'Content-Type': 'text/vnd.graphviz' },
-            withCredentials: false,
-          }
-        )
+        const data = await this.$axios.$post('siga/public/app/graphviz/svg', 'digraph G { graph[tooltip="Tramitação"] ' + dot + '}', {
+          headers: { 'Content-Type': 'text/vnd.graphviz' },
+          withCredentials: false,
+        })
         if (!data) return
-        let result = data.replace(
-          /width="\d+pt" height="\d+pt"/gm,
-          'style="left:0; top:0; width:100%; height:12em; display:block; margin: auto;"'
-        )
+        let result = data.replace(/width="\d+pt" height="\d+pt"/gm, 'style="left:0; top:0; width:100%; height:12em; display:block; margin: auto;"')
         result = result.replace(/<polygon fill="white".+?\/>/gm, '')
         return result
       } catch (ex) {}

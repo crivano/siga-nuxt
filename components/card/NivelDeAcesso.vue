@@ -1,19 +1,17 @@
 <template>
-  <div class="card bg-light mb-3">
-    <div class="card-header">Nível de Acesso</div>
-    <div class="card-body">
-      <b>{{ doc.nmNivelAcesso }}</b>
-      <div v-if="doc.listaDeAcessos">
-        <div v-if="doc.listaDeAcessos.length == 1">
-          {{ doc.listaDeAcessos[0] == 'PUBLICO' ? '(Público)' : acesso.sigla }}
-        </div>
-        <div v-if="doc.listaDeAcessos.length > 1">
-          <ul>
-            <li v-for="acesso in doc.listaDeAcessos" :key="acesso">
-              {{ acesso.sigla }}
-            </li>
-          </ul>
-        </div>
+  <div v-if="doc.listaDeAcessos && doc.listaDeAcessos.length">
+    <h4>Nível de Acesso</h4>
+    <b>{{ doc.nmNivelAcesso }}</b>
+    <div v-if="doc.listaDeAcessos">
+      <div v-if="doc.listaDeAcessos.length == 1">
+        {{ doc.listaDeAcessos[0] == 'PUBLICO' ? '(Público)' : acesso.sigla }}
+      </div>
+      <div v-if="doc.listaDeAcessos.length > 1">
+        <ul>
+          <li v-for="acesso in doc.listaDeAcessos" :key="acesso">
+            {{ acesso.sigla }}
+          </li>
+        </ul>
       </div>
     </div>
   </div>
