@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="container-fluid content profile">
-      <div v-if="!errormsg &amp;&amp; doc">
-        <div class="row xd-print-block mt-3 mb-3">
+      <div v-if="!errormsg && doc">
+        <div v-if="false" class="row xd-print-block mt-3 mb-3">
           <div class="col-md-12">
             <h4 class="text-center mb-0">{{ doc.forma }} {{ doc.mobs[0].sigla }}</h4>
           </div>
@@ -10,13 +10,14 @@
             <h6 class="text-center mb-0 mt-2" v-html="doc.mobs[0].marcadoresEmHtml"></h6>
           </div>
         </div>
-        <div class="row no-gutters mt-2"></div>
+        <div class="row no-gutters mt-3"></div>
         <template v-if="doc">
           <div class="row">
             <div class="col col-12 col-lg-8">
+              <h4>{{ doc.forma }} {{ doc.mobs[0].sigla }}</h4>
               <doc-html v-if="errormsg === undefined && doc && doc.conteudoBlobHtmlString" :html="doc.conteudoBlobHtmlString" />
               <MyIFrame v-if="!doc.conteudoBlobHtmlString" :src="pdfSource" />
-              <table v-if="filteredMovs && filteredMovs.length" class="table table-sm table-striped">
+              <table v-if="filteredMovs && filteredMovs.length" class="table table-sm table-striped mt-3">
                 <thead class="table-dark">
                   <tr>
                     <th>Tempo</th>
