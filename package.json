@@ -35,7 +35,7 @@
     "nuxt": "^2.15.7",
     "pdfvuer": "1.6.1",
     "v-autocomplete": "~1.8.2",
-    "vee-validate": "~3.3.11",
+    "vee-validate": "~4.5.9",
     "vue-clip": "~1.0.0",
     "vue-numeric": "^2.3.0",
     "vue-select": "~2.2.0",
