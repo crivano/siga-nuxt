@@ -22,7 +22,7 @@ export default {
       sHtml = sHtml.replace('   <p align="justify"> <br /> \n    <!-- INICIO PRIMEIRO CABECALHO --> </p>', '')
       sHtml = sHtml.replace(/bgcolor="#(FFFFFF|000000)"/g, '')
       
-      console.log(sHtml)
+      // console.log(sHtml)
       return sHtml
     },
   },

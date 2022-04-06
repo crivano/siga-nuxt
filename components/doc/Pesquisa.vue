@@ -1,5 +1,5 @@
 <template>
-  <DocListaPainel v-if="painel" :lista="lista" />
+  <DocListaPainel v-if="painel" />
   <DocLista v-else :lista="lista" />
 </template>
 <script>

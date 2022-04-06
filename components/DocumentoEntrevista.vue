@@ -20,7 +20,7 @@ export default {
   watch: {
     entrevista() {
       if (this.entrevista) {
-        console.log(this.entrevista);
+        // console.log(this.entrevista);
         const compiled = Vue.compile("<div>" + this.entrevista + "</div>");
         this.template = compiled.render;
         this._staticTrees = [];
@@ -34,8 +34,8 @@ export default {
   },
   methods: {
     setHidden(name, value) {
-      console.log(name);
-      console.log(value);
+      // console.log(name);
+      // console.log(value);
       this.$refs["hidden_" + name].value = value;
     },
   },

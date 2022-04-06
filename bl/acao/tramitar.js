@@ -16,7 +16,6 @@ export default {
   },
 
   lote(documentos, cont, params) {
-    console.log('teste')
     AcaoBL.lotePadrao("Trâmite",
       "tramite",
       "tramite",

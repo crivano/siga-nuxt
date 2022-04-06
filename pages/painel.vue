@@ -49,7 +49,6 @@
               </span>
             </template>
             <DocPesquisa
-              v-if="$store.state.painel.lista"
               ref="pesquisa"
               :id-marcador="marcadorId"
               :filtro-pessoa-lotacao="filtroPessoaLotacao"

@@ -1,16 +1,10 @@
 <template>
-  <div v-if="lista && lista.length > 0">
+  <div>
     <table class="table table-sm table-hover">
       <thead class="table-dark">
         <tr>
           <th style="text-align: center">
-            <input
-              id="progress_checkall"
-              v-model="todos"
-              type="checkbox"
-              name="progress_checkall"
-              @change="marcarTodos(f.grupo)"
-            />
+            <input id="progress_checkall" v-model="todos" type="checkbox" name="progress_checkall" @change="marcarTodos(f.grupo)" />
           </th>
           <th></th>
           <th>Data</th>
@@ -22,7 +16,7 @@
           <th v-if="exibirColunaUltimaAnotacao">Anotação</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="lista && lista.length > 0">
         <DocListaPainelItem
           v-for="i in lista"
           :key="i.marcaId + ':tr'"
@@ -32,26 +26,20 @@
         />
       </tbody>
     </table>
-    <b-pagination
-      class="mr-3"
-      v-model="pagina"
-      :total-rows="$store.state.painel.qtd"
-      :per-page="10"
-      align="right"
-    ></b-pagination>
+    <b-pagination class="mr-3" v-model="pagina" :total-rows="$store.state.painel.qtd" :per-page="10" align="right"></b-pagination>
   </div>
 </template>
 <script>
 export default {
-  props: {
-    lista: { type: Array, required: true },
-  },
   data() {
     return {
       todos: undefined,
     }
   },
   computed: {
+    lista() {
+      return this.$store.state.painel.lista
+    },
     pagina: {
       get() {
         return this.$store.state.painel.pagina
@@ -64,7 +52,8 @@ export default {
       return !this.$store.state.painel.marcadorId
     },
     exibirColunaUltimaAnotacao() {
-      return this.$store.state.painel.lista.some((e) => e.ultimaAnotacao)
+      if (!this.lista) return
+      return this.lista.some((e) => e.ultimaAnotacao)
     },
   },
 }

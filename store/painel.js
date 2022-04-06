@@ -345,6 +345,7 @@ export const actions = {
     state, getters, commit, dispatch
   }, token) {
     // console.log("vou carregar a lista")
+    commit('setLista', undefined)
     const url = `siga/api/v1/painel/lista?idMarcadores=${getters.marcadoresId}&filtroPessoaLotacao=${state.pessoaOuLotacao}&tipoMarca=${state.tab ? state.tab : ''}&itensPorPagina=${state.itensPorPagina}&pagina=${state.pagina}`
     try {
       const data = await this.$axios.$get(url)
