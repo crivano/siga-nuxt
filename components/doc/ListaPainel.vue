@@ -26,7 +26,7 @@
         />
       </tbody>
     </table>
-    <b-pagination class="mr-3" v-model="pagina" :total-rows="$store.state.painel.qtd" :per-page="10" align="right"></b-pagination>
+    <b-pagination class="mr-3" v-model="pagina" :total-rows="$store.state.painel.qtd" :per-page="$store.state.painel.itensPorPagina" align="right"></b-pagination>
   </div>
 </template>
 <script>
