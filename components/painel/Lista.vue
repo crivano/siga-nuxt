@@ -17,7 +17,7 @@
         </tr>
       </thead>
       <tbody v-if="lista && lista.length > 0">
-        <DocListaPainelItem
+        <PainelListaItem
           v-for="i in lista"
           :key="i.marcaId + ':tr'"
           :item="i"
@@ -26,7 +26,7 @@
         />
       </tbody>
     </table>
-    <b-pagination class="mr-3" v-model="pagina" :total-rows="$store.state.painel.qtd" :per-page="$store.state.painel.itensPorPagina" align="right"></b-pagination>
+    <b-pagination class="mr-3" v-model="pagina" :total-rows="$store.getters['painel/tabInfo'].count" :per-page="$store.state.painel.itensPorPagina" align="right"></b-pagination>
   </div>
 </template>
 <script>

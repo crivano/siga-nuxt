@@ -1,6 +1,6 @@
 import UtilsBL from "../bl/utils.js";
 
-const localizarItemNaLista = function(a, escopo, id) {
+const localizarItemNaLista = function (a, escopo, id) {
     for (let i = 0; i < a.length; i++) {
         if (a[i].escopo === escopo && a[i].id === id) return a[i]
         if (a[i].filhos) {
@@ -28,10 +28,10 @@ export const state = () => ({
     itensPorPagina: 50,
     pagina: 1,
     tiposDeMarca: [
-        { id: 'SIGA_EX', nome: 'Documentos', modulo: 'sigaex' },
-        { id: 'SIGA_SR', nome: 'Serviços', modulo: 'sigasr' },
-        { id: 'SIGA_GC', nome: 'Conhecimentos', modulo: 'sigagc' },
-        { id: 'SIGA_WF', nome: 'Procedimentos', modulo: 'sigawf' },
+        { id: 'SIGA_EX', nome: 'Documentos', modulo: 'sigaex', defaultNamespace: 'documento' },
+        { id: 'SIGA_SR', nome: 'Serviços', modulo: 'sigasr', defaultNamespace: 'solicitacao' },
+        { id: 'SIGA_GC', nome: 'Conhecimentos', modulo: 'sigagc', defaultNamespace: 'conhecimento' },
+        { id: 'SIGA_WF', nome: 'Procedimentos', modulo: 'sigawf', defaultNamespace: 'wf/procedimento' },
     ]
 })
 
@@ -62,7 +62,7 @@ export const getters = {
         // const compareQtd = function (a, b) {
         //   return sumQtd(b) - sumQtd(a)
         // }
-        const addQtd = function(qtd, para) {
+        const addQtd = function (qtd, para) {
             if (para.qtd[qtd.filtro] === undefined) para.qtd[qtd.filtro] = 0
             para.qtd[qtd.filtro] += parseInt(qtd.qtd)
 
@@ -89,7 +89,7 @@ export const getters = {
 
         let tipo
         let grupo
-            // let marcador
+        // let marcador
         for (let i = 0; i < state.quadro.length; i++) {
             const x = {
                 ...state.quadro[i],
@@ -156,7 +156,7 @@ export const getters = {
                     addQtd(qtd, x)
                     addQtd(qtd, grupo)
                     addQtd(qtd, tipo)
-                        // addQtd(qtd, todos.filho[qtd.tipo])
+                    // addQtd(qtd, todos.filho[qtd.tipo])
                     addQtd(qtd, todos)
                 }
             }
@@ -197,7 +197,7 @@ export const getters = {
     marcadoresId(state) {
         if (!state.item || state.item.tipo === 'TUDO') return ''
         const marcadores = {}
-        const add = function(item) {
+        const add = function (item) {
             if (item.escopo === 'MARCADOR') marcadores[item.id] = 1
             if (item.filhos) item.filhos.forEach(e => add(e))
         }
@@ -205,7 +205,28 @@ export const getters = {
         return Object.keys(marcadores).join()
     },
 
+    tabInfo(state, getters) {
+        return getters.tabs.find(i => i.id === state.tab)
+    },
 
+    tabs(state) {
+        let a = [{ id: undefined, nome: 'Todos' }]
+        if (state.tiposDeMarca) {
+            state.tiposDeMarca.forEach((e) => {
+                a.push({ ...e })
+            })
+            if (state.item)
+                a.forEach((e) => {
+                    e.count =
+                        state.item.qtd[
+                        state.pessoaOuLotacao +
+                        (e.id ? ':' + e.id : '')
+                        ]
+                })
+        }
+        a = a.filter((e) => e.count)
+        return a
+    },
 }
 
 export const mutations = {
@@ -279,34 +300,34 @@ export const actions = {
     }, val) {
         try {
             const data = await this.$axios.$get(
-                `siga/api/v1/painel/quadro?estilo=Agrupados&tipoMarca=${state.tab ? state.tab : ''}`
+                'siga/api/v1/painel/quadro?estilo=Agrupados'
             )
             const l = data.list.filter(
                 (i) =>
-                i.marcadorId !== 9 &&
-                i.marcadorId !== 8 &&
-                i.marcadorId !== 10 &&
-                i.marcadorId !== 11 &&
-                i.marcadorId !== 12 &&
-                i.marcadorId !== 13 &&
-                i.marcadorId !== 16 &&
-                i.marcadorId !== 18 &&
-                i.marcadorId !== 20 &&
-                i.marcadorId !== 21 &&
-                i.marcadorId !== 22 &&
-                i.marcadorId !== 26 &&
-                i.marcadorId !== 32 &&
-                i.marcadorId !== 62 &&
-                i.marcadorId !== 63 &&
-                i.marcadorId !== 64 &&
-                i.marcadorId !== 7 &&
-                i.marcadorId !== 50 &&
-                i.marcadorId !== 51
+                    i.marcadorId !== 9 &&
+                    i.marcadorId !== 8 &&
+                    i.marcadorId !== 10 &&
+                    i.marcadorId !== 11 &&
+                    i.marcadorId !== 12 &&
+                    i.marcadorId !== 13 &&
+                    i.marcadorId !== 16 &&
+                    i.marcadorId !== 18 &&
+                    i.marcadorId !== 20 &&
+                    i.marcadorId !== 21 &&
+                    i.marcadorId !== 22 &&
+                    i.marcadorId !== 26 &&
+                    i.marcadorId !== 32 &&
+                    i.marcadorId !== 62 &&
+                    i.marcadorId !== 63 &&
+                    i.marcadorId !== 64 &&
+                    i.marcadorId !== 7 &&
+                    i.marcadorId !== 50 &&
+                    i.marcadorId !== 51
             )
             commit('setPrimeiraCarga', false)
             commit('setQuadro', l)
             await dispatch('ajustarSelecaoDeItem')
-        } catch (ex) {}
+        } catch (ex) { }
     },
 
     async ajustarSelecaoDeItem({
@@ -332,7 +353,7 @@ export const actions = {
                     await dispatch('trocarItemEFiltro', { item: state.item, filtro: f.filtro })
                     return true
                 }
-                // Limpar o state.item para forçar uma reinicialização
+            // Limpar o state.item para forçar uma reinicialização
             commit('setItem', undefined)
         }
         if (!state.item && getters.arvore) {
@@ -370,14 +391,14 @@ export const actions = {
             })
             commit('setLista', l)
             Object.entries(marcasPorModulo).forEach(([key, value]) => { dispatch('complementarLista', { moduloId: key, idMarcas: value }) })
-        } catch (ex) {}
+        } catch (ex) { }
     },
 
     async complementarLista({
         state,
         commit
     }, val) {
-        console.log("vou complementar a lista")
+        // console.log("vou complementar a lista")
 
         const url = state.tiposDeMarca[val.moduloId - 1].modulo + '/api/v1/painel/lista?idMarcas=' + val.idMarcas.join(',')
 
@@ -401,11 +422,11 @@ export const actions = {
 
             for (let i = 0; i < lista.length; i++) {
                 const r = map[lista[i].marcaId]
-                if (r) lista[i] = {...lista[i], ...r }
+                if (r) lista[i] = { ...lista[i], ...r }
             }
 
             commit('setLista', lista)
-        } catch (ex) {}
+        } catch (ex) { }
     },
 
 
@@ -455,7 +476,7 @@ export const actions = {
         dispatch
     }, val) {
         commit('setTab', val)
-            // await dispatch('carregarQuadro')
+        // await dispatch('carregarQuadro')
         commit('setPagina', 1)
         await dispatch('carregarLista')
     },

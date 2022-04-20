@@ -1,28 +1,14 @@
 <template>
   <div>
     <div class="container-fluid content profile">
-      <div class="row xd-print-block mt-3 mb-3">
-        <div class="col-md-12">
-          <h4 class="text-center mb-0">
-            Procedimento {{ procedimento.sigla }}
-          </h4>
-        </div>
-      </div>
-      <div class="row no-gutters mt-2"></div>
+      <div class="row no-gutters mt-3"></div>
       <template v-if="procedimento">
         <div class="row">
           <div class="col col-12 col-lg-8">
-            <acao v-for="acao in filteredAcoes" :key="acao.nome" :acao="acao" />
+             <h4>Procedimento {{ procedimento.sigla }}</h4>
+            <WfTarefa :procedimento="procedimento" v-if="procedimento.formulario" />
 
-            <WfTarefa
-              :procedimento="procedimento"
-              v-if="procedimento.formulario"
-            />
-
-            <table
-              v-if="filteredMovs && filteredMovs.length"
-              class="table table-sm table-striped"
-            >
+            <table v-if="filteredMovs && filteredMovs.length" class="table table-sm table-striped">
               <thead class="table-dark">
                 <tr>
                   <th>Tempo</th>
@@ -32,18 +18,10 @@
                 </tr>
               </thead>
               <tbody>
-                <tr
-                  v-for="mov in filteredMovs"
-                  :key="mov.eventoId"
-                  :class="[mov.classe, mov.disabled]"
-                >
+                <tr v-for="mov in filteredMovs" :key="mov.eventoId" :class="[mov.classe, mov.disabled]">
                   <td>{{ mov.eventoTempoRelativo }}</td>
                   <td>
-                    {{
-                      mov.lotaResponsavel
-                        ? mov.lotaResponsavel.sigla
-                        : undefined
-                    }}
+                    {{ mov.lotaResponsavel ? mov.lotaResponsavel.sigla : undefined }}
                   </td>
                   <td>{{ mov.eventoTitulo }}</td>
                   <td style="padding: 5px 5px; word-break: break-all">
@@ -54,10 +32,11 @@
             </table>
           </div>
           <div class="col col-12 col-lg-4">
-            <CardGraphViz
-              :dot="procedimento.vizProcedimento"
-              titulo="Diagrama"
-            />
+            <h4>Ações</h4>
+            <ul class="blog-tags p-0">
+              <acao v-for="acao in filteredAcoes" :key="acao.nome" :acao="acao" />
+            </ul>
+            <CardGraphViz :dot="procedimento.vizProcedimento" titulo="Diagrama" />
             <WfCardVariaveis :procedimento="procedimento" titulo="Variáveis" />
           </div>
         </div>
@@ -78,9 +57,7 @@ export default {
 
   async asyncData({ params, $axios, $store }) {
     try {
-      const data = await $axios.$get(
-        `sigawf/api/v1/procedimentos/${params.sigla}`
-      )
+      const data = await $axios.$get(`sigawf/api/v1/procedimentos/${params.sigla}`)
       const procedimento = data.procedimento
       return { procedimento }
     } catch (ex) {}
@@ -91,20 +68,13 @@ export default {
   },
   computed: {
     filteredMovs() {
-      if (
-        !this.procedimento ||
-        !this.procedimento.eventos ||
-        this.procedimento.eventos.length === 0
-      )
-        return undefined
+      if (!this.procedimento || !this.procedimento.eventos || this.procedimento.eventos.length === 0) return undefined
       return this.procedimento.eventos.filter((m) => !m.cancelada)
     },
     filteredAcoes() {
       if (!this.procedimento) return undefined
       let acoes = this.procedimento.acoes
-      acoes = acoes.sort((a, b) =>
-        a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0
-      )
+      acoes = acoes.sort((a, b) => (a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0))
       return acoes.filter((m) => m.pode)
     },
   },
@@ -227,4 +197,5 @@ table.mov tr.anexacaox {
 table.mov tr.encerramento_volumex {
   background-color: rgb(255, 218, 218);
 }
+
 </style>

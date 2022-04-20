@@ -9,7 +9,7 @@
     <td v-html="item.dataIniFormatada"></td>
     <td>{{ item.tipo }}</td>
     <td class="action">
-      <nuxt-link :to="`/documento/${item.codigo}`">{{ item.sigla }}</nuxt-link>
+      <nuxt-link :to="`/${namespace}/${item.codigo}`">{{ item.sigla }}</nuxt-link>
     </td>
     <td>
       {{ item.origem }}
@@ -33,6 +33,10 @@ export default {
     exibirColunaUltimaAnotacao: { type: Boolean, required: true },
   },
   computed: {
+    namespace() {
+      if (!this.item || !this.item.moduloId) return undefined
+      return this.$store.state.painel.tiposDeMarca[this.item.moduloId - 1].defaultNamespace
+    },
     pagina: {
       get() {
         return this.$store.state.painel.marcaIdChecked[this.item.marcaId]

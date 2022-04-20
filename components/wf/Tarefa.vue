@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card bg-info mb-3 mt-3">
+    <div class="card bg-info mb-3">
       <div class="card-header text-white">
         <span
           v-if="

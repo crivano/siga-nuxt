@@ -2,14 +2,10 @@
   <div class="container-fluid content">
     <div class="row">
       <div class="col-12 col-xl-3 col-md-6 bg-light pt-2">
-        <QuadroPainel
-          :carregando="carregandoExpediente"
-          :primeira-carga="primeiraCarga"
-          @pesquisar="pesquisar($event)"
-        />
+        <QuadroPainel :carregando="carregandoExpediente" :primeira-carga="primeiraCarga" @pesquisar="pesquisar($event)" />
       </div>
       <div class="col-12 col-xl-9 col-md-6">
-        <div class="row" v-if="false">
+        <div v-if="false" class="row">
           <div class="col col-12 col-md-9 mt-3 mb-3">
             <h4 class="mb-0 mt-0">{{ titulo }}</h4>
           </div>
@@ -18,56 +14,21 @@
           </div>
         </div>
 
-        <b-tabs
-          class="mt-3 mb-0"
-          content-class="mt-0"
-          active-nav-item-class="font-weight-bold bg-dark text-white"
-          lazy
-        >
-          <b-tab
-            v-for="tm in tabs"
-            :key="tm.id"
-            :title="tm.nome + (tm.id ? ' (' + tm.count + ')' : '')"
-            @click="$store.dispatch('painel/trocarTab', tm.id)"
-          >
+        <b-tabs class="mt-3 mb-0" content-class="mt-0" active-nav-item-class="font-weight-bold bg-dark text-white" lazy>
+          <b-tab v-for="tm in tabs" :key="tm.id" :title="tm.nome + (tm.id ? ' (' + tm.count + ')' : '')" @click="$store.dispatch('painel/trocarTab', tm.id)" :active="$store.state.painel.tab === tm.id">
             <template v-if="false" #title>
               <span>{{ tm.nome }} </span>
-              <span
-                class="
-                  position-absolutex
-                  badge
-                  rounded-pillx
-                  bg-light
-                  text-dark
-                  top-0
-                  start-100
-                  translate-middle
-                "
-                style="margin-top: -0.5em"
-              >
+              <span class="position-absolutex badge rounded-pillx bg-light text-dark top-0 start-100 translate-middle" style="margin-top: -0.5em">
                 {{ tm.count }}
               </span>
             </template>
-            <DocPesquisa
-              ref="pesquisa"
-              :id-marcador="marcadorId"
-              :filtro-pessoa-lotacao="filtroPessoaLotacao"
-              :filtro-expediente-processo="filtroExpedienteProcesso"
-              :qtd="qtd"
-              :marcador-nome="marcadorNome"
-              :filtro="filtro"
-              :painel="true"
-            />
+            <PainelLista />
           </b-tab>
         </b-tabs>
       </div>
     </div>
-    <p
-      v-if="acessos &amp;&amp; acessos.length >= 1"
-      class="alert alert-success mt-3"
-    >
-      Último acesso em {{ acessos[1].datahora }} no endereço
-      {{ acessos[1].ip }}.
+    <p v-if="acessos &amp;&amp; acessos.length >= 1" class="alert alert-success mt-3">
+      Último acesso em {{ acessos[1].datahora }} no endereço {{ acessos[1].ip }}.
     </p>
   </div>
 </template>
@@ -100,6 +61,30 @@ export default {
     await this.$store.dispatch('painel/iniciar')
   },
 
+  computed: {
+    titulo() {
+      if (this.marcadorNome && this.qtd) return this.marcadorNome + ' (' + this.qtd + ')'
+      return ''
+    },
+
+    tabs() {
+      return this.$store.getters['painel/tabs']
+    },
+
+    tabsOld() {
+      let a = [{ id: undefined, nome: 'Todos' }]
+      this.$store.state.painel.tiposDeMarca.forEach((e) => {
+        a.push({ ...e })
+      })
+      if (this.$store.state.painel.item)
+        a.forEach((e) => {
+          e.count = this.$store.state.painel.item.qtd[this.$store.state.painel.pessoaOuLotacao + (e.id ? ':' + e.id : '')]
+        })
+      a = a.filter((e) => e.count)
+      return a
+    },
+  },
+
   mounted() {
     if (this.$route.params.item) {
       this.$store.dispatch('painel/trocarItemEFiltro', {
@@ -109,30 +94,6 @@ export default {
     }
   },
 
-  computed: {
-    titulo() {
-      if (this.marcadorNome && this.qtd)
-        return this.marcadorNome + ' (' + this.qtd + ')'
-      return ''
-    },
-
-    tabs() {
-      let a = [{ id: undefined, nome: 'Todos' }]
-      this.$store.state.painel.tiposDeMarca.forEach((e) => {
-        a.push({ ...e })
-      })
-      if (this.$store.state.painel.item)
-        a.forEach((e) => {
-          e.count =
-            this.$store.state.painel.item.qtd[
-              this.$store.state.painel.pessoaOuLotacao +
-                (e.id ? ':' + e.id : '')
-            ]
-        })
-      a = a.filter((e) => e.count)
-      return a
-    },
-  },
   methods: {
     async carregarAcessos() {
       this.acessos.length = 0
