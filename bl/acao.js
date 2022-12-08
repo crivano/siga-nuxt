@@ -1,5 +1,6 @@
 import UtilsBL from "./utils.js";
 
+import Anotar from "./acao/anotar";
 import ArquivarCorrente from "./acao/arquivarCorrente";
 import DesarquivarCorrente from "./acao/desarquivarCorrente";
 import Sobrestar from "./acao/sobrestar";
@@ -35,6 +36,7 @@ export default {
     this.bus = component.$root;
     this.axios = component.$axios;
     this.modais = modais;
+    Anotar.registrar(component);
     Duplicar.registrar(component);
     ArquivarCorrente.registrar(component);
     DesarquivarCorrente.registrar(component);

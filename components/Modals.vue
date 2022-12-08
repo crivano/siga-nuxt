@@ -16,6 +16,7 @@
     <ModalAcesso ref="modalAcesso" />
     <ModalCossignatario ref="modalCossignatario" />
     <ModalAnexo ref="modalAnexo" />
+    <ModalAnotacao ref="modalAnotacao" />
   </div>
 </template>
 <script>

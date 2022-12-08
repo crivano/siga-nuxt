@@ -85,7 +85,7 @@ export default {
         this.errormsg = 'Texto da anotação deve ser informado.'
         return
       }
-      this.$root.$emit('anotar', this.documentos, this.anotacao, this.cont)
+      this.$root.$emit('anotar', this.documentos, this.cont, {anotacao: this.anotacao})
       this.$refs.modal.hide(true)
     },
 

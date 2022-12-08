@@ -184,7 +184,7 @@ export default {
     },
 
     anotar() {
-      this.emitir('iniciarAnotacao')
+      this.emitir('anotarModal')
     },
 
     arq_corrente() {

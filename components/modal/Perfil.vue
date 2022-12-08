@@ -30,63 +30,29 @@
             </div>
 
             <div class="form-group col col-sm-6">
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                :immediate="true"
-              >
-                <label class="control-label" for="tipo" style="width: 100%"
-                  >Responsável</label
-                >
+              <validation-provider v-slot="{ errors }" rules="required" :immediate="true">
+                <label class="control-label" for="tipo" style="width: 100%">Responsável</label>
                 <select id="tipo" v-model="tipo" class="form-control">
                   <option value="lotacao">Lotação</option>
                   <option value="matricula">Pessoa</option>
                 </select>
-                <span
-                  v-if="false"
-                  v-show="errors.length > 0"
-                  class="help is-danger"
-                  >{{ errors[0] }}</span
-                >
+                <span v-if="false" v-show="errors.length > 0" class="help is-danger">{{ errors[0] }}</span>
               </validation-provider>
             </div>
             <div v-if="tipo === 'lotacao'" class="form-group col col-sm-6">
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                :immediate="true"
-              >
+              <validation-provider v-slot="{ errors }" rules="required" :immediate="true">
                 <my-lotacao v-model="lotacao" label="Sigla da Lotação" />
-                <span
-                  v-if="false"
-                  v-show="errors.length > 0"
-                  class="help is-danger"
-                  >{{ errors[0] }}</span
-                >
+                <span v-if="false" v-show="errors.length > 0" class="help is-danger">{{ errors[0] }}</span>
               </validation-provider>
             </div>
             <div v-if="tipo === 'matricula'" class="form-group col col-sm-6">
-              <validation-provider
-                v-slot="{ errors }"
-                rules="required"
-                :immediate="true"
-              >
+              <validation-provider v-slot="{ errors }" rules="required" :immediate="true">
                 <my-pessoa v-model="matricula" label="Sigla da Pessoa" />
-                <span
-                  v-if="false"
-                  v-show="errors.length > 0"
-                  class="help is-danger"
-                  >{{ errors[0] }}</span
-                >
+                <span v-if="false" v-show="errors.length > 0" class="help is-danger">{{ errors[0] }}</span>
               </validation-provider>
             </div>
           </div>
-          <em
-            v-if="errormsg &amp;&amp; errormsg !== ''"
-            for="processos"
-            class="invalid"
-            >{{ errormsg }}</em
-          >
+          <em v-if="errormsg &amp;&amp; errormsg !== ''" for="processos" class="invalid">{{ errormsg }}</em>
         </form>
       </b-modal>
     </validation-observer>
@@ -95,7 +61,6 @@
 
 <script>
 import ItemTemplate from '../ItemTemplate.vue'
-import UtilsBL from '../../bl/utils.js'
 
 export default {
   name: 'DefinirPerfil',
@@ -122,34 +87,19 @@ export default {
   mounted() {},
 
   methods: {
-    carregar() {
+    async carregar() {
       this.carregando = true
-      const self = this
-      this.$http
-        .get(
-          'sigaex/api/v1/documentos/' +
-            this.documentos[0].codigo +
-            '/perfis-disponiveis'
-        )
-        .then(
-          (response) => {
-            self.carregando = false
-            self.perfis.length = 0
-            const resp = response.data
-            for (let i = 0; i < resp.list.length; i++) {
-              self.perfis.push(
-                UtilsBL.applyDefauts(resp.list[i], {
-                  id: undefined,
-                  nome: undefined,
-                })
-              )
-            }
-          },
-          (error) => {
-            self.carregando = false
-            UtilsBL.errormsg(error, this)
-          }
-        )
+
+      try {
+        const data = await this.$axios.$get('sigaex/api/v1/documentos/' + this.documentos[0].codigo + '/perfis-disponiveis')
+        this.carregando = false
+        this.perfis.length = 0
+        const resp = data
+        for (let i = 0; i < resp.list.length; i++) {
+          this.perfis.push({ idPerfil: resp.list[i].idPerfil, nome: resp.list[i].nome })
+        }
+        this.primeiraCarga = false
+      } catch (ex) {}
     },
 
     getLabelLotacao(item) {
@@ -165,9 +115,7 @@ export default {
       if (!text || text === '') return
       this.errormsg = undefined
       try {
-        const data = await this.$axios.$get(
-          'siga/api/v1/pessoas?texto=' + encodeURI(text)
-        )
+        const data = await this.$axios.$get('siga/api/v1/pessoas?texto=' + encodeURI(text))
         this.pessoas = []
         const l = data.list
         if (l) {
@@ -184,9 +132,7 @@ export default {
       if (!text || text === '') return
       this.errormsg = undefined
       try {
-        const data = await this.$axios.$get(
-          'siga/api/v1/lotacoes?texto=' + encodeURI(text)
-        )
+        const data = await this.$axios.$get('siga/api/v1/lotacoes?texto=' + encodeURI(text))
         this.lotacoes = []
         const l = data.list
         if (l) {
