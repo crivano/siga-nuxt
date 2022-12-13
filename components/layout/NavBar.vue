@@ -89,7 +89,7 @@
             </b-nav-item>
             <b-nav-item-dropdown v-if="logged" right>
               <template v-slot:button-content>
-                {{ $store.state.jwt.sub }}
+                {{ $store.state.usuario.cadastranteSigla }}
                 <template v-if="$store.state.usuario && $store.state.usuario.substituicaoId">
                   <font-awesome-icon :icon="['fa', 'arrow-circle-right']" class="mr-1" /><span>{{ descrUsuarioAtivo }}</span>
                 </template>
@@ -130,7 +130,6 @@
   </div>
 </template>
 <script>
-import AuthBL from '../../bl/auth.js'
 export default {
   data() {
     return { siglaParaPesquisar: undefined }
@@ -145,11 +144,11 @@ export default {
             else test.properties[k] = test.properties[k].replace(/\[default: (.*)\]/gm, '$1')
         }
 
-        if (test.properties['siga-le.wootric.token'] && test.properties['siga-le.wootric.token'] !== '[undefined]' && this.$store.state.jwt) {
+        if (test.properties['siga-le.wootric.token'] && test.properties['siga-le.wootric.token'] !== '[undefined]' && this.logged) {
           // This loads the Wootric survey
           // window.wootric_survey_immediately = true
           window.wootricSettings = {
-            email: this.jwt.sub,
+            email: this.$store.state.usuario.cadastranteSigla,
             account_token: this.test.properties['siga-le.wootric.token'],
           }
           window.wootric('run')
@@ -157,9 +156,9 @@ export default {
 
         this.$store.commit('setTest', test)
 
-        let token = AuthBL.getIdToken()
-        if (token && AuthBL.isTokenExpired(token)) token = undefined
-        this.$store.dispatch('updateLogged', token)
+        // let token = AuthBL.getIdToken()
+        // if (token && AuthBL.isTokenExpired(token)) token = undefined
+        this.$store.dispatch('updateLogged') // , token)
       }
     } catch (ex) {}
   },
@@ -180,8 +179,7 @@ export default {
 
     logout() {
       delete window.listaDaMesa
-      AuthBL.logout()
-      this.jwt = {}
+      this.$store.dispatch('logout');
       this.$router.push({ name: 'login' })
     },
 
@@ -205,7 +203,7 @@ export default {
       return s
     },
     logged() {
-      return this.$store.state.jwt && this.$store.state.jwt.sub
+      return this.$store.state.usuario && this.$store.state.usuario.cadastranteSigla
     },
   },
 }

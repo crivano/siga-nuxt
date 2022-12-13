@@ -28,6 +28,10 @@ export default {
   mounted() {
     const prg = this.$refs.progressModal
 
+    this.$root.$on('loginRequired', () => {
+      this.$router.push({ name: 'login' })
+    })
+
     this.$root.$on('prgStart', (title, total, callbackNext, callbackEnd) => {
       prg.start(title, total, callbackNext, callbackEnd)
     })

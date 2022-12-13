@@ -8,7 +8,6 @@ export const state = () => ({
   },
   enums: {},
   tabelas: {},
-  jwt: {},
   usuario: {}
 })
 
@@ -21,9 +20,6 @@ export const mutations = {
   },
   setTabelas(state, val) {
     state.tabelas = val
-  },
-  setJwt(state, val) {
-    state.jwt = val
   },
   setUsuario(state, val) {
     state.usuario = val
@@ -68,20 +64,26 @@ export const actions = {
     } catch (ex) { }
   },
 
+  async logout({
+    state,
+    commit,
+    dispatch
+  }, val) {
+    try {
+      await this.$axios.$post(
+        'siga/api/v1/sair', {}, {}
+      )
+
+      commit('setUsuario', {})
+      AuthBL.logout()
+    } catch (ex) { }
+  },
+
+
   async updateLogged({
     commit,
     dispatch
   }, token) {
-    if (!token) {
-      commit('setJwt', undefined)
-      commit('painel/reset')
-      if (!this.$router.currentRoute || this.$router.currentRoute.name !== "login")
-        this.$router.push({
-          name: 'login'
-        })
-      return
-    }
-    commit('setJwt', AuthBL.decodeToken(token))
     await dispatch('carregarUsuario')
     dispatch('painel/iniciar')
     // console.log(this.$router.currentRoute)

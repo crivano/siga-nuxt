@@ -383,7 +383,9 @@ export default {
       const cpf = document.createElement('input')
       cpf.type = 'text'
       cpf.name = 'cpf'
-      cpf.value = this.$parent.jwt.cpf
+      // Falta incluir esta informação no retorno do webservice
+      console.log("falta incluir o cadastranteCpf no retorno do webservice")
+      cpf.value = this.$store.usuario.cadastranteCpf
 
       const system = document.createElement('input')
       system.type = 'text'

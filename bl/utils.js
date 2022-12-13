@@ -341,6 +341,12 @@ export default {
       }
     }
     return r
+  },
+
+  redirectToVRaptor(relativeUrl) {
+    history.back();
+      // history.replaceState(null, null, process.env.API_URL_BROWSER + 'sigagc/app/exibir/' + this.$route.params.numero);
+      window.location = process.env.API_URL_BROWSER + relativeUrl;
   }
 
 }
