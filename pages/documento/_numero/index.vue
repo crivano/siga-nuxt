@@ -70,7 +70,7 @@ export default {
   async asyncData({ params, $axios, $store }) {
     let numero = params.numero
     try {
-      const doc = await $axios.$get('sigaex/api/v1/documentos/' + numero)
+      const doc = await $axios.$get(`sigaex/api/v1/documentos/${numero}?exibe=true&completo=true`)
       const mob = doc.mobs[0]
       if (!mob.isGeral) numero = mob.sigla.replace(/[^a-zA-Z0-9]/gi, '')
       return { numero, doc, mob }
