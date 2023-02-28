@@ -53,7 +53,7 @@
             </validation-provider>
           </div>
           <div v-if="tipoDestinatario === 'LOTACAO'" class="form-group col col-sm-8 col-lg-4">
-            <my-lotacao v-model="lotaDestinatario" label="Lotação Destinatária" />
+            <my-lotacao v-model="lotaDestinatario" label="Lotação Destinatária" validation-rules="" />
           </div>
           <div v-if="tipoDestinatario === 'PESSOA'" class="form-group col col-sm-8 col-lg-4">
             <my-pessoa v-model="destinatario" label="Matrícula do Destinatário" />
@@ -92,18 +92,6 @@ import UtilsBL from '../bl/utils.js'
 import EntrevistaBL from '../bl/entrevista.js'
 
 export default {
-  mounted() {
-    const self = this
-
-    this.$nextTick(async function () {
-      await this.carregarModelos()
-      await this.carregarDocumento(this.$route.params.numero)
-    })
-
-    window.sbmt = function () {
-      self.processarEntrevista()
-    }
-  },
   data() {
     return {}
   },
@@ -154,6 +142,18 @@ export default {
     '$route.params.numero'() {
       this.carregarDocumento()
     },
+  },
+  mounted() {
+    const self = this
+
+    this.$nextTick(async function () {
+      await this.carregarModelos()
+      await this.carregarDocumento(this.$route.params.numero)
+    })
+
+    window.sbmt = function () {
+      self.processarEntrevista()
+    }
   },
   methods: {
     getFormParams() {

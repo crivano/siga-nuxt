@@ -1,5 +1,5 @@
 <template>
-  <validation-provider v-slot="{ errors }" rules="required" :immediate="true">
+  <validation-provider v-slot="{ errors }" :rules="{ validationRules }" :immediate="true">
     <label class="control-label" for="lotacao" style="width: 100%">{{
       label
     }}</label>
@@ -25,7 +25,7 @@ import ItemTemplate from '../ItemTemplate.vue'
 
 export default {
   name: 'MyLotacao',
-  props: ['value', 'label', 'name'],
+  props: {value: String, label: String, name: String, validationRules: {type: String, default: 'required'}},
   data() {
     return {
       lotacoes: [],
