@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-v-html -->
 <template>
   <div class="container-fluid content profile">
     <div class="row xd-print-block mt-3 mb-3">
