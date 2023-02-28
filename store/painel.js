@@ -454,8 +454,7 @@ export const actions = {
         commit('setPessoaOuLotacao', val.filtro)
         commit('setQtd', val.item.qtd[val.filtro])
         commit('setPagina', 1)
-        await dispatch('ajustarSelecaoDeItem')
-        await dispatch('carregarLista')
+        await dispatch('recarregar')
     },
 
     async trocarFiltroDePessoaOuLotacao({
@@ -487,6 +486,14 @@ export const actions = {
         dispatch
     }, val) {
         commit('setPagina', val)
+        await dispatch('recarregar')
+    },
+
+    async recarregar({
+        state,
+        commit,
+        dispatch
+    }) {
         await dispatch('ajustarSelecaoDeItem')
         await dispatch('carregarLista')
     }

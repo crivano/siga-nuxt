@@ -91,6 +91,8 @@ export default {
         item: this.$route.params.item,
         filtro: 'TOTAL',
       })
+    } else {
+      this.$store.dispatch('painel/recarregar')
     }
   },
 
