@@ -1,5 +1,5 @@
 <template>
-  <li type="button" class="btnx btn-smx d-print-nonex mr-2x mb-2x" :class="{ 'btn-outline-secondary': !!metodo, 'btn-light': !metodo }" @click="clique()" v-if="exibir">
+  <li v-if="exibir" type="button" class="btnx btn-smx d-print-nonex mr-2x mb-2x" :class="{ 'btn-outline-secondary': !!metodo, 'btn-light': !metodo }" @click="clique()">
     <img :src="$axios.defaults.baseURL + '/siga/css/famfamfam/icons/' + acao.icone + '.png'" width="16px" height="16px" class="mr-1 mb-1" title="" />
     {{ nome }}
   </li>

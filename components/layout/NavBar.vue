@@ -320,7 +320,7 @@
               <router-link active-class="active" :to="{ name: 'login' }" tag="a">Login</router-link>
             </b-nav-item>
             <b-nav-item-dropdown v-if="logged" right>
-              <template v-slot:button-content>
+              <template #button-content>
                 {{ $store.state.usuario.cadastranteSigla }}
                 <template v-if="$store.state.usuario && $store.state.usuario.substituicaoId">
                   <font-awesome-icon :icon="['fa', 'arrow-circle-right']" class="mr-1" /><span>{{ descrUsuarioAtivo
@@ -362,6 +362,24 @@
 export default {
   data() {
     return { siglaParaPesquisar: undefined }
+  },
+  computed: {
+    descrUsuarioAtivo() {
+      if (!this.$store.state.usuario) return
+      let s = ''
+      if (this.$store.state.usuario.substituicaoId)
+        this.$store.state.usuario.substituicoesPermitidas.forEach((element) => {
+          if (this.$store.state.usuario.substituicaoId === element.substituicaoId) {
+            if (element.titularSigla) s += element.titularSigla
+            if (element.titularSigla && element.lotaTitularSigla) s += '/'
+            if (element.lotaTitularSigla) s += element.lotaTitularSigla
+          }
+        })
+      return s
+    },
+    logged() {
+      return this.$store.state.usuario && this.$store.state.usuario.cadastranteSigla
+    },
   },
   async mounted() {
     try {
@@ -441,24 +459,6 @@ export default {
       return false
     }
 
-  },
-  computed: {
-    descrUsuarioAtivo() {
-      if (!this.$store.state.usuario) return
-      let s = ''
-      if (this.$store.state.usuario.substituicaoId)
-        this.$store.state.usuario.substituicoesPermitidas.forEach((element) => {
-          if (this.$store.state.usuario.substituicaoId === element.substituicaoId) {
-            if (element.titularSigla) s += element.titularSigla
-            if (element.titularSigla && element.lotaTitularSigla) s += '/'
-            if (element.lotaTitularSigla) s += element.lotaTitularSigla
-          }
-        })
-      return s
-    },
-    logged() {
-      return this.$store.state.usuario && this.$store.state.usuario.cadastranteSigla
-    },
   },
 }
 </script>
