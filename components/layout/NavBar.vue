@@ -8,7 +8,7 @@
         'navbar-dark bg-secondary': $store.state.test.properties['siga.ambiente'] === 'homolo',
         'navbar-dark bg-primary': $store.state.test.properties['siga.ambiente'] === 'prod',
       }">
-        <b-navbar-brand href="/painel">
+        <b-navbar-brand :to="{ name: 'painel' }">
           <img id="logo-header" src="~assets/logo-siga-novo-38px.png" alt="Siga-Le" height="38" />
           <img id="logo-header2" class="ml-2" src="~assets/trf2-38px-2.png" alt="Logo TRF2" height="38" />
         </b-navbar-brand>
