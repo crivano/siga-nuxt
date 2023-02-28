@@ -154,7 +154,7 @@ export default {
     excluir() {
       this.emitir('excluir', undefined, () => {
         this.$router.push({
-          name: 'Home',
+          name: 'painel',
         })
       })
     },
