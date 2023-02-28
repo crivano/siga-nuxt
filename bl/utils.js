@@ -281,6 +281,11 @@ export default {
     return s.replace(/[^a-z0-9]/gi, "")
   },
 
+  fixHtmlRerefences(s) {
+      const regex = /<a href="\/sigaex\/app\/expediente\/doc\/exibir\?sigla=(?<sigla>[^"]+)">/gm;
+      return s.replace(regex, (match, tag) => `<a href="/documento/${this.onlyLettersAndNumbers(tag)}">`);  
+  },
+
   buildHierarchy(input, id, label) {
     const output = [];
     const allNodes = [];

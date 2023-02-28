@@ -8,30 +8,14 @@
     </div>
     <div class="row justify-content-center mt-3 mb-3">
       <div class="col-12">
-        <b-form-radio-group
-          id="radio-group-2"
-          v-model="tipo"
-          class="text-center"
-          name="radio-sub-component"
-        >
+        <b-form-radio-group id="radio-group-2" v-model="tipo" class="text-center" name="radio-sub-component">
           <b-form-radio value="html">HTML</b-form-radio>
-          <b-form-radio value="pdf"
-            >PDF -
+          <b-form-radio value="pdf">PDF -
             <a id="pdflink" accesskey="a" :href="urlAbrirPdf" target="_blank">
-              <u>a</u>brir</a
-            ></b-form-radio
-          >
-          <b-form-radio value="pdfSemMarcas"
-            >PDF sem Marcas -
-            <a
-              id="pdflink"
-              accesskey="r"
-              :href="urlAbrirPdfSemMarcas"
-              target="_blank"
-            >
-              abri<u>r</u></a
-            ></b-form-radio
-          >
+              <u>a</u>brir</a></b-form-radio>
+          <b-form-radio value="pdfSemMarcas">PDF sem Marcas -
+            <a id="pdflink" accesskey="r" :href="urlAbrirPdfSemMarcas" target="_blank">
+              abri<u>r</u></a></b-form-radio>
         </b-form-radio-group>
       </div>
     </div>
@@ -44,11 +28,7 @@
             <td style="text-align: right">Pág.</td>
           </thead>
           <tbody>
-            <tr
-              v-for="i in lista"
-              :key="i.paginaInicial"
-              @click.prevent="show(i)"
-            >
+            <tr v-for="i in lista" :key="i.paginaInicial" @click.prevent="show(i)">
               <td :style="{ 'padding-left': i.nivel + '.4em' }">
                 {{ i.descr }}
               </td>
@@ -57,25 +37,19 @@
             </tr>
           </tbody>
         </table>
-        <router-link
-          class="btn btn-secondary mb-4"
-          :to="{ name: 'documento-numero', params: { numero: numero } }"
-          >Voltar</router-link
-        >
+        <router-link class="btn btn-secondary mb-4"
+          :to="{ name: 'documento-numero', params: { numero: numero } }">Voltar</router-link>
       </div>
 
       <div id="right-col" class="col col-12 col-md-8">
-        <div
-          id="paipainel"
-          style="
-            margin: 0;
-            padding: 0;
-            border: 0 solid black;
-            clear: both;
-            overflow: hidden;
-          "
-        >
-          <div ref="html" v-html="html"></div>
+        <div id="paipainel" style="
+              margin: 0;
+              padding: 0;
+              border: 0 solid black;
+              clear: both;
+              overflow: hidden;
+            ">
+          <div ref="html" v-html="htmlAlterado"></div>
           <MyIFrame v-if="src" :src="src" />
         </div>
       </div>
@@ -122,6 +96,18 @@ export default {
         (this.completo ? '&completo=1' : '')
       )
     },
+    htmlAlterado() {
+      if (!this.html) return undefined
+      let sHtml = this.html
+      sHtml = sHtml.replaceAll('src="/siga', `src="${process.env.API_URL_BROWSER}siga`)
+      sHtml = sHtml.replace(/bgcolor="#(FFFFFF|000000)"/g, '')
+
+      sHtml = UtilsBL.fixHtmlRerefences(sHtml);
+
+      // console.log(sHtml)
+      return sHtml
+    },
+
   },
   watch: {
     '$route.params.numero'() {
@@ -153,8 +139,8 @@ export default {
       try {
         const data = await this.$axios.$get(
           'sigaex/api/v1/documentos/' +
-            UtilsBL.onlyLettersAndNumbers(this.numero) +
-            '/dossie'
+          UtilsBL.onlyLettersAndNumbers(this.numero) +
+          '/dossie'
         )
         this.lista = data.list
         this.lista.push({
@@ -170,7 +156,7 @@ export default {
             volumes: true,
           })
         this.show(this.lista[this.lista.length - 1])
-      } catch (ex) {}
+      } catch (ex) { }
     },
 
     mostrar() {
@@ -194,7 +180,7 @@ export default {
         try {
           const data = await this.$axios.$get(url)
           this.html = data
-        } catch (ex) {}
+        } catch (ex) { }
       } else {
         this.src = url
         this.html = undefined
@@ -204,13 +190,13 @@ export default {
     async mostrarCompleto() {
       const data = await this.$axios.$get(
         'sigaex/api/v1/documentos/' +
-          this.numeroAtivo +
-          '/arquivo?estampa=' +
-          (this.tipo !== 'pdfSemMarcas') +
-          (this.completo ? '&completo=true' : '') +
-          (this.volumes ? '&volumes=true' : '') +
-          '&contenttype=' +
-          (this.tipo === 'html' ? 'text/html' : 'application/pdf')
+        this.numeroAtivo +
+        '/arquivo?estampa=' +
+        (this.tipo !== 'pdfSemMarcas') +
+        (this.completo ? '&completo=true' : '') +
+        (this.volumes ? '&volumes=true' : '') +
+        '&contenttype=' +
+        (this.tipo === 'html' ? 'text/html' : 'application/pdf')
       )
       this.$root.$emit('prgAsyncStart', 'PDF Completo', data.uuid, async () => {
         const jwt = data.jwt
@@ -223,15 +209,15 @@ export default {
           (this.tipo === 'html'
             ? '.html'
             : this.tipo === 'pdf'
-            ? '.pdf'
-            : '.pdf')
+              ? '.pdf'
+              : '.pdf')
 
         if (this.tipo === 'html') {
           this.src = undefined
           try {
             const data = await this.$axios.$get(url)
             this.html = data
-          } catch (ex) {}
+          } catch (ex) { }
         } else {
           this.src = url
           this.html = undefined
