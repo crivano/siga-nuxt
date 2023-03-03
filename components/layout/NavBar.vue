@@ -77,24 +77,20 @@
                   class="dropdown-link" active-class="active"
                   to="/sigaex/app/expediente/mov/arquivar_corrente_lote">Arquivar em Lote</nuxt-link></b-dropdown-item>
 
-              <b-dropdown-item v-if="podeArquivarIntermediarioPorConfiguracao()"><nuxt-link
-                  class="dropdown-link" active-class="active"
-                  to="/sigaex/app/expediente/mov/arquivar_intermediario_lote">Arquivar Intermediário em
+              <b-dropdown-item v-if="podeArquivarIntermediarioPorConfiguracao()"><nuxt-link class="dropdown-link"
+                  active-class="active" to="/sigaex/app/expediente/mov/arquivar_intermediario_lote">Arquivar Intermediário
+                  em
                   Lote</nuxt-link></b-dropdown-item>
 
-              <b-dropdown-item v-if="podeArquivarPermanentePorConfiguracao()"><nuxt-link
-                  class="dropdown-link" active-class="active"
-                  to="/sigaex/app/expediente/mov/arquivar_permanente_lote">Arquivar Permanente em
+              <b-dropdown-item v-if="podeArquivarPermanentePorConfiguracao()"><nuxt-link class="dropdown-link"
+                  active-class="active" to="/sigaex/app/expediente/mov/arquivar_permanente_lote">Arquivar Permanente em
                   Lote</nuxt-link></b-dropdown-item>
 
-              <b-dropdown-item
-                v-if="testaCompetencia('atenderPedidoPublicacaoNoDiario')"><nuxt-link
-                  class="dropdown-link" active-class="active"
-                  to="/sigaex/app/expediente/mov/atender_pedido_publicacao">Gerenciar Publicação
+              <b-dropdown-item v-if="testaCompetencia('atenderPedidoPublicacaoNoDiario')"><nuxt-link class="dropdown-link"
+                  active-class="active" to="/sigaex/app/expediente/mov/atender_pedido_publicacao">Gerenciar Publicação
                   DJE</nuxt-link></b-dropdown-item>
 
-              <b-dropdown-item
-                v-if="testaCompetencia('gerenciarPublicacaoNoBoletimPorConfiguracao')"><nuxt-link
+              <b-dropdown-item v-if="testaCompetencia('gerenciarPublicacaoNoBoletimPorConfiguracao')"><nuxt-link
                   class="dropdown-link" active-class="active"
                   to="/sigaex/app/configuracao/gerenciar_publicacao_boletim">Definir Publicadores
                   Boletim</nuxt-link></b-dropdown-item>
@@ -122,8 +118,8 @@
 
               <b-dropdown-item
                 v-if="podeUtilizarServicoPorConfiguracao('SIGA:Sistema Integrado de Gestão Administrativa;DOC:Módulo de Documentos;FE:Ferramentas;EMAIL:Email de Notificação')"><nuxt-link
-                  class="dropdown-link" active-class="active"
-                  to="/sigaex/app/expediente/emailNotificacao/listar">Cadastro de Email de
+                  class="dropdown-link" active-class="active" to="/sigaex/app/expediente/emailNotificacao/listar">Cadastro
+                  de Email de
                   Notificação</nuxt-link></b-dropdown-item>
 
               <b-dropdown-item
@@ -336,9 +332,9 @@
                 <b-dropdown-item v-for="s in $store.state.usuario.substituicoesPermitidas" :key="s.substituicaoId"
                   :disabled="$store.state.usuario.substituicaoId === s.substituicaoId" @click="substituir(s)">
                   {{
-                      (s.cadastranteId !== s.titularId ? s.titularNome : '') +
-                      (s.cadastranteId !== s.titularId && s.lotaCadastranteId !== s.lotaTitularId ? '/' : '') +
-                      (s.lotaCadastranteId !== s.lotaTitularId ? s.lotaTitularNome : '')
+                    (s.cadastranteId !== s.titularId ? s.titularNome : '') +
+                    (s.cadastranteId !== s.titularId && s.lotaCadastranteId !== s.lotaTitularId ? '/' : '') +
+                    (s.lotaCadastranteId !== s.lotaTitularId ? s.lotaTitularNome : '')
                   }}
                 </b-dropdown-item>
                 <b-dropdown-divider></b-dropdown-divider>
@@ -348,7 +344,7 @@
 
             <b-nav-form>
               <b-form-input v-model="siglaParaPesquisar" size="sm" class="mr-sm-2" placeholder="Sigla"></b-form-input>
-              <b-button size="sm" class="my-2 my-sm-0" type="submit" @click="pesquisar">Buscar</b-button>
+              <b-button size="sm" class="my-2 my-sm-0" type="submit" @click.prevent="pesquisar">Buscar</b-button>
             </b-nav-form>
           </b-navbar-nav>
         </b-collapse>
@@ -413,11 +409,15 @@ export default {
     async pesquisar() {
       const pesq = (this.siglaParaPesquisar || '').replace(/[^a-z0-9]/gi, '')
       try {
-        const codigo = await this.$axios.$get('sigaex/api/v1/documentos/' + pesq + '/pesquisar-sigla').codigo
-        if (codigo) {
+        const resp = await this.$axios.$get('sigaex/api/v1/documentos/' + pesq + '/pesquisar-sigla')
+        console.log(resp)
+        if (resp) {
+          this.siglaParaPesquisar = resp.sigla
           this.$router.push({
-            name: 'Documento',
-            params: { numero: codigo },
+            name: 'documento-numero',
+            params: {
+              numero: resp.codigo
+            }
           })
         }
       } catch (ex) { }
