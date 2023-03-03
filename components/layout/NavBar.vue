@@ -343,7 +343,7 @@
             </b-nav-item-dropdown>
 
             <b-nav-form>
-              <b-form-input v-model="siglaParaPesquisar" size="sm" class="mr-sm-2" placeholder="Sigla"></b-form-input>
+              <b-form-input v-model="siglaParaPesquisar" size="sm" class="mr-sm-2" placeholder=""></b-form-input>
               <b-button size="sm" class="my-2 my-sm-0" type="submit" @click.prevent="pesquisar">Buscar</b-button>
             </b-nav-form>
           </b-navbar-nav>
