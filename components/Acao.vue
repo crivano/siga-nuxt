@@ -30,7 +30,7 @@ export default {
     },
     numeroGeral() {
       const geral = this.$parent.doc.mobs.filter((a) => a.isGeral)[0]
-      return UtilsBL.onlyLettersAndNumbers(geral.sigla)
+      return UtilsBL.onlyLettersAndNumbers((geral||{}).sigla)
     },
     exibir() {
       return this.metodo || process.env.SHOW_UNIMPLEMENTED_ACTIONS
@@ -123,7 +123,7 @@ export default {
     ver_mais() {
       this.$router.push({
         name: 'documento-numero-auditar',
-        params: { numero: this.numeroGeral },
+        params: { numero: this.numero },
       })
     },
 
@@ -208,7 +208,7 @@ export default {
     },
 
     ver_impressao() {
-      this.$parent.mostrarCompleto()
+      this.$parent.imprimir()
     },
 
     juntar() {

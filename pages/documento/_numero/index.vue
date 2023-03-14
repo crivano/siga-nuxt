@@ -15,7 +15,8 @@
           <div class="row">
             <div class="col col-12 col-lg-8">
               <h4>{{ doc.forma }} {{ doc.mobs[0].sigla }}</h4>
-              <doc-html v-if="errormsg === undefined && doc && doc.conteudoBlobHtmlString" :html="doc.conteudoBlobHtmlString" />
+              <doc-html v-if="errormsg === undefined && doc && doc.conteudoBlobHtmlString"
+                :html="doc.conteudoBlobHtmlString" />
               <MyIFrame v-if="!doc.conteudoBlobHtmlString" :src="pdfSource" />
               <table v-if="filteredMovs && filteredMovs.length" class="table table-sm table-striped mt-3">
                 <thead class="table-dark">
@@ -35,10 +36,9 @@
                       {{ mov.descricao }}
                       <span v-if="mov.idTpMov != 2">{{ mov.complemento }}</span>
                       <span v-if="mov.descricao &amp;&amp; mov.acoes &amp;&amp; mov.acoes.length !== 0">|</span>
-                      <span v-for="acao in mov.acoes" :key="acao.nome"
-                        >{{ acao.pre }} <a v-if="acao.acao" href="" @click.prevent="executar(mov, acao)">{{ acao.nome }}</a
-                        ><span v-if="!acao.acao">{{ acao.nome }}</span> {{ acao.pos }}</span
-                      >
+                      <span v-for="acao in mov.acoes" :key="acao.nome">{{ acao.pre }} <a v-if="acao.acao" href=""
+                          @click.prevent="executar(mov, acao)">{{ acao.nome }}</a><span v-if="!acao.acao">{{ acao.nome
+                          }}</span> {{ acao.pos }}</span>
                     </td>
                   </tr>
                 </tbody>
@@ -49,11 +49,14 @@
               <ul class="blog-tags p-0">
                 <acao v-for="acao in filteredAcoes" :key="acao.nome" :acao="acao" />
               </ul>
-              <div class="mt-1"><CardMarcas :doc="doc" /></div>
+              <div class="mt-1">
+                <CardMarcas :doc="doc" />
+              </div>
               <CardPendencias :doc="doc" />
 
               <CardGraphViz :dot="doc.vizTramitacao" titulo="Tramitação" />
-              <CardGraphViz v-if="doc.vizRelacaoDocs && doc.vizRelacaoDocs.length > 200" :dot="doc.vizRelacao" titulo="Tramitação" />
+              <CardGraphViz v-if="doc.vizRelacaoDocs && doc.vizRelacaoDocs.length > 200" :dot="doc.vizRelacao"
+                titulo="Tramitação" />
 
               <CardDetalhes :doc="doc" />
               <CardNivelDeAcesso :doc="doc" />
@@ -74,7 +77,7 @@ export default {
       const mob = doc.mobs[0]
       if (!mob.isGeral) numero = mob.sigla.replace(/[^a-zA-Z0-9]/gi, '')
       return { numero, doc, mob }
-    } catch (ex) {}
+    } catch (ex) { }
   },
 
   data() {
@@ -136,7 +139,10 @@ export default {
     },
 
     imprimir() {
-      window.print()
+      window.open(
+        process.env.API_URL_BROWSER + 'sigaex/api/v1/documentos/' +
+        this.numero +
+        '/arquivo/produzir?estampa=true&completo=false&volumes=false&contenttype=application/pdf', '_blank')
     },
   },
 }
@@ -253,6 +259,5 @@ table.mov tr.anexacaox {
 table.mov tr.encerramento_volumex {
   background-color: rgb(255, 218, 218);
 }
-
 </style>
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="container-fluid content profile">
-      <div v-if="!errormsg &amp;&amp; doc">
+      <div v-if="!errormsg && doc">
         <div class="row xd-print-block mt-3 mb-3">
           <div class="col-md-12">
             <h4 class="text-center mb-0">Auditando {{ doc.forma }} {{ doc.mobs[0].sigla }}</h4>
@@ -31,18 +31,19 @@
                         {{ mov.descricao }}
                         <span v-if="mov.idTpMov != 2">{{ mov.complemento }}</span>
                         <span v-if="mov.descricao &amp;&amp; mov.acoes &amp;&amp; mov.acoes.length !== 0">|</span>
-                        <span v-for="acao in mov.acoes" :key="acao.nome"
-                          >{{ acao.pre }} <a v-if="acao.acao" href="" @click.prevent="executar(mov, acao)">{{ acao.nome }}</a
-                          ><span v-if="!acao.acao">{{ acao.nome }}</span> {{ acao.pos }}</span
-                        >
+                        <span v-for="acao in mov.acoes" :key="acao.nome">{{ acao.pre }} <a v-if="acao.acao" href=""
+                            @click.prevent="executar(mov, acao)">{{ acao.nome }}</a><span v-if="!acao.acao">{{ acao.nome
+                            }}</span> {{ acao.pos }}</span>
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
+
+              <AuditMarcas :doc="doc" />
+              <AuditAcoes :doc="doc" />
             </div>
             <div class="col col-12 col-lg-4">
-              <CardMarcas :doc="doc" />
               <CardPendencias :doc="doc" />
               <CardDetalhes :doc="doc" />
               <CardNivelDeAcesso :doc="doc" />
@@ -57,34 +58,13 @@
 <script>
 export default {
   async asyncData({ params, $axios, $store }) {
-    const computeGraph = async function (dot) {
-      if (!dot) return
-      try {
-        const data = await $axios.$post('siga/public/app/graphviz/svg', 'digraph G { graph[tooltip="Tramitação"] ' + dot + '}', {
-          headers: { 'Content-Type': 'text/vnd.graphviz' },
-          withCredentials: false,
-        })
-        if (!data) return
-        let result = data.replace(/width="\d+pt" height="\d+pt"/gm, 'style="left:0; top:0; width:100%; height:12em; display:block; margin: auto;"')
-        result = result.replace(/<polygon fill="white".+?\/>/gm, '')
-        return result
-      } catch (ex) {}
-    }
-
     let numero = params.numero
     try {
-      const doc = await $axios.$get('sigaex/api/v1/documentos/' + numero + '?auditar=true')
+      const doc = await $axios.$get(`sigaex/api/v1/documentos/${numero}?exibe=true&completo=true&auditar=true`)
       const mob = doc.mobs[0]
       if (!mob.isGeral) numero = mob.sigla.replace(/[^a-zA-Z0-9]/gi, '')
-      let relacao
-      // if ($store.state.test.properties['vizservice.url']) {
-      // if (doc) {
-      const tramitacao = await computeGraph(doc.vizTramitacao)
-      if (doc.vizRelacaoDocs && doc.vizRelacaoDocs.length > 200) relacao = await computeGraph(doc.vizRelacaoDocs)
-      // }
-
-      return { numero, doc, mob, tramitacao, relacao }
-    } catch (ex) {}
+      return { numero, doc, mob }
+    } catch (ex) { }
   },
 
   data() {
@@ -105,6 +85,12 @@ export default {
       marcadores: [],
       marcasativas: true,
       notas: false,
+      acoesOptionsSelected: ['descricoes'],
+      acoesOptions: [
+        { text: 'Descrições', value: 'descricoes' },
+        { text: 'Explicações', value: 'explicacoes' },
+        { text: 'Inativas', value: 'inativas' },
+      ]
     }
   },
   computed: {
@@ -117,11 +103,16 @@ export default {
       if (!this.mob || !this.mob.movs || this.mob.movs.length === 0) return undefined
       return this.mob.movs.filter((m) => m.idTpMov !== 14 && !m.cancelada)
     },
-    filteredAcoes() {
+    unfilteredAcoes() {
       if (!this.mob) return undefined
       let acoes = this.doc.mobs.length > 1 ? this.mob.acoes.concat(this.doc.mobs[1].acoes) : this.mob.acoes
-      acoes = acoes.sort((a, b) => (a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0))
-      return acoes.filter((m) => m.pode)
+      acoes = acoes.sort((a, b) => (!a.pode && b.pode ? 1 : !b.pode && a.pode ? -1 : (a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0)))
+      return acoes
+    },
+    filteredAcoes() {
+      if (this.unfilteredAcoes)
+        return this.unfilteredAcoes.filter((m) => this.acoesOptionsSelected.includes('inativas') || m.pode)
+      return undefined
     },
     pdfSource() {
       if (!this.doc || this.doc.conteudoBlobHtmlString) return undefined

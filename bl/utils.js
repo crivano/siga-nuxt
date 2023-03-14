@@ -81,6 +81,21 @@ export default {
     return r
   },
 
+  formatJSDDMMYYHHMM(s) {
+    if (!s) return
+    const r =
+      s.substring(8, 10) +
+      '/' +
+      s.substring(5, 7) +
+      '/' +
+      s.substring(2, 4) +
+      '&nbsp;' +
+      s.substring(11, 13) +
+      ':' +
+      s.substring(14, 16)
+    return r
+  },
+
   trunc(s, n, useWordBoundary) {
     if (s.length <= n) {
       return s
