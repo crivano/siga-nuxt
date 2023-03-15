@@ -8,7 +8,9 @@ export const state = () => ({
   },
   enums: {},
   tabelas: {},
-  usuario: {}
+  usuario: {},
+  home: (process.server) ? 'painel' : localStorage.getItem('home')||'painel'
+ // home: 'painel'
 })
 
 export const mutations = {
@@ -23,6 +25,10 @@ export const mutations = {
   },
   setUsuario(state, val) {
     state.usuario = val
+  },
+  setHome(state, val) {
+    state.home = val
+    localStorage.setItem('home', val)
   }
 }
 

@@ -17,8 +17,20 @@
         <b-collapse id="nav-collapse" is-nav>
           <b-navbar-nav>
             <b-nav-item v-if="logged">
-              <nuxt-link active-class="active" :to="{ name: 'painel' }">Painel</nuxt-link>
+              <nuxt-link v-if="$store.state.home === 'painel'" active-class="active" :to="{ name: 'painel' }">Painel</nuxt-link>
+              <nuxt-link v-if="$store.state.home === 'quadro'" active-class="active" :to="{ name: 'quadro' }">Quadro</nuxt-link>
+              <nuxt-link v-if="$store.state.home === 'mesa'" active-class="active" :to="{ name: 'mesa' }">Mesa</nuxt-link>
             </b-nav-item>
+
+            <b-nav-item-dropdown v-if="logged" text="Ver">
+              <b-dropdown-item @click="$store.commit('setHome', 'painel')"><nuxt-link class="dropdown-link" active-class="active"
+                  :to="{ name: 'painel' }">Painel</nuxt-link></b-dropdown-item>
+              <b-dropdown-item @click="$store.commit('setHome', 'quadro')"><nuxt-link class="dropdown-link" active-class="active"
+                  :to="{ name: 'quadro' }">Quadro</nuxt-link></b-dropdown-item>
+              <b-dropdown-item @click="$store.commit('setHome', 'mesa')"><nuxt-link class="dropdown-link" active-class="active"
+                  :to="{ name: 'mesa' }">Mesa</nuxt-link></b-dropdown-item>
+            </b-nav-item-dropdown>
+
 
             <b-nav-item-dropdown v-if="$store.state.painel.listaMarcaIdChecked.length">
               <template slot="button-content"><span class="em-lote text-warning">Em Lote</span></template>
@@ -32,14 +44,6 @@
               <b-dropdown-item><nuxt-link class="dropdown-link" active-class="active"
                   :to="{ name: 'documento-novo' }">Documento</nuxt-link></b-dropdown-item>
             </b-nav-item-dropdown>
-
-            <b-nav-item-dropdown v-if="logged" text="Ver">
-              <b-dropdown-item><nuxt-link class="dropdown-link" active-class="active"
-                  :to="{ name: 'quadro' }">Quadro</nuxt-link></b-dropdown-item>
-              <b-dropdown-item><nuxt-link class="dropdown-link" active-class="active"
-                  :to="{ name: 'mesa' }">Mesa</nuxt-link></b-dropdown-item>
-            </b-nav-item-dropdown>
-
 
             <b-nav-item-dropdown
               v-if="podeUtilizarServicoPorConfiguracao('SIGA;DOC:Módulo de Documentos') && (!ehPublicoExterno() || podeCriarNovoExterno())">
