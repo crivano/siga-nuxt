@@ -355,6 +355,8 @@
   </div>
 </template>
 <script>
+import UtilsBL from '../../bl/utils'
+
 export default {
   data() {
     return { siglaParaPesquisar: undefined }
@@ -409,14 +411,25 @@ export default {
     async pesquisar() {
       const pesq = (this.siglaParaPesquisar || '').replace(/[^a-z0-9]/gi, '')
       try {
-        const resp = await this.$axios.$get('sigaex/api/v1/documentos/' + pesq + '/pesquisar-sigla')
+        const resp = await this.$axios.$get(`siga/api/v1/selecionar/${pesq}`)
         console.log(resp)
-        if (resp) {
-          this.siglaParaPesquisar = resp.sigla
+        if (resp && resp.entidade && resp.entidade.tipo) {
+          this.siglaParaPesquisar = resp.entidade.sigla
+
+          const entidadeTipoXRoute = {
+            GI_PESSOA: 'pessoa-numero',
+            GI_LOTACAO: 'lotacao-numero',
+            EX_DOCUMENTO: 'documento-numero',
+            WF_PROCEDIMENTO: 'wf-procedimento-numero',
+            WF_DIAGRAMA: 'wf-diagrama-numero',
+            SR_SOLICITACAO: 'solicitacao-numero',
+            GC_INFORMACAO: 'conhecimento-numero',
+          }
+
           this.$router.push({
-            name: 'documento-numero',
+            name: entidadeTipoXRoute[resp.entidade.tipo],
             params: {
-              numero: resp.codigo
+              numero: UtilsBL.onlyLettersAndNumbers(resp.entidade.sigla)
             }
           })
         }

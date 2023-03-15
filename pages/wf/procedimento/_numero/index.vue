@@ -57,7 +57,7 @@ export default {
 
   async asyncData({ params, $axios, $store }) {
     try {
-      const data = await $axios.$get(`sigawf/api/v1/procedimentos/${params.sigla}`)
+      const data = await $axios.$get(`sigawf/api/v1/procedimentos/${params.numero}`)
       const procedimento = data.procedimento
       return { procedimento }
     } catch (ex) {}
