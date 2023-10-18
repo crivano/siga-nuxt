@@ -4,7 +4,8 @@
       <div class="col-md-12">
         <h4 v-if="sigla" class="text-center mt-3 mb-0">Editar {{ sigla }}</h4>
         <h4 v-else class="text-center mt-3 mb-0">
-          {{ siglaMobilPai ? 'Incluir em ' + siglaMobilPai : siglaMobilFilho ? 'Autuando ' + siglaMobilFilho : 'Criar Documento' }}
+          {{ siglaMobilPai ? 'Incluir em ' + siglaMobilPai : siglaMobilFilho ? 'Autuando ' + siglaMobilFilho :
+            'Criar&nbsp;Documento' }}
         </h4>
       </div>
     </div>
@@ -13,29 +14,13 @@
         <div class="row">
           <div class="form-group col col-sm-12">
             <label for="modelos">Modelo</label>
-            <treeselect
-              id="modelos"
-              v-model="idModelo"
-              :options="hierarquiaDeModelos"
-              :disable-branch-nodes="true"
-              :show-count="true"
-              placeholder="Qual o modelo?"
-              @input="carregarModeloEProcessarEntrevista"
-            />
+            <treeselect id="modelos" v-model="idModelo" :options="hierarquiaDeModelos" :disable-branch-nodes="true"
+              :show-count="true" placeholder="Qual o modelo?" @input="carregarModeloEProcessarEntrevista" />
           </div>
           <div v-if="modelo && !modelo.nivelDeAcesso" class="form-group col col-md-4 col-lg-2">
-            <my-select
-              id="nivelacesso"
-              v-model="nivelacesso"
-              label="Nível de Acesso"
-              name="nivelacesso"
-              validate="required"
-              :disabled="false"
-              :list="niveisDeAcesso"
-              :edit="true"
-              chave="nmNivelAcesso"
-              descr="nmNivelAcesso"
-            ></my-select>
+            <my-select id="nivelacesso" v-model="nivelacesso" label="Nível de Acesso" name="nivelacesso"
+              validate="required" :disabled="false" :list="niveisDeAcesso" :edit="true" chave="nmNivelAcesso"
+              descr="nmNivelAcesso"></my-select>
           </div>
         </div>
         <div class="row">
@@ -64,25 +49,23 @@
         </div>
         <div class="form-group">
           <label>Descrição</label>
-          <textarea id="descrDocumento" v-model="descricao" name="exDocumentoDTO.descrDocumento" cols="80" rows="2" class="form-control"></textarea>
-          <small class="form-text text-muted">Preencher o campo acima com palavras-chave, sempre usando substantivos, gênero masculino e singular.</small>
+          <textarea id="descrDocumento" v-model="descricao" name="exDocumentoDTO.descrDocumento" cols="80" rows="2"
+            class="form-control"></textarea>
+          <small class="form-text text-muted">Preencher o campo acima com palavras-chave, sempre usando substantivos,
+            gênero masculino e singular.</small>
         </div>
         <div v-if="capturarPDF" class="form-group">
           <label>Arquivo PDF (limite de 10MB)</label>
-          <b-form-file
-            v-model="arquivo"
-            :state="Boolean(arquivo)"
-            accept="application/pdf"
-            placeholder="Selecione o arquivo ou solte ele aqui..."
-            drop-placeholder="Solte aqui..."
-          ></b-form-file>
+          <b-form-file v-model="arquivo" :state="Boolean(arquivo)" accept="application/pdf"
+            placeholder="Selecione o arquivo ou solte ele aqui..." drop-placeholder="Solte aqui..."></b-form-file>
         </div>
       </form>
       <form ref="form">
         <documento-entrevista :entrevista="entrevistaTemplate" />
       </form>
       <div ref="divEntrevista" style="display: none" />
-      <b-button :disabled="invalid" class="mt-4" variant="primary" accesskey="O" @click.prevent="salvar()"><u>O</u>K</b-button>
+      <b-button :disabled="invalid" class="mt-4" variant="primary" accesskey="O"
+        @click.prevent="salvar()"><u>O</u>K</b-button>
     </validation-observer>
   </div>
 </template>
@@ -140,16 +123,13 @@ export default {
   },
   watch: {
     '$route.params.numero'() {
-      this.carregarDocumento()
+      this.inicializarDocumento()
     },
   },
   mounted() {
     const self = this
 
-    this.$nextTick(async function () {
-      await this.carregarModelos()
-      await this.carregarDocumento(this.$route.params.numero)
-    })
+    this.$nextTick(this.inicializarDocumento)
 
     window.sbmt = function () {
       self.processarEntrevista()
@@ -159,12 +139,24 @@ export default {
     getFormParams() {
       return EntrevistaBL.encodeFormParams(EntrevistaBL.getFormResults(this.$refs.form))
     },
-    async carregarModelos() {
+    async carregarModelos(siglaMobilPai, siglaMobilFilho) {
       await this.$store.dispatch('doc/carregarModelos')
     },
-    async carregarDocumento() {
-      await this.$store.dispatch('doc/carregarDocumento', this.$route.params.numero)
-      if (this.$store.state.doc.conteudoBlobFormString) await this.processarEntrevista(this.$store.state.doc.conteudoBlobFormString)
+    async inicializarDocumento() {
+      this.$store.commit('doc/resetDocumento')
+      const numeroMobilPai = UtilsBL.onlyLettersAndNumbers(this.$route.params.siglaMobilPai)
+      const numeroMobilFilho = UtilsBL.onlyLettersAndNumbers(this.$route.params.siglaMobilFilho)
+      this.$store.commit('doc/siglaMobilPai', numeroMobilPai)
+      this.$store.commit('doc/siglaMobilFilho', numeroMobilFilho)
+      await this.carregarModelos()
+      if (this.$route.params.numero) {
+        await this.$store.dispatch('doc/carregarDocumento', this.$route.params.numero)
+      } else if (this.$route.params.siglaMobilPai) {
+        await this.$store.dispatch('doc/inicializarDocumentoFilho', numeroMobilPai)
+      } else if (this.$route.params.siglaMobilFilho) {
+        await this.$store.dispatch('doc/inicializarDocumentoPai', numeroMobilFilho)
+      }
+      await this.processarEntrevista(this.$store.state.doc.conteudoBlobFormString)
     },
     async carregarModeloEProcessarEntrevista() {
       if (this.$store.state.doc.idModelo && (!this.$store.state.doc.modelo || this.$store.state.doc.modelo.idModelo !== this.$store.state.doc.idModelo))
@@ -172,9 +164,11 @@ export default {
       await this.processarEntrevista()
     },
     async processarEntrevista(params) {
-      await this.$store.dispatch('doc/processarEntrevista', { params, formParams: this.getFormParams() })
-      this.$refs.divEntrevista.innerHTML = this.$store.state.doc.entrevista
-      this.$store.commit('doc/entrevistaTemplate', this.$refs.divEntrevista.innerHTML)
+      if (this.$store.state.doc.idModelo) {
+        await this.$store.dispatch('doc/processarEntrevista', { params, formParams: this.getFormParams() })
+        this.$refs.divEntrevista.innerHTML = this.$store.state.doc.entrevista
+        this.$store.commit('doc/entrevistaTemplate', this.$refs.divEntrevista.innerHTML)
+      }
     },
     async salvar() {
       const rdata = await this.$store.dispatch('doc/salvar', this.getFormParams())

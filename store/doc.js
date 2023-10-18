@@ -125,7 +125,9 @@ export const mutations = {
 export const actions = {
   async carregarDocumento({ state, commit, dispatch }, numero) {
     commit('resetDocumento')
-    if (!numero) return
+    if (!numero) {
+      return
+    }
     commit('numero', numero)
     try {
       const doc = await this.$axios.$get(
@@ -151,6 +153,34 @@ export const actions = {
         doc.classificacaoNome)
 
       commit('conteudoBlobFormString', doc.conteudoBlobFormString)
+    } catch (ex) { }
+  },
+
+  async inicializarDocumentoFilho({ state, commit, dispatch }, numeroDocumentoPai) {
+    commit('resetDocumento')
+    try {
+      const doc = await this.$axios.$get(
+        `sigaex/api/v1/documentos/${UtilsBL.onlyLettersAndNumbers(numeroDocumentoPai)}?exibe=true&completo=true`
+      )
+      commit('siglaMobilPai', doc.mobs[0].sigla)
+      commit('descricao', doc.descrDocumento)
+      commit('classificacao',
+        (doc.classificacaoSigla ? doc.classificacaoSigla + ' - ' : '') +
+        doc.classificacaoNome)
+    } catch (ex) { }
+  },
+
+  async inicializarDocumentoPai({ state, commit, dispatch }, numeroDocumentoFilho) {
+    commit('resetDocumento')
+    try {
+      const doc = await this.$axios.$get(
+        `sigaex/api/v1/documentos/${UtilsBL.onlyLettersAndNumbers(numeroDocumentoFilho)}?exibe=true&completo=true`
+      )
+      commit('siglaMobilFilho', doc.mobs[0].sigla)
+      commit('descricao', doc.descrDocumento)
+      commit('classificacao',
+        (doc.classificacaoSigla ? doc.classificacaoSigla + ' - ' : '') +
+        doc.classificacaoNome)
     } catch (ex) { }
   },
 
